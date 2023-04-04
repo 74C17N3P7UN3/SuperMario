@@ -11,8 +11,10 @@ package control;
 public class GameEngine implements Runnable {
     private final static int WIDTH = 1920, HEIGHT = 1080;
 
+    private SoundManager soundManager;
+
     public GameEngine() {
-        //
+        soundManager = new SoundManager();
     }
 
     @Override
