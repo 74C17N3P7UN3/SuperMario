@@ -6,7 +6,7 @@ package control;
  * provides some runtime checks that make up the whole game's brain.
  *
  * @author TheInfernalNick
- * @version 0.0.1
+ * @version 0.1.0
  */
 public class GameEngine implements Runnable {
     private final static int WIDTH = 1920, HEIGHT = 1080;
