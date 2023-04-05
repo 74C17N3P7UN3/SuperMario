@@ -32,10 +32,23 @@ public abstract class GameObject {
         setFalling(true);
     }
 
+    /**
+     * Draws the {@link BufferedImage} stored in the class
+     * at the {@code (x, y)} coordinated with the given
+     * {@link Graphics} parent drawer class.
+     *
+     * @param graphics The parent responsible for drawing
+     *                 the child object.
+     */
     public void drawObject(Graphics graphics) {
         graphics.drawImage(style, (int) x, (int) y, null);
     }
 
+    /**
+     * Updates the location of the sprite given its status.
+     * Provides checks for vertical conditions and updates
+     * the horizontal position regardless every game tick.
+     */
     public void updateLocation() {
         if (jumping && velY <= 0) {
             setJumping(false);
@@ -51,7 +64,7 @@ public abstract class GameObject {
         x += velX;
     }
 
-    /* ----- Getters / Setters ----- */
+    /* ---------- Getters / Setters ---------- */
 
     public BufferedImage getStyle() {
         return style;
