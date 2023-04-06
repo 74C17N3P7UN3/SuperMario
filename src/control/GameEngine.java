@@ -1,6 +1,7 @@
 package control;
 
 import view.ImageLoader;
+import view.UIManager;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -19,18 +20,22 @@ import java.util.Objects;
 public class GameEngine implements Runnable {
     private final static int WIDTH = 1920, HEIGHT = 1080;
 
+    private final Camera camera;
     private final ImageLoader imageLoader;
     private final InputManager inputManager;
     private final SoundManager soundManager;
+    private final UIManager uiManager;
 
     private GameStatus gameStatus;
     private final Thread thread;
     private final boolean isRunning;
 
     public GameEngine() {
+        camera = new Camera();
         imageLoader = new ImageLoader();
         inputManager = new InputManager(this);
         soundManager = new SoundManager();
+        uiManager = new UIManager(this, WIDTH, HEIGHT);
 
         gameStatus = GameStatus.START_SCREEN;
 
@@ -41,12 +46,16 @@ public class GameEngine implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        frame.add(uiManager);
         frame.pack();
 
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setVisible(true);
+
+        frame.addMouseListener(inputManager);
+        frame.addKeyListener(inputManager);
 
         // Start the thread execution
         isRunning = true;
@@ -80,7 +89,7 @@ public class GameEngine implements Runnable {
      * Renders the current frame.
      */
     private void render() {
-        //
+        uiManager.repaint();
     }
 
     /**
@@ -102,6 +111,10 @@ public class GameEngine implements Runnable {
     }
 
     /* ---------- Getters / Setters ---------- */
+
+    public Point getCameraPosition() {
+        return new Point((int) camera.getX(), (int) camera.getY());
+    }
 
     public GameStatus getGameStatus() {
         return gameStatus;
