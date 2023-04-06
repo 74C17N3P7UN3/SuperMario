@@ -7,7 +7,6 @@ import java.awt.*;
 
 
 public class UIManager extends JPanel {
-
     GameEngine engine;
 
     public UIManager(GameEngine e, int width, int height) {
@@ -17,7 +16,6 @@ public class UIManager extends JPanel {
         setMinimumSize(new Dimension(width, height));
 
         ImageLoader loader = engine.getImageLoader();
-
     }
 
     @Override

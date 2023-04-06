@@ -1,8 +1,8 @@
 package control;
 
-import javax.sound.sampled.Clip;
+import utils.SoundImporter;
 
-import static utils.SoundImporter.loadTrack;
+import javax.sound.sampled.Clip;
 
 /**
  * Responsible for retrieving and playing the
@@ -16,7 +16,7 @@ public class SoundManager {
     private long clipTime;
 
     public SoundManager() {
-        themeClip = loadTrack("theme");
+        themeClip = SoundImporter.loadTrack("theme");
     }
 
     /**
@@ -46,6 +46,6 @@ public class SoundManager {
     /* ---------- Play single sounds ---------- */
 
     public void playCoin() {
-        loadTrack("coin").start();
+        SoundImporter.loadTrack("coin").start();
     }
 }

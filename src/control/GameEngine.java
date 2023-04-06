@@ -1,13 +1,11 @@
 package control;
 
+import utils.ImageImporter;
 import view.ImageLoader;
 import view.UIManager;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
-import java.util.Objects;
 
 /**
  * The core class of the program. It's responsible for handling the
@@ -41,11 +39,7 @@ public class GameEngine implements Runnable {
 
         // Prepare the frame
         JFrame frame = new JFrame("Super Mario Bros");
-        try { // TODO: Create a utility class that handles nonsense exceptions
-            frame.setIconImage(ImageIO.read(Objects.requireNonNull(getClass().getResource("/media/icon.png"))));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        frame.setIconImage(ImageImporter.loadLogo());
         frame.add(uiManager);
         frame.pack();
 
