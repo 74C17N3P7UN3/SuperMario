@@ -2,6 +2,7 @@ package control;
 
 import model.brick.Brick;
 import model.Map;
+import utils.ImageImporter;
 import view.ImageLoader;
 
 import java.awt.*;
@@ -22,9 +23,9 @@ public class MapCreator {
 
     public MapCreator(ImageLoader imageLoader) {
         this.imageLoader = imageLoader;
-        this.backgroundImage = imageLoader.loadImage("/background.png");
+        this.backgroundImage = ImageImporter.loadImage("background");
 
-        BufferedImage sprite = imageLoader.loadImage("/sprite.png");
+        BufferedImage sprite = ImageImporter.loadImage("sprite");
         this.ordinaryBrick = imageLoader.getImage(sprite, 1, 1, 48, 48);
         this.surpriseBrick = imageLoader.getImage(sprite, 2, 1, 48, 48);
         this.block = imageLoader.getImage(sprite, 2, 2, 48, 48);
@@ -40,7 +41,7 @@ public class MapCreator {
 	 * @return The generated {@link Map} object.
 	 */
     public Map createMap(String mapName) {
-        BufferedImage mapImage = imageLoader.loadImage(mapName);
+        BufferedImage mapImage = ImageImporter.loadMap(mapName);
 
         Map createdMap = new Map(backgroundImage);
 
