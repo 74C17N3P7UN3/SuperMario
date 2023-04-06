@@ -1,5 +1,13 @@
 package control;
 
+import view.ImageLoader;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
+import java.util.Objects;
+
 /**
  * The core class of the program. It's responsible for handling the
  * initialization and synchronization of the other threads. It also
@@ -11,14 +19,99 @@ package control;
 public class GameEngine implements Runnable {
     private final static int WIDTH = 1920, HEIGHT = 1080;
 
-    private SoundManager soundManager;
+    private final ImageLoader imageLoader;
+    private final InputManager inputManager;
+    private final SoundManager soundManager;
+
+    private GameStatus gameStatus;
+    private final Thread thread;
+    private final boolean isRunning;
 
     public GameEngine() {
+        imageLoader = new ImageLoader();
+        inputManager = new InputManager(this);
         soundManager = new SoundManager();
+
+        gameStatus = GameStatus.START_SCREEN;
+
+        // Prepare the frame
+        JFrame frame = new JFrame("Super Mario Bros");
+        try { // TODO: Create a utility class that handles nonsense exceptions
+            frame.setIconImage(ImageIO.read(Objects.requireNonNull(getClass().getResource("/media/icon.png"))));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        frame.pack();
+
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
+        frame.setVisible(true);
+
+        // Start the thread execution
+        isRunning = true;
+        thread = new Thread(this);
+        thread.start();
     }
 
     @Override
     public void run() {
+        long lastTime = System.nanoTime();
+        double amountOfTicks = 60.0;
+        double ns = 1000000000 / amountOfTicks;
+        double delta = 0;
+
+        while (isRunning && !thread.isInterrupted()) {
+            long now = System.nanoTime();
+            delta += (now - lastTime) / ns;
+            lastTime = now;
+
+            while (delta >= 1) {
+                if (gameStatus == GameStatus.RUNNING)
+                    gameLoop();
+                delta--;
+            }
+
+            render();
+        }
+    }
+
+    /**
+     * Renders the current frame.
+     */
+    private void render() {
         //
+    }
+
+    /**
+     * Runs the game until the game is over or the player dies.
+     */
+    private void gameLoop() {
+        //
+    }
+
+    /**
+     * Handles all the input received by the player. It checks for the
+     * game state and currently selected screen to determine which action
+     * needs to be executed by the {@link GameEngine}.
+     *
+     * @param input The inputted key-press.
+     */
+    public void receiveInput(ButtonAction input) {
+        //
+    }
+
+    /* ---------- Getters / Setters ---------- */
+
+    public GameStatus getGameStatus() {
+        return gameStatus;
+    }
+
+    public void setGameStatus(GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
+    }
+
+    public ImageLoader getImageLoader() {
+        return imageLoader;
     }
 }
