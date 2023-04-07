@@ -12,7 +12,7 @@ import java.awt.event.MouseListener;
  * @author TheInfernalNick
  * @version 0.1.0
  */
-public class InputManager implements MouseListener, KeyListener {
+public class InputManager implements KeyListener, MouseListener {
     private GameEngine engine;
 
     InputManager(GameEngine engine) {
@@ -34,29 +34,14 @@ public class InputManager implements MouseListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        GameStatus status = engine.getGameStatus();
         ButtonAction currentAction = ButtonAction.NO_ACTION;
 
-        if (keyCode == KeyEvent.VK_UP) {
-            if (status == GameStatus.START_SCREEN || status == GameStatus.MAP_SELECTION)
-                currentAction = ButtonAction.GO_UP;
-            else currentAction = ButtonAction.JUMP;
-        }
-        else if (keyCode == KeyEvent.VK_SPACE || keyCode == KeyEvent.VK_W)
+        if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_SPACE)
             currentAction = ButtonAction.JUMP;
-        else if (keyCode == KeyEvent.VK_DOWN) {
-            if (status == GameStatus.START_SCREEN || status == GameStatus.MAP_SELECTION)
-                currentAction = ButtonAction.GO_DOWN;
-            else currentAction = ButtonAction.CROUCH;
-        }
-        else if (keyCode == KeyEvent.VK_SHIFT || keyCode == KeyEvent.VK_S)
-            currentAction = ButtonAction.CROUCH;
-        else if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D)
+        if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D)
             currentAction = ButtonAction.M_RIGHT;
-        else if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A)
+        if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A)
             currentAction = ButtonAction.M_LEFT;
-        else if (keyCode == KeyEvent.VK_ENTER)
-            currentAction = ButtonAction.SELECT;
 
         notifyInput(currentAction);
     }
@@ -67,11 +52,6 @@ public class InputManager implements MouseListener, KeyListener {
 
         if(keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_LEFT)
             notifyInput(ButtonAction.ACTION_COMPLETED);
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        //
     }
 
     /* ---------- Not needed implemented methods ---------- */
@@ -87,6 +67,9 @@ public class InputManager implements MouseListener, KeyListener {
 
     @Override
     public void mouseExited(MouseEvent e) {}
+
+    @Override
+    public void mousePressed(MouseEvent e) {}
 
     @Override
     public void mouseReleased(MouseEvent e) {}

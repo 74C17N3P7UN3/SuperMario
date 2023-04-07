@@ -25,8 +25,8 @@ public class GameEngine implements Runnable {
     private final UIManager uiManager;
 
     private GameStatus gameStatus;
-    private final Thread thread;
-    private final boolean isRunning;
+    private Thread thread;
+    private boolean isRunning;
 
     public GameEngine() {
         camera = new Camera();
@@ -48,10 +48,15 @@ public class GameEngine implements Runnable {
         frame.setResizable(false);
         frame.setVisible(true);
 
-        frame.addMouseListener(inputManager);
         frame.addKeyListener(inputManager);
 
         // Start the thread execution
+        start();
+    }
+
+    private synchronized void start() {
+        if (isRunning) return;
+
         isRunning = true;
         thread = new Thread(this);
         thread.start();
