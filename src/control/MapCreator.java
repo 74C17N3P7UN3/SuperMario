@@ -1,6 +1,12 @@
 package control;
 
+import model.brick.Block;
 import model.brick.Brick;
+import model.brick.GroundBrick;
+import model.brick.OrdinaryBrick;
+import model.brick.PipeBody;
+import model.brick.PipeHead;
+import model.brick.SurpriseBrick;
 import model.Map;
 import utils.ImageImporter;
 import view.ImageLoader;
@@ -66,15 +72,15 @@ public class MapCreator {
                     createdMap.addBrick(brick);
                 }
                 if (currentPixel == surpriseBrick) {
-                    Brick brick = new SurpriseBrick(xLocation, yLocation, this.surpriseBrick, prize);
+                    Brick brick = new SurpriseBrick(xLocation, yLocation, this.surpriseBrick);
                     createdMap.addBrick(brick);
                 }
                 if (currentPixel == groundBrick) {
-                    Brick brick = new GroundBrick();
+                    Brick brick = new GroundBrick(xLocation, yLocation, this.ordinaryBrick);
                     createdMap.addBrick(brick);
                 }
                 if (currentPixel == block) {
-                    Brick brick = new Block();
+                    Brick brick = new Block(xLocation, yLocation, this.ordinaryBrick);
                     createdMap.addBrick(brick);
                 }
                 if (currentPixel == pipeHead) {

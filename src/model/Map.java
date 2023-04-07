@@ -20,6 +20,7 @@ public class Map {
 
     public void drawMap(Graphics2D g2D) {
         drawBackground(g2D);
+        drawBricks(g2D);
     }
 
     // TODO: Javadoc
@@ -29,9 +30,9 @@ public class Map {
 
     // TODO: Javadoc
     private void drawBricks(Graphics2D g2) {
-        /* for (Brick brick : bricks) {
-            if (brick != null)
-                brick.draw(g2);
-        } */
+        for (Brick brick : bricks) {
+            //if (brick != null)
+            //    brick.draw(g2);
+        }
     }
 }
