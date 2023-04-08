@@ -29,10 +29,9 @@ public class Map {
     }
 
     // TODO: Javadoc
-    private void drawBricks(Graphics2D g2) {
-        for (Brick brick : bricks) {
-            //if (brick != null)
-            //    brick.draw(g2);
-        }
+    private void drawBricks(Graphics2D g2D) {
+        for(Brick brick : bricks)
+        	g2D.drawImage(brick.getStyle(), (int)brick.getX(), (int)brick.getY(), null);
     }
+    
 }
