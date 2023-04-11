@@ -21,6 +21,7 @@ public class GameEngine implements Runnable {
     private final Camera camera;
     private final ImageLoader imageLoader;
     private final InputManager inputManager;
+    private final MapManager mapManager;
     private final SoundManager soundManager;
     private final UIManager uiManager;
 
@@ -32,6 +33,7 @@ public class GameEngine implements Runnable {
         camera = new Camera();
         imageLoader = new ImageLoader();
         inputManager = new InputManager(this);
+        mapManager = new MapManager();
         soundManager = new SoundManager();
         uiManager = new UIManager(this, WIDTH, HEIGHT);
 
@@ -85,10 +87,19 @@ public class GameEngine implements Runnable {
     }
 
     /**
-     * Renders the current frame.
+     * Creates the selected map and sets
+     * the game status to {@code running}.
+     *
+     * @param mapName The name of the map to be loaded.
+     * @see GameStatus
      */
-    private void render() {
-        uiManager.repaint();
+    private void createMap(String mapName) {
+        boolean loaded = mapManager.createMap(imageLoader, mapName);
+
+        if (loaded) {
+            setGameStatus(GameStatus.RUNNING);
+            soundManager.restartTheme();
+        } else setGameStatus(GameStatus.START_SCREEN);
     }
 
     /**
@@ -107,6 +118,13 @@ public class GameEngine implements Runnable {
      */
     public void receiveInput(ButtonAction input) {
         //
+    }
+
+    /**
+     * Renders the current frame.
+     */
+    private void render() {
+        uiManager.repaint();
     }
 
     /* ---------- Getters / Setters ---------- */
