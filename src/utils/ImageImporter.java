@@ -42,7 +42,7 @@ public class ImageImporter {
      * @return The {@link BufferedImage} of the requested map.
      */
     public static BufferedImage loadMap(String mapName) {
-        return Objects.requireNonNull(getImage("maps/" + mapName));
+        return Objects.requireNonNull(getImage("/maps/" + mapName));
     }
 
     /**

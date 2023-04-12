@@ -3,6 +3,8 @@ package control;
 import model.Map;
 import view.ImageLoader;
 
+import java.awt.*;
+
 /**
  * Creates and handles all the game-level collisions and
  * behaviours. It provides checks and low-level conditions
@@ -29,5 +31,9 @@ public class MapManager {
         map = mapCreator.createMap(mapName);
 
         return map != null;
+    }
+
+    public void drawMap(Graphics2D g2){
+        map.drawMap(g2);
     }
 }

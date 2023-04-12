@@ -27,7 +27,7 @@ public class UIManager extends JPanel {
 
         Point camLocation = engine.getCameraPosition();
         g2.translate(-camLocation.x, -camLocation.y);
-        // FIXME: engine.drawMap(g2);
+        engine.drawMap(g2);
         g2.translate(camLocation.x, camLocation.y);
 
         g2.dispose();

@@ -61,6 +61,7 @@ public class GameEngine implements Runnable {
 
         isRunning = true;
         thread = new Thread(this);
+        createMap("map-01");
         thread.start();
     }
 
@@ -143,5 +144,9 @@ public class GameEngine implements Runnable {
 
     public ImageLoader getImageLoader() {
         return imageLoader;
+    }
+
+    public void drawMap(Graphics2D g2){
+        mapManager.drawMap(g2);
     }
 }
