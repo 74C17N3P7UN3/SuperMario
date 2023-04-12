@@ -33,7 +33,7 @@ public class MapManager {
         return map != null;
     }
 
-    public void drawMap(Graphics2D g2){
-        map.drawMap(g2);
+    public void drawMap(Graphics2D g2D){
+        if (map != null) map.drawMap(g2D);
     }
 }

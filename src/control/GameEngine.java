@@ -16,7 +16,9 @@ import java.awt.*;
  * @version 0.1.0
  */
 public class GameEngine implements Runnable {
-    private final static int WIDTH = 1920, HEIGHT = 1080;
+    private final static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private final static int WIDTH = ((int) screenSize.getWidth()) - 80;
+    private final static int HEIGHT = 720;
 
     private final Camera camera;
     private final ImageLoader imageLoader;
@@ -128,6 +130,10 @@ public class GameEngine implements Runnable {
         uiManager.repaint();
     }
 
+    public void drawMap(Graphics2D g2D) {
+        mapManager.drawMap(g2D);
+    }
+
     /* ---------- Getters / Setters ---------- */
 
     public Point getCameraPosition() {
@@ -144,9 +150,5 @@ public class GameEngine implements Runnable {
 
     public ImageLoader getImageLoader() {
         return imageLoader;
-    }
-
-    public void drawMap(Graphics2D g2){
-        mapManager.drawMap(g2);
     }
 }

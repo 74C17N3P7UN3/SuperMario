@@ -22,14 +22,14 @@ public class UIManager extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        Graphics2D g2 = (Graphics2D) g.create();
+        Graphics2D g2D = (Graphics2D) g.create();
         // TODO: We need to add the game status if we're going to have some menus
 
         Point camLocation = engine.getCameraPosition();
-        g2.translate(-camLocation.x, -camLocation.y);
-        engine.drawMap(g2);
-        g2.translate(camLocation.x, camLocation.y);
+        g2D.translate(-camLocation.getX(), -camLocation.getY());
+        engine.drawMap(g2D);
+        g2D.translate(camLocation.getX(), camLocation.getY());
 
-        g2.dispose();
+        g2D.dispose();
     }
 }
