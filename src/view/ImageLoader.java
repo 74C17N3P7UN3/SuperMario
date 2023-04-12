@@ -22,9 +22,9 @@ public class ImageLoader {
     }
 
     public BufferedImage getImage(BufferedImage image, int x, int y, int w, int h) {
-        if ((x == 1 || x == 4) && y == 3)
-            return image.getSubimage((x - 1) * 48, 128, w, h);
-        return image.getSubimage((x - 1) * 48, (y - 1) * 48, w, h);
+        if ((x == 0 || x == 3) && y == 2)
+            return image.getSubimage(x * 48, 128, w, h);
+        return image.getSubimage(x * 48, y * 48, w, h);
     }
 
     public BufferedImage[] getLeftFrames(int marioForm) {

@@ -1,13 +1,10 @@
 package control;
 
-import model.brick.Block;
-import model.brick.Brick;
-import model.brick.GroundBrick;
-import model.brick.OrdinaryBrick;
-import model.brick.PipeBody;
-import model.brick.PipeHead;
-import model.brick.SurpriseBrick;
 import model.Map;
+import model.brick.*;
+import model.enemy.Enemy;
+import model.enemy.Goomba;
+import model.enemy.KoopaTroopa;
 import utils.ImageImporter;
 import view.ImageLoader;
 
@@ -26,26 +23,30 @@ public class MapCreator {
     private BufferedImage backgroundImage;
     private BufferedImage ordinaryBrick, surpriseBrick, groundBrick, block;
     private BufferedImage pipeHead, pipeBody;
+    private BufferedImage goomba, koopaTroopa;
 
     public MapCreator(ImageLoader imageLoader) {
         this.imageLoader = imageLoader;
         this.backgroundImage = ImageImporter.loadImage("background");
 
         BufferedImage sprite = ImageImporter.loadImage("sprite");
-        this.ordinaryBrick = imageLoader.getImage(sprite, 1, 1, 48, 48);
-        this.surpriseBrick = imageLoader.getImage(sprite, 2, 1, 48, 48);
-        this.block = imageLoader.getImage(sprite, 2, 2, 48, 48);
-        this.groundBrick = imageLoader.getImage(sprite, 2, 5, 48, 48);
-        this.pipeHead = imageLoader.getImage(sprite, 3, 1, 96, 48);
-        this.pipeBody = imageLoader.getImage(sprite, 3, 2, 96, 48);
+        this.ordinaryBrick = imageLoader.getImage(sprite, 0, 0, 48, 48);
+        this.surpriseBrick = imageLoader.getImage(sprite, 1, 0, 48, 48);
+        this.block = imageLoader.getImage(sprite, 1, 1, 48, 48);
+        this.groundBrick = imageLoader.getImage(sprite, 1, 4, 48, 48);
+        this.pipeHead = imageLoader.getImage(sprite, 2, 0, 96, 48);
+        this.pipeBody = imageLoader.getImage(sprite, 2, 1, 96, 48);
+
+        this.goomba = imageLoader.getImage(sprite, 1, 2, 48, 48);
+        this.koopaTroopa = imageLoader.getImage(sprite, 0, 2, 48, 63);
     }
 
-	/**
-	 * Returns the generated map by its name.
-	 *
-	 * @param mapName The name of the map to be generated.
-	 * @return The generated {@link Map} object.
-	 */
+    /**
+     * Returns the generated map by its name.
+     *
+     * @param mapName The name of the map to be generated.
+     * @return The generated {@link Map} object.
+     */
     public Map createMap(String mapName) {
         BufferedImage mapImage = ImageImporter.loadMap(mapName);
 
@@ -53,12 +54,15 @@ public class MapCreator {
 
         int mario = new Color(160, 160, 160).getRGB();
 
-        int ordinaryBrick = new Color(237, 28, 36).getRGB();
+        int ordinaryBrick = new Color(158, 122, 87).getRGB();
         int surpriseBrick = new Color(163, 73, 164).getRGB();
         int groundBrick = new Color(237, 28, 36).getRGB();
         int block = new Color(127, 127, 127).getRGB();
         int pipeHead = new Color(34, 177, 76).getRGB();
         int pipeBody = new Color(181, 230, 29).getRGB();
+
+        int goomba = new Color(63, 72, 204).getRGB();
+        int koopaTroopa = new Color(255, 174, 201).getRGB();
 
         for (int x = 0; x < mapImage.getWidth(); x++) {
             for (int y = 0; y < mapImage.getHeight(); y++) {
@@ -88,12 +92,21 @@ public class MapCreator {
                     createdMap.addBrick(brick);
                 }
                 if (currentPixel == pipeBody) {
-					Brick brick = new PipeBody(xLocation, yLocation, this.pipeBody);
-					createdMap.addBrick(brick);
-				}
+                    Brick brick = new PipeBody(xLocation, yLocation, this.pipeBody);
+                    createdMap.addBrick(brick);
+                }
+
+                if (currentPixel == goomba) {
+                    Enemy enemy = new Goomba(xLocation, yLocation, this.goomba);
+                    createdMap.addEnemy(enemy);
+                }
+                if (currentPixel == koopaTroopa) {
+                    Enemy enemy = new KoopaTroopa(xLocation, yLocation, this.koopaTroopa);
+                    createdMap.addEnemy(enemy);
+                }
             }
         }
 
-		return createdMap;
-	}
+        return createdMap;
+    }
 }
