@@ -1,13 +1,11 @@
 package control;
 
-import model.brick.Block;
-import model.brick.Brick;
-import model.brick.GroundBrick;
-import model.brick.OrdinaryBrick;
-import model.brick.PipeBody;
-import model.brick.PipeHead;
-import model.brick.SurpriseBrick;
 import model.Map;
+import model.brick.*;
+import model.enemy.Enemy;
+import model.enemy.Goomba;
+import model.enemy.Koopa;
+import model.hero.Mario;
 import utils.ImageImporter;
 import view.ImageLoader;
 
@@ -21,79 +19,85 @@ import java.awt.image.BufferedImage;
  * @version 0.1.0
  */
 public class MapCreator {
-    private ImageLoader imageLoader;
+    private final ImageLoader imageLoader;
 
-    private BufferedImage backgroundImage;
-    private BufferedImage ordinaryBrick, surpriseBrick, groundBrick, block;
-    private BufferedImage pipeHead, pipeBody;
+    private final BufferedImage backgroundImage;
+    private final BufferedImage ordinaryBrick, surpriseBrick, groundBrick, block;
+    private final BufferedImage pipeHead, pipeBody;
+    private final BufferedImage goombaLeft, goombaRight, koopaLeft, koopaRight;
 
     public MapCreator(ImageLoader imageLoader) {
         this.imageLoader = imageLoader;
-        this.backgroundImage = ImageImporter.loadImage("background");
+        backgroundImage = ImageImporter.loadImage("background");
 
         BufferedImage sprite = ImageImporter.loadImage("sprite");
-        this.ordinaryBrick = imageLoader.getImage(sprite, 1, 1, 48, 48);
-        this.surpriseBrick = imageLoader.getImage(sprite, 2, 1, 48, 48);
-        this.block = imageLoader.getImage(sprite, 2, 2, 48, 48);
-        this.groundBrick = imageLoader.getImage(sprite, 2, 5, 48, 48);
-        this.pipeHead = imageLoader.getImage(sprite, 3, 1, 96, 48);
-        this.pipeBody = imageLoader.getImage(sprite, 3, 2, 96, 48);
+        block = imageLoader.getImage(sprite, 1, 1, 48, 48);
+        groundBrick = imageLoader.getImage(sprite, 4, 1, 48, 48);
+        ordinaryBrick = imageLoader.getImage(sprite, 0, 0, 48, 48);
+        surpriseBrick = imageLoader.getImage(sprite, 1, 0, 48, 48);
+        pipeBody = imageLoader.getImage(sprite, 2, 1, 96, 48);
+        pipeHead = imageLoader.getImage(sprite, 2, 0, 96, 48);
+
+        goombaLeft = imageLoader.getImage(sprite, 1, 3, 48, 48);
+        goombaRight = imageLoader.getImage(sprite, 4, 3, 48, 48);
+        koopaLeft = imageLoader.getImage(sprite, 0, 2, 48, 64);
+        koopaRight = imageLoader.getImage(sprite, 3, 2, 48, 64);
     }
 
-	/**
-	 * Returns the generated map by its name.
-	 *
-	 * @param mapName The name of the map to be generated.
-	 * @return The generated {@link Map} object.
-	 */
+    /**
+     * Returns the generated map by its name.
+     *
+     * @param mapName The name of the map to be generated.
+     * @return The generated {@link Map} object.
+     */
     public Map createMap(String mapName) {
         BufferedImage mapImage = ImageImporter.loadMap(mapName);
 
         Map createdMap = new Map(backgroundImage);
 
-        int mario = new Color(160, 160, 160).getRGB();
+        int marioRGB = new Color(160, 160, 160).getRGB();
 
-        int ordinaryBrick = new Color(237, 28, 36).getRGB();
-        int surpriseBrick = new Color(163, 73, 164).getRGB();
-        int groundBrick = new Color(237, 28, 36).getRGB();
-        int block = new Color(127, 127, 127).getRGB();
-        int pipeHead = new Color(34, 177, 76).getRGB();
-        int pipeBody = new Color(181, 230, 29).getRGB();
+        int blockRGB = new Color(127, 127, 127).getRGB();
+        int groundBrickRGB = new Color(237, 28, 36).getRGB();
+        int ordinaryBrickRGB = new Color(185, 122, 87).getRGB();
+        int surpriseBrickRGB = new Color(163, 73, 164).getRGB();
+        int pipeBodyRGB = new Color(181, 230, 29).getRGB();
+        int pipeHeadRGB = new Color(34, 177, 76).getRGB();
+
+        int goombaRGB = new Color(63, 72, 204).getRGB();
+        int koopaRGB = new Color(255, 174, 201).getRGB();
 
         for (int x = 0; x < mapImage.getWidth(); x++) {
             for (int y = 0; y < mapImage.getHeight(); y++) {
-
                 int currentPixel = mapImage.getRGB(x, y);
                 int xLocation = x * 48;
                 int yLocation = y * 48;
 
-                if (currentPixel == ordinaryBrick) {
-                    Brick brick = new OrdinaryBrick(xLocation, yLocation, this.ordinaryBrick);
-                    createdMap.addBrick(brick);
+                if (currentPixel == marioRGB) createdMap.setMario(new Mario(xLocation, yLocation));
+
+                Brick brick = null;
+                Enemy enemy = null;
+                if (currentPixel == blockRGB) brick = new Block(xLocation, yLocation, block);
+                if (currentPixel == groundBrickRGB) brick = new GroundBrick(xLocation, yLocation, groundBrick);
+                if (currentPixel == ordinaryBrickRGB) brick = new OrdinaryBrick(xLocation, yLocation, ordinaryBrick);
+                if (currentPixel == surpriseBrickRGB) brick = new SurpriseBrick(xLocation, yLocation, surpriseBrick);
+                if (currentPixel == pipeBodyRGB) brick = new PipeBody(xLocation, yLocation, pipeBody);
+                if (currentPixel == pipeHeadRGB) brick = new PipeHead(xLocation, yLocation, pipeHead);
+
+                if (currentPixel == goombaRGB) {
+                    enemy = new Goomba(xLocation, yLocation, goombaLeft);
+                    ((Goomba) enemy).setRightImage(goombaRight);
                 }
-                if (currentPixel == surpriseBrick) {
-                    Brick brick = new SurpriseBrick(xLocation, yLocation, this.surpriseBrick);
-                    createdMap.addBrick(brick);
+                if (currentPixel == koopaRGB) {
+                    enemy = new Koopa(xLocation, yLocation, koopaLeft);
+                    ((Koopa) enemy).setRightImage(koopaRight);
                 }
-                if (currentPixel == groundBrick) {
-                    Brick brick = new GroundBrick(xLocation, yLocation, this.ordinaryBrick);
-                    createdMap.addBrick(brick);
-                }
-                if (currentPixel == block) {
-                    Brick brick = new Block(xLocation, yLocation, this.ordinaryBrick);
-                    createdMap.addBrick(brick);
-                }
-                if (currentPixel == pipeHead) {
-                    Brick brick = new PipeHead(xLocation, yLocation, this.pipeHead);
-                    createdMap.addBrick(brick);
-                }
-                if (currentPixel == pipeBody) {
-					Brick brick = new PipeBody(xLocation, yLocation, this.pipeBody);
-					createdMap.addBrick(brick);
-				}
+
+                if (brick != null) createdMap.addBrick(brick);
+                if (enemy != null) createdMap.addEnemy(enemy);
             }
         }
 
-		return createdMap;
-	}
+        return createdMap;
+    }
 }
