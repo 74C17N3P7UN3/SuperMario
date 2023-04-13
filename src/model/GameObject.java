@@ -28,8 +28,8 @@ public abstract class GameObject {
         setVelX(0);
         setVelY(0);
         setGravityAcc(0.38);
-        setJumping(false);
         setFalling(true);
+        setJumping(false);
     }
 
     /**
@@ -139,12 +139,8 @@ public abstract class GameObject {
         return dimension;
     }
 
-    public void setDimension(Dimension dimension) {
-        this.dimension = dimension;
-    }
-
     public void setDimension(int height, int width) {
-        setDimension(new Dimension(width, height));
+        this.dimension = new Dimension(width, height);
     }
 
     public Rectangle getTopBounds() {

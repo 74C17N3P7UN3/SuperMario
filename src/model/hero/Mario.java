@@ -1,5 +1,10 @@
 package model.hero;
 
-public class Mario {
-    //
+import model.GameObject;
+
+public class Mario extends GameObject {
+    public Mario(double x, double y) {
+        super(x, y, null);
+        setDimension(48, 48);
+    }
 }

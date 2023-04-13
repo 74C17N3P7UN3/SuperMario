@@ -5,6 +5,7 @@ import model.brick.*;
 import model.enemy.Enemy;
 import model.enemy.Goomba;
 import model.enemy.Koopa;
+import model.hero.Mario;
 import utils.ImageImporter;
 import view.ImageLoader;
 
@@ -23,7 +24,7 @@ public class MapCreator {
     private final BufferedImage backgroundImage;
     private final BufferedImage ordinaryBrick, surpriseBrick, groundBrick, block;
     private final BufferedImage pipeHead, pipeBody;
-    private final BufferedImage goomba, koopa;
+    private final BufferedImage goombaLeft, goombaRight, koopaLeft, koopaRight;
 
     public MapCreator(ImageLoader imageLoader) {
         this.imageLoader = imageLoader;
@@ -37,8 +38,10 @@ public class MapCreator {
         pipeHead = imageLoader.getImage(sprite, 3, 1, 96, 48);
         pipeBody = imageLoader.getImage(sprite, 3, 2, 96, 48);
 
-        goomba = imageLoader.getImage(sprite, 1, 2, 48, 48);
-        koopa = imageLoader.getImage(sprite, 0, 2, 48, 63);
+        goombaLeft = imageLoader.getImage(sprite, 2, 4, 48, 48);
+        goombaRight = imageLoader.getImage(sprite, 5, 4, 48, 48);
+        koopaLeft = imageLoader.getImage(sprite, 1, 3, 48, 64);
+        koopaRight = imageLoader.getImage(sprite, 4, 3, 48, 64);
     }
 
     /**
@@ -70,6 +73,8 @@ public class MapCreator {
                 int xLocation = x * 48;
                 int yLocation = y * 48;
 
+                if (currentPixel == marioRGB) createdMap.setMario(new Mario(xLocation, yLocation));
+
                 Brick brick = null;
                 Enemy enemy = null;
                 if (currentPixel == blockRGB) brick = new Block(xLocation, yLocation, block);
@@ -79,8 +84,14 @@ public class MapCreator {
                 if (currentPixel == pipeBodyRGB) brick = new PipeBody(xLocation, yLocation, pipeBody);
                 if (currentPixel == pipeHeadRGB) brick = new PipeHead(xLocation, yLocation, pipeHead);
 
-                if (currentPixel == goombaRGB) enemy = new Goomba(xLocation, yLocation, goomba);
-                if (currentPixel == koopaRGB) enemy = new Koopa(xLocation, yLocation, koopa);
+                if (currentPixel == goombaRGB) {
+                    enemy = new Goomba(xLocation, yLocation, goombaLeft);
+                    ((Goomba) enemy).setRightImage(goombaRight);
+                }
+                if (currentPixel == koopaRGB) {
+                    enemy = new Koopa(xLocation, yLocation, koopaLeft);
+                    ((Koopa) enemy).setRightImage(koopaRight);
+                }
 
                 if (brick != null) createdMap.addBrick(brick);
                 if (enemy != null) createdMap.addEnemy(enemy);

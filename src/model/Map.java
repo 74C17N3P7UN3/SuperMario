@@ -2,6 +2,7 @@ package model;
 
 import model.brick.Brick;
 import model.enemy.Enemy;
+import model.hero.Mario;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -9,6 +10,8 @@ import java.util.ArrayList;
 
 public class Map {
     private BufferedImage backgroundImage;
+
+    private Mario mario;
 
     private ArrayList<Brick> bricks = new ArrayList<>();
     private ArrayList<Enemy> enemies = new ArrayList<>();
@@ -43,5 +46,15 @@ public class Map {
     private void drawEnemies(Graphics2D g2D) {
         for (Enemy enemy : enemies)
             g2D.drawImage(enemy.getStyle(), (int) enemy.getX(), (int) enemy.getY(), null);
+    }
+
+    /* ---------- Getters / Setters ---------- */
+
+    public Mario getMario() {
+        return mario;
+    }
+
+    public void setMario(Mario mario) {
+        this.mario = mario;
     }
 }
