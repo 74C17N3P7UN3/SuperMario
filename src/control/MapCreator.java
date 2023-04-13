@@ -31,17 +31,17 @@ public class MapCreator {
         backgroundImage = ImageImporter.loadImage("background");
 
         BufferedImage sprite = ImageImporter.loadImage("sprite");
-        block = imageLoader.getImage(sprite, 2, 2, 48, 48);
-        groundBrick = imageLoader.getImage(sprite, 5, 2, 48, 48);
-        ordinaryBrick = imageLoader.getImage(sprite, 1, 1, 48, 48);
-        surpriseBrick = imageLoader.getImage(sprite, 2, 1, 48, 48);
-        pipeHead = imageLoader.getImage(sprite, 3, 1, 96, 48);
-        pipeBody = imageLoader.getImage(sprite, 3, 2, 96, 48);
+        block = imageLoader.getImage(sprite, 1, 1, 48, 48);
+        groundBrick = imageLoader.getImage(sprite, 4, 1, 48, 48);
+        ordinaryBrick = imageLoader.getImage(sprite, 0, 0, 48, 48);
+        surpriseBrick = imageLoader.getImage(sprite, 1, 0, 48, 48);
+        pipeBody = imageLoader.getImage(sprite, 2, 1, 96, 48);
+        pipeHead = imageLoader.getImage(sprite, 2, 0, 96, 48);
 
-        goombaLeft = imageLoader.getImage(sprite, 2, 4, 48, 48);
-        goombaRight = imageLoader.getImage(sprite, 5, 4, 48, 48);
-        koopaLeft = imageLoader.getImage(sprite, 1, 3, 48, 64);
-        koopaRight = imageLoader.getImage(sprite, 4, 3, 48, 64);
+        goombaLeft = imageLoader.getImage(sprite, 1, 3, 48, 48);
+        goombaRight = imageLoader.getImage(sprite, 4, 3, 48, 48);
+        koopaLeft = imageLoader.getImage(sprite, 0, 2, 48, 64);
+        koopaRight = imageLoader.getImage(sprite, 3, 2, 48, 64);
     }
 
     /**
