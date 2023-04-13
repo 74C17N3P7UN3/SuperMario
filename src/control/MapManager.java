@@ -1,6 +1,7 @@
 package control;
 
 import model.Map;
+import model.hero.Mario;
 import view.ImageLoader;
 
 import java.awt.*;
@@ -39,5 +40,11 @@ public class MapManager {
 
     public void updateLocations() {
         map.updateLocations();
+    }
+
+    /* ---------- Getters / Setters ---------- */
+
+    public Mario getMario() {
+        return map.getMario();
     }
 }

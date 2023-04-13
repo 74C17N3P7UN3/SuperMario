@@ -1,6 +1,7 @@
 package control;
 
 import model.Map;
+import model.hero.Mario;
 import utils.ImageImporter;
 import view.ImageLoader;
 import view.UIManager;
@@ -119,6 +120,7 @@ public class GameEngine implements Runnable {
      * Runs the game until the game is over or the player dies.
      */
     private void gameLoop() {
+        updateCamera();
         updateLocations();
     }
 
@@ -147,6 +149,21 @@ public class GameEngine implements Runnable {
      */
     public void playSound(String soundName) {
         soundManager.playSound(soundName);
+    }
+
+    /**
+     * Updates the camera position based on the player's movement.
+     * It also prevents the player from going back past the camera view.
+     */
+    private void updateCamera() {
+        Mario mario = mapManager.getMario();
+        double marioVelX = mario.getVelX();
+
+        double shiftAmount = 0;
+        if (marioVelX > 0 && mario.getX() - 600 > camera.getX())
+            shiftAmount = marioVelX;
+
+        camera.moveCam(shiftAmount, 0);
     }
 
     private void updateLocations() {
