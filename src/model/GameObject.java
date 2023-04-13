@@ -51,8 +51,8 @@ public abstract class GameObject {
      */
     public void updateLocation() {
         if (jumping && velY <= 0) {
-            setJumping(false);
             setFalling(true);
+            setJumping(false);
         } else if (jumping) {
             velY -= gravityAcc;
             y -= velY;
