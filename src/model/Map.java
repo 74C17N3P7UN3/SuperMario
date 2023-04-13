@@ -53,6 +53,14 @@ public class Map {
         mario.drawObject(g2D);
     }
 
+    public void updateLocations() {
+        // Updates Mario's location
+        mario.updateLocation();
+
+        // Updates enemies' locations
+        for (Enemy enemy : enemies) enemy.updateLocation();
+    }
+
     /* ---------- Getters / Setters ---------- */
 
     public Mario getMario() {

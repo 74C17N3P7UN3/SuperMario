@@ -119,7 +119,7 @@ public class GameEngine implements Runnable {
      * Runs the game until the game is over or the player dies.
      */
     private void gameLoop() {
-        //
+        updateLocations();
     }
 
     /**
@@ -147,6 +147,10 @@ public class GameEngine implements Runnable {
      */
     public void playSound(String soundName) {
         soundManager.playSound(soundName);
+    }
+
+    private void updateLocations() {
+        mapManager.updateLocations();
     }
 
     /* ---------- Getters / Setters ---------- */

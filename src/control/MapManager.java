@@ -36,4 +36,8 @@ public class MapManager {
     public void drawMap(Graphics2D g2D){
         if (map != null) map.drawMap(g2D);
     }
+
+    public void updateLocations() {
+        map.updateLocations();
+    }
 }
