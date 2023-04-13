@@ -1,5 +1,6 @@
 package model.hero;
 
+import control.Camera;
 import control.GameEngine;
 import model.GameObject;
 import view.Animation;
@@ -22,6 +23,7 @@ public class Mario extends GameObject {
     public Mario(double x, double y) {
         super(x, y, null);
         setDimension(48, 48);
+        toRight = true;
 
         ImageLoader imageLoader = new ImageLoader();
         BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.SMALL);

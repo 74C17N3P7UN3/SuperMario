@@ -32,6 +32,7 @@ public class Map {
         drawBackground(g2D);
         drawBricks(g2D);
         drawEnemies(g2D);
+        drawMario(g2D);
     }
 
     public void drawBackground(Graphics2D g2D) {
@@ -46,6 +47,10 @@ public class Map {
     private void drawEnemies(Graphics2D g2D) {
         for (Enemy enemy : enemies)
             g2D.drawImage(enemy.getStyle(), (int) enemy.getX(), (int) enemy.getY(), null);
+    }
+
+    private void drawMario(Graphics2D g2D) {
+        mario.drawObject(g2D);
     }
 
     /* ---------- Getters / Setters ---------- */

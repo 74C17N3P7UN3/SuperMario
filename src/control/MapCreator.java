@@ -55,7 +55,7 @@ public class MapCreator {
 
         Map createdMap = new Map(backgroundImage);
 
-        int marioRGB = new Color(160, 160, 160).getRGB();
+        int marioRGB = new Color(255, 127, 39).getRGB();
 
         int blockRGB = new Color(127, 127, 127).getRGB();
         int groundBrickRGB = new Color(237, 28, 36).getRGB();

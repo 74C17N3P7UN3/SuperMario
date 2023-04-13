@@ -23,7 +23,9 @@ public abstract class GameObject {
     public GameObject(double x, double y, BufferedImage style) {
         setLocation(x, y);
         setStyle(style);
-        setDimension(style.getHeight(), style.getWidth());
+
+        if (style != null)
+            setDimension(style.getHeight(), style.getWidth());
 
         setVelX(0);
         setVelY(0);
