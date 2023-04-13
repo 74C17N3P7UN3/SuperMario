@@ -59,7 +59,7 @@ public class Mario extends GameObject {
         if (!isFalling() && !isJumping()) {
             setJumping(true);
             setVelY(10);
-            // TODO: engine.playSound("jump");
+            engine.playSound("jump");
         }
     }
 

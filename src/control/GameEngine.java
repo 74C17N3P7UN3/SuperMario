@@ -1,5 +1,6 @@
 package control;
 
+import model.Map;
 import utils.ImageImporter;
 import view.ImageLoader;
 import view.UIManager;
@@ -106,6 +107,15 @@ public class GameEngine implements Runnable {
     }
 
     /**
+     * Draws the Map calling {@link Map#drawMap}.
+     *
+     * @param g2D The Graphics engine drawing the map.
+     */
+    public void drawMap(Graphics2D g2D) {
+        mapManager.drawMap(g2D);
+    }
+
+    /**
      * Runs the game until the game is over or the player dies.
      */
     private void gameLoop() {
@@ -130,8 +140,13 @@ public class GameEngine implements Runnable {
         uiManager.repaint();
     }
 
-    public void drawMap(Graphics2D g2D) {
-        mapManager.drawMap(g2D);
+    /**
+     * Plays a specific sound by the given name.
+     *
+     * @param soundName The name of the sound to be played.
+     */
+    public void playSound(String soundName) {
+        soundManager.playSound(soundName);
     }
 
     /* ---------- Getters / Setters ---------- */

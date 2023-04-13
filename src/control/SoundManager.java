@@ -43,9 +43,12 @@ public class SoundManager {
         resumeTheme();
     }
 
-    /* ---------- Play single sounds ---------- */
-
-    public void playCoin() {
-        SoundImporter.loadTrack("coin").start();
+    /**
+     * Plays a specific sound by the given name.
+     *
+     * @param soundName The name of the sound to be played.
+     */
+    public void playSound(String soundName) {
+        SoundImporter.loadTrack(soundName).start();
     }
 }
