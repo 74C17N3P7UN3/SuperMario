@@ -9,7 +9,7 @@ import javax.sound.sampled.Clip;
  * requested tracks from the media's package.
  *
  * @author TacitNeptune
- * @version 0.1.0
+ * @version 1.0.0
  */
 public class SoundManager {
     private final Clip themeClip;
@@ -17,6 +17,7 @@ public class SoundManager {
 
     public SoundManager() {
         themeClip = SoundImporter.loadTrack("theme");
+        themeClip.loop(Clip.LOOP_CONTINUOUSLY);
     }
 
     /**

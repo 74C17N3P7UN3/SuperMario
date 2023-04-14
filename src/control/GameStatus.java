@@ -5,7 +5,7 @@ package control;
  * and currently active view.
  *
  * @author TheInfernalNick
- * @version 0.1.0
+ * @version 1.0.0
  */
 public enum GameStatus {
     ABOUT_SCREEN,
