@@ -19,8 +19,8 @@ import java.awt.*;
  */
 public class GameEngine implements Runnable {
     private final static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private final static int HEIGHT = 720; // Height is fixed because of the map's size
     private final static int WIDTH = ((int) screenSize.getWidth()) - 80;
-    private final static int HEIGHT = 720;
 
     private final Camera camera;
     private final ImageLoader imageLoader;
@@ -39,7 +39,7 @@ public class GameEngine implements Runnable {
         inputManager = new InputManager(this);
         mapManager = new MapManager();
         soundManager = new SoundManager();
-        uiManager = new UIManager(this, WIDTH, HEIGHT);
+        uiManager = new UIManager(this, HEIGHT, WIDTH);
 
         gameStatus = GameStatus.START_SCREEN;
 
@@ -60,12 +60,18 @@ public class GameEngine implements Runnable {
         start();
     }
 
+    /**
+     * The initializer method of the game engine,
+     * which calls the {@link Thread#start()} method.
+     */
     private synchronized void start() {
         if (isRunning) return;
 
+        // FIXME: Temporary until we add the map selector
+        createMap("map-01");
+
         isRunning = true;
         thread = new Thread(this);
-        createMap("map-01");
         thread.start();
     }
 
@@ -81,7 +87,7 @@ public class GameEngine implements Runnable {
             delta += (now - lastTime) / ns;
             lastTime = now;
 
-            while (delta >= 1) {
+            while (delta > 0) {
                 if (gameStatus == GameStatus.RUNNING)
                     gameLoop();
                 delta--;
@@ -92,11 +98,10 @@ public class GameEngine implements Runnable {
     }
 
     /**
-     * Creates the selected map and sets
-     * the game status to {@code running}.
+     * Creates the selected map and sets the
+     * {@link GameStatus} to {@code running}.
      *
      * @param mapName The name of the map to be loaded.
-     * @see GameStatus
      */
     private void createMap(String mapName) {
         boolean loaded = mapManager.createMap(imageLoader, mapName);
@@ -108,7 +113,7 @@ public class GameEngine implements Runnable {
     }
 
     /**
-     * Draws the Map calling {@link Map#drawMap}.
+     * Draws the Map calling {@link Map#drawMap(Graphics2D)}.
      *
      * @param g2D The Graphics engine drawing the map.
      */
@@ -122,6 +127,17 @@ public class GameEngine implements Runnable {
     private void gameLoop() {
         updateCamera();
         updateLocations();
+
+        // TODO: Add game logic
+    }
+
+    /**
+     * Plays a specific sound by the given name.
+     *
+     * @param soundName The name of the sound to be played.
+     */
+    public void playSound(String soundName) {
+        soundManager.playSound(soundName);
     }
 
     /**
@@ -136,19 +152,29 @@ public class GameEngine implements Runnable {
     }
 
     /**
-     * Renders the current frame.
+     * Renders the current frame by repainting the Frame.
      */
     private void render() {
         uiManager.repaint();
     }
 
     /**
-     * Plays a specific sound by the given name.
-     *
-     * @param soundName The name of the sound to be played.
+     * Resets the game completely by resetting the camera
+     * position, restarting the theme and sending the player
+     * to the starting screen.
      */
-    public void playSound(String soundName) {
-        soundManager.playSound(soundName);
+    private void reset() {
+        resetCamera();
+        soundManager.restartTheme();
+
+        setGameStatus(GameStatus.START_SCREEN);
+    }
+
+    /**
+     * Resets the camera's position.
+     */
+    public void resetCamera() {
+        camera.moveCam(-camera.getX(), -camera.getY());
     }
 
     /**

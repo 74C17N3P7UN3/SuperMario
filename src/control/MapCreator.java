@@ -19,17 +19,11 @@ import java.awt.image.BufferedImage;
  * @version 0.1.0
  */
 public class MapCreator {
-    private final ImageLoader imageLoader;
-
-    private final BufferedImage backgroundImage;
-    private final BufferedImage ordinaryBrick, surpriseBrick, groundBrick, block;
-    private final BufferedImage pipeHead, pipeBody;
+    private final BufferedImage block, groundBrick, ordinaryBrick, surpriseBrick;
+    private final BufferedImage pipeBody, pipeHead;
     private final BufferedImage goombaLeft, goombaRight, koopaLeft, koopaRight;
 
     public MapCreator(ImageLoader imageLoader) {
-        this.imageLoader = imageLoader;
-        backgroundImage = ImageImporter.loadImage("background");
-
         BufferedImage sprite = ImageImporter.loadImage("sprite");
         block = imageLoader.getImage(sprite, 1, 1, 48, 48);
         groundBrick = imageLoader.getImage(sprite, 4, 1, 48, 48);
@@ -51,9 +45,8 @@ public class MapCreator {
      * @return The generated {@link Map} object.
      */
     public Map createMap(String mapName) {
+        Map createdMap = new Map(mapName);
         BufferedImage mapImage = ImageImporter.loadMap(mapName);
-
-        Map createdMap = new Map(backgroundImage);
 
         int marioRGB = new Color(255, 127, 39).getRGB();
 
@@ -76,7 +69,6 @@ public class MapCreator {
                 if (currentPixel == marioRGB) createdMap.setMario(new Mario(xLocation, yLocation));
 
                 Brick brick = null;
-                Enemy enemy = null;
                 if (currentPixel == blockRGB) brick = new Block(xLocation, yLocation, block);
                 if (currentPixel == groundBrickRGB) brick = new GroundBrick(xLocation, yLocation, groundBrick);
                 if (currentPixel == ordinaryBrickRGB) brick = new OrdinaryBrick(xLocation, yLocation, ordinaryBrick);
@@ -84,6 +76,7 @@ public class MapCreator {
                 if (currentPixel == pipeBodyRGB) brick = new PipeBody(xLocation, yLocation, pipeBody);
                 if (currentPixel == pipeHeadRGB) brick = new PipeHead(xLocation, yLocation, pipeHead);
 
+                Enemy enemy = null;
                 if (currentPixel == goombaRGB) {
                     enemy = new Goomba(xLocation, yLocation, goombaLeft);
                     ((Goomba) enemy).setRightImage(goombaRight);

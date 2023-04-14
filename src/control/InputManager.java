@@ -6,14 +6,14 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 /**
- * Handles all the key presses that the player performs.
- * It then notifies the performed action to the {@link GameEngine}
+ * Handles all the key presses that the player performs to
+ * then notify the performed action to the {@link GameEngine}.
  *
  * @author TheInfernalNick
  * @version 0.1.0
  */
 public class InputManager implements KeyListener, MouseListener {
-    private GameEngine engine;
+    private final GameEngine engine;
 
     InputManager(GameEngine engine) {
         this.engine = engine;
@@ -23,14 +23,19 @@ public class InputManager implements KeyListener, MouseListener {
      * Signals the {@link GameEngine} with the currently
      * pressed or clicked {@link ButtonAction}.
      *
-     * @param action The action performed to be handled by
-     *               the {@link GameEngine#receiveInput}.
+     * @param input The action performed to be handled by the
+     *               {@link GameEngine#receiveInput(ButtonAction)}.
      */
-    private void notifyInput(ButtonAction action) {
-        if (action != ButtonAction.NO_ACTION)
-            engine.receiveInput(action);
+    private void notifyInput(ButtonAction input) {
+        if (input != ButtonAction.NO_ACTION)
+            engine.receiveInput(input);
     }
 
+    /**
+     * Handles a key being pressed.
+     *
+     * @param e The event to be processed.
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
@@ -46,11 +51,16 @@ public class InputManager implements KeyListener, MouseListener {
         notifyInput(currentAction);
     }
 
+    /**
+     * Handles a key being released.
+     *
+     * @param e The event to be processed.
+     */
     @Override
     public void keyReleased(KeyEvent e) {
         int keyCode = e.getKeyCode();
 
-        if(keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_LEFT)
+        if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_LEFT)
             notifyInput(ButtonAction.ACTION_COMPLETED);
     }
 

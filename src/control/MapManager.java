@@ -24,8 +24,8 @@ public class MapManager {
      *
      * @param imageLoader The loader responsible for
      *                    drawing the map in the creator.
-     * @param mapName The name of the map to be loaded.
-     * @return If the map was loaded successfully.
+     * @param mapName     The name of the map to be loaded.
+     * @return If the map was created successfully.
      */
     public boolean createMap(ImageLoader imageLoader, String mapName) {
         MapCreator mapCreator = new MapCreator(imageLoader);
@@ -34,12 +34,34 @@ public class MapManager {
         return map != null;
     }
 
-    public void drawMap(Graphics2D g2D){
+    /**
+     * Draws the currently loaded map, calling
+     * {@link Map#drawMap(Graphics2D)}.
+     *
+     * @param g2D The Graphics engine to draw the map.
+     */
+    public void drawMap(Graphics2D g2D) {
         if (map != null) map.drawMap(g2D);
     }
 
+    /**
+     * Resets the current map.
+     *
+     * @param engine The {@link GameEngine} object.
+     */
+    public void resetMap(GameEngine engine) {
+        getMario().resetLocation();
+        engine.resetCamera();
+
+        createMap(engine.getImageLoader(), map.getName());
+    }
+
+    /**
+     * Updates all entity/tiles locations
+     * with {@link Map#updateLocations()}.
+     */
     public void updateLocations() {
-        map.updateLocations();
+        if (map != null) map.updateLocations();
     }
 
     /* ---------- Getters / Setters ---------- */

@@ -9,8 +9,8 @@ import java.awt.*;
 public class UIManager extends JPanel {
     GameEngine engine;
 
-    public UIManager(GameEngine e, int width, int height) {
-        this.engine = e;
+    public UIManager(GameEngine engine, int height, int width) {
+        this.engine = engine;
         setPreferredSize(new Dimension(width, height));
         setMaximumSize(new Dimension(width, height));
         setMinimumSize(new Dimension(width, height));
