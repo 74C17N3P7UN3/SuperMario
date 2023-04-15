@@ -16,6 +16,7 @@ public class Map {
     private Mario mario;
 
     private ArrayList<Brick> bricks = new ArrayList<>();
+
     private ArrayList<Enemy> enemies = new ArrayList<>();
 
     public Map(String mapName) {
@@ -76,5 +77,9 @@ public class Map {
 
     public String getName() {
         return name;
+    }
+
+    public ArrayList<Enemy> getEnemies() {
+        return enemies;
     }
 }

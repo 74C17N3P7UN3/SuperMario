@@ -11,6 +11,7 @@ import view.ImageLoader;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 /**
  * Creates the {@link Map} by its given name.
@@ -20,7 +21,7 @@ import java.awt.image.BufferedImage;
  */
 public class MapCreator {
     private BufferedImage mapImage;
-
+    private Map createdMap;
     private final BufferedImage block, groundBrick, ordinaryBrick, surpriseBrick;
     private final BufferedImage pipeBody, pipeHead;
     private final BufferedImage goombaLeft, goombaRight, koopaLeft, koopaRight;
@@ -47,7 +48,7 @@ public class MapCreator {
      * @return The generated {@link Map} object.
      */
     public Map createMap(String mapName) {
-        Map createdMap = new Map(mapName);
+        this.createdMap = new Map(mapName);
         mapImage = ImageImporter.loadMap(mapName);
 
         int marioRGB = new Color(255, 127, 39).getRGB();
@@ -100,5 +101,9 @@ public class MapCreator {
 
     public BufferedImage getMapImage() {
         return mapImage;
+    }
+
+    public ArrayList<Enemy> getEnemies() {
+        return createdMap.getEnemies();
     }
 }

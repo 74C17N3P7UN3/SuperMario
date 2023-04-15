@@ -1,6 +1,7 @@
 package control;
 
 import model.Map;
+import model.enemy.Enemy;
 import model.hero.Mario;
 import view.ImageLoader;
 
@@ -67,6 +68,7 @@ public class MapManager {
         int surpriseBrickRGB = new Color(163, 73, 164).getRGB();
         int pipeBodyRGB = new Color(181, 230, 29).getRGB();
         int pipeHeadRGB = new Color(34, 177, 76).getRGB(); */
+        int marioRGB = new Color(255, 127, 39).getRGB();
         int air = new Color(0, 0, 0).getRGB();
 
         int goombaRGB = new Color(63, 72, 204).getRGB();
@@ -80,9 +82,10 @@ public class MapManager {
 
         // Checks the block above Mario
         // FIXME: Bottom code needs to be revised
-        /* blockToCheck = new Point((int) marioBlockPosition.getX(), (int) marioBlockPosition.getY() - 1);
-        colorToCheck = mapImage.getRGB((int) blockToCheck.getX(), (int) blockToCheck.getY());
-        if (colorToCheck != air) {
+        blockToCheck = new Point((int) marioBlockPosition.getX(), (int) marioBlockPosition.getY() - 1);
+        colorToCheck = mapCreator.getMapImage().getRGB(blockToCheck.x,blockToCheck.y);
+
+        if (colorToCheck != air && colorToCheck != marioRGB) {
             if (colorToCheck == goombaRGB || colorToCheck == koopaRGB) {
                 // TODO: FINISH HIM
             } else {
@@ -97,7 +100,7 @@ public class MapManager {
                     mario.setVelY(0);
                 }
             }
-        } */
+        }
 
         // Checks the block to the right of Mario
         blockToCheck = new Point((int) marioBlockPosition.getX() + 1, (int) marioBlockPosition.getY());
@@ -147,6 +150,60 @@ public class MapManager {
                 if (right.intersects(mario.getLeftBounds())) mario.setVelX(0);
             }
         }
+
+        //TODO: WE NEED TO TRANSFORM THIS IN METHODS BECAUSE IS SPAGHETTI
+
+        for(Enemy enemy : mapCreator.getEnemies()){
+            Point enemyPos = new Point(((int)enemy.getX()+24) /48, (int) (enemy.getY()+24) / 48);
+
+
+            //Checks if the enemy has a block under them
+            blockToCheck = new Point(enemyPos.x,enemyPos.y+1);
+            colorToCheck = mapImage.getRGB(blockToCheck.x,blockToCheck.y);
+            Rectangle under = new Rectangle(blockToCheck.x*48,blockToCheck.y*48-12,48,48);
+            if(colorToCheck != air && colorToCheck != goombaRGB && colorToCheck != koopaRGB){
+                if(enemy.getBottomBounds().intersects(under)){
+                    enemy.setFalling(false);
+                    enemy.setJumping(false);
+                    enemy.setVelY(0);
+                }
+            }
+
+            //Checks if the enemy has a block above them
+            blockToCheck = new Point(enemyPos.x,enemyPos.y+1);
+            colorToCheck = mapImage.getRGB(blockToCheck.x,blockToCheck.y);
+            Rectangle above = new Rectangle(blockToCheck.x*48,blockToCheck.y*48+12,48,48);
+            if(colorToCheck != air && colorToCheck != goombaRGB && colorToCheck != koopaRGB){
+                if(enemy.getTopBounds().intersects(above)){
+                    enemy.setFalling(true);
+                    enemy.setJumping(false);
+                    enemy.setVelY(0);
+                }
+            }
+
+            //Checks if the enemy has a block at the right
+            blockToCheck = new Point(enemyPos.x+1,enemyPos.y);
+            colorToCheck = mapImage.getRGB(blockToCheck.x,blockToCheck.y);
+            Rectangle right = new Rectangle(blockToCheck.x*48,blockToCheck.y*48,48,48);
+            if(colorToCheck != air && colorToCheck != goombaRGB && colorToCheck != koopaRGB){
+                if(enemy.getRightBounds().intersects(right)){
+                    enemy.setVelX(-enemy.getVelX());
+                }
+            }
+
+            //Checks if the enemy has a block at the left
+            blockToCheck = new Point(enemyPos.x-1,enemyPos.y);
+            colorToCheck = mapImage.getRGB(blockToCheck.x,blockToCheck.y);
+            Rectangle left = new Rectangle(blockToCheck.x*48,blockToCheck.y*48,48,48);
+            if(blockToCheck.x == 0) enemy.setVelX(-enemy.getVelX());
+            if(colorToCheck != air && colorToCheck != goombaRGB && colorToCheck != koopaRGB){
+                if(enemy.getLeftBounds().intersects(left)){
+                    enemy.setVelX(-enemy.getVelX());
+                }
+            }
+        }
+
+
     }
 
     /**
