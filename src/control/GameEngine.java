@@ -126,6 +126,7 @@ public class GameEngine implements Runnable {
      */
     private void gameLoop() {
         updateCamera();
+        updateCollisions();
         updateLocations();
 
         // TODO: Add game logic
@@ -152,7 +153,7 @@ public class GameEngine implements Runnable {
     }
 
     /**
-     * Renders the current frame by repainting the Frame.
+     * Renders the current frame by repainting the JFrame.
      */
     private void render() {
         uiManager.repaint();
@@ -192,8 +193,20 @@ public class GameEngine implements Runnable {
         camera.moveCam(shiftAmount, 0);
     }
 
+    /**
+     * Updates all entity/tiles locations
+     * with {@link Map#updateLocations()}.
+     */
     private void updateLocations() {
         mapManager.updateLocations();
+    }
+
+    /**
+     * Check for all entity collisions with other entities
+     * or blocks with {@link MapManager#checkCollisions()}.
+     */
+    private void updateCollisions() {
+        mapManager.checkCollisions();
     }
 
     /* ---------- Getters / Setters ---------- */

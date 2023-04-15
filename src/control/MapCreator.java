@@ -19,6 +19,8 @@ import java.awt.image.BufferedImage;
  * @version 0.1.0
  */
 public class MapCreator {
+    private BufferedImage mapImage;
+
     private final BufferedImage block, groundBrick, ordinaryBrick, surpriseBrick;
     private final BufferedImage pipeBody, pipeHead;
     private final BufferedImage goombaLeft, goombaRight, koopaLeft, koopaRight;
@@ -46,7 +48,7 @@ public class MapCreator {
      */
     public Map createMap(String mapName) {
         Map createdMap = new Map(mapName);
-        BufferedImage mapImage = ImageImporter.loadMap(mapName);
+        mapImage = ImageImporter.loadMap(mapName);
 
         int marioRGB = new Color(255, 127, 39).getRGB();
 
@@ -92,5 +94,11 @@ public class MapCreator {
         }
 
         return createdMap;
+    }
+
+    /* ---------- Getters / Setters ---------- */
+
+    public BufferedImage getMapImage() {
+        return mapImage;
     }
 }
