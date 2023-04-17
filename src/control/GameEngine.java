@@ -149,7 +149,10 @@ public class GameEngine implements Runnable {
      * @param input The inputted key-press.
      */
     public void receiveInput(ButtonAction input) {
-        //
+        if (input == ButtonAction.M_RIGHT)
+            camera.moveCam(50, 0);
+        if (input == ButtonAction.M_LEFT)
+            camera.moveCam(-50, 0);
     }
 
     /**
