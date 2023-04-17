@@ -68,6 +68,7 @@ public class MapManager {
         int surpriseBrickRGB = new Color(163, 73, 164).getRGB();
         int pipeBodyRGB = new Color(181, 230, 29).getRGB();
         int pipeHeadRGB = new Color(34, 177, 76).getRGB(); */
+        int dead = new Color (255, 253, 85).getRGB();
         int marioRGB = new Color(255, 127, 39).getRGB();
         int air = new Color(0, 0, 0).getRGB();
 
@@ -170,10 +171,13 @@ public class MapManager {
                         enemy.setVelY(0);
                     }
 
+                    }else if(colorToCheck == dead) {
+                    	enemy.setFalling(false);
+                    	System.out.println("dead");
                     }else if(colorToCheck == air){
-                    enemy.setFalling(true);
-                    System.out.println(enemy.getVelY());
-                }
+                    	enemy.setFalling(true);
+                    	System.out.println(enemy.getVelY());
+                    }
             }
 
             //Checks if the enemy has a block above them
