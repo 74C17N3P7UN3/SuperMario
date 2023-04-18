@@ -66,8 +66,8 @@ public class MapManager {
         int groundBrickRGB = new Color(237, 28, 36).getRGB();
         int ordinaryBrickRGB = new Color(185, 122, 87).getRGB();
         int surpriseBrickRGB = new Color(163, 73, 164).getRGB();
+        int pipeHeadRGB = new Color(34, 177, 76).getRGB();*/
         int pipeBodyRGB = new Color(181, 230, 29).getRGB();
-        int pipeHeadRGB = new Color(34, 177, 76).getRGB(); */
         int dead = new Color (255, 253, 85).getRGB();
         int marioRGB = new Color(255, 127, 39).getRGB();
         int air = new Color(0, 0, 0).getRGB();
@@ -164,26 +164,25 @@ public class MapManager {
             if(colorToCheck != goombaRGB && colorToCheck != koopaRGB){
 
                 if(checkCollisionRGB(colorToCheck)){
-                    Rectangle under = new Rectangle(blockToCheck.x*48,blockToCheck.y*48-12,48,48);
+                    Rectangle under = new Rectangle(blockToCheck.x*48,blockToCheck.y*48,48,48);
                     if(enemy.getBottomBounds().intersects(under)){
                         enemy.setFalling(false);
                         enemy.setJumping(false);
                         enemy.setVelY(0);
                     }
-
-                    }else if(colorToCheck == dead) {
-                    	enemy.setFalling(false);
-                    	System.out.println("dead");
-                    }else if(colorToCheck == air){
-                    	enemy.setFalling(true);
-                    	System.out.println(enemy.getVelY());
+                }else if(colorToCheck == dead) {
+                    enemy.setFalling(false);
+                    	//System.out.println("dead");
+                }else if(colorToCheck == air){
+                    enemy.setFalling(true);
+                    	//System.out.println(enemy.getVelY());
                     }
             }
 
             //Checks if the enemy has a block above them
             blockToCheck = new Point(enemyPos.x,enemyPos.y+1);
             colorToCheck = mapImage.getRGB(blockToCheck.x,blockToCheck.y);
-            Rectangle above = new Rectangle(blockToCheck.x*48,blockToCheck.y*48+12,48,48);
+            Rectangle above = new Rectangle(blockToCheck.x*48,blockToCheck.y*48,48,48);
             if(colorToCheck != air && colorToCheck != goombaRGB && colorToCheck != koopaRGB){
                 if(enemy.getTopBounds().intersects(above)){
                     enemy.setFalling(true);
@@ -203,13 +202,24 @@ public class MapManager {
             }
 
             //Checks if the enemy has a block at the left
-            blockToCheck = new Point(enemyPos.x-1,enemyPos.y);
+            blockToCheck = new Point(enemyPos.x-2,enemyPos.y);
             colorToCheck = mapImage.getRGB(blockToCheck.x,blockToCheck.y);
-            Rectangle left = new Rectangle(blockToCheck.x*48,blockToCheck.y*48,48,48);
+            
             if(blockToCheck.x == 0) enemy.setVelX(-enemy.getVelX());
+            
             if(colorToCheck != air && colorToCheck != goombaRGB && colorToCheck != koopaRGB){
-                if(enemy.getLeftBounds().intersects(left)){
-                    enemy.setVelX(-enemy.getVelX());
+            	if(colorToCheck == pipeBodyRGB){
+            		
+            		Rectangle left = new Rectangle(blockToCheck.x*48,blockToCheck.y*48,96,48);
+            		if(enemy.getLeftBounds().intersects(left)) enemy.setVelX(-enemy.getVelX());
+            	
+            	}else {
+            		blockToCheck = new Point(enemyPos.x-2,enemyPos.y);
+            		Rectangle left = new Rectangle(blockToCheck.x*48,blockToCheck.y*48,60,48);
+            		
+                    if(enemy.getLeftBounds().intersects(left)){
+                        enemy.setVelX(-enemy.getVelX());
+                    }
                 }
             }
         }

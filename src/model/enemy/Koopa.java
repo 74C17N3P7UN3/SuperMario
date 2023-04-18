@@ -8,7 +8,7 @@ public class Koopa extends Enemy {
 
     public Koopa(double x, double y, BufferedImage style) {
         super(x, y, style);
-        setVelX(4);
+        setVelX(-4);
     }
 
     @Override
