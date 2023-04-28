@@ -149,10 +149,18 @@ public class GameEngine implements Runnable {
      * @param input The inputted key-press.
      */
     public void receiveInput(ButtonAction input) {
-        if (input == ButtonAction.M_RIGHT)
-            camera.moveCam(50, 0);
+        Mario mario = mapManager.getMario();
+        
+        
+    	if (input == ButtonAction.M_RIGHT)
+        	mario.move(true,this.camera);
         if (input == ButtonAction.M_LEFT)
-            camera.moveCam(-50, 0);
+        	mario.move(false, camera);
+        if (input == ButtonAction.JUMP)
+        	mario.jump(this);
+        if (input == ButtonAction.ACTION_COMPLETED)
+        	mario.setVelX(0);
+            
     }
 
     /**
