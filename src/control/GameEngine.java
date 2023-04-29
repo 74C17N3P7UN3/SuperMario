@@ -150,17 +150,17 @@ public class GameEngine implements Runnable {
      */
     public void receiveInput(ButtonAction input) {
         Mario mario = mapManager.getMario();
-
-
+        
+        
     	if (input == ButtonAction.M_RIGHT)
-        	mario.move(true,camera);
+        	mario.move(true,this.camera);
         if (input == ButtonAction.M_LEFT)
-        	mario.move(false, camera);
+        	if(mario.getX() > camera.getX()+ 12) mario.move(false, camera);
         if (input == ButtonAction.JUMP)
         	mario.jump(this);
         if (input == ButtonAction.ACTION_COMPLETED)
         	mario.setVelX(0);
-
+            
     }
 
     /**

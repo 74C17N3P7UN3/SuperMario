@@ -27,6 +27,7 @@ public class MapCreator {
     private final BufferedImage block, groundBrick, ordinaryBrick, surpriseBrick;
     private final BufferedImage pipeBody, pipeHead;
     private final BufferedImage goombaLeft, goombaRight, koopaLeft, koopaRight;
+    private final BufferedImage superMushroom, fireFlower, starMan, mushroom1Up;
 
     public MapCreator(ImageLoader imageLoader) {
         BufferedImage sprite = ImageImporter.loadImage("sprite");
@@ -44,6 +45,11 @@ public class MapCreator {
         goombaRight = imageLoader.getImage(sprite, 4, 3, 48, 48);
         koopaLeft = imageLoader.getImage(sprite, 0, 2, 48, 64);
         koopaRight = imageLoader.getImage(sprite, 3, 2, 48, 64);
+
+        superMushroom = imageLoader.getImage(sprite, 1, 4, 48, 48);
+        fireFlower = imageLoader.getImage(sprite, 3, 4, 48, 48);
+        starMan = imageLoader.getImage(sprite, 1, 4, 48, 48);
+        mushroom1Up = imageLoader.getImage(sprite, 2, 4, 48, 48);
     }
 
     /**
@@ -113,4 +119,17 @@ public class MapCreator {
     public ArrayList<Enemy> getEnemies() {
         return createdMap.getEnemies();
     }
+
+    public BufferedImage getSuperMushroom() {
+    	return superMushroom;
+    }
+	public BufferedImage getFireFlower() {
+	    return fireFlower;
+	}
+	public BufferedImage getStarman() {
+		return starMan;
+	}
+	public BufferedImage getMushroom1Up() {
+		return mushroom1Up;
+	}
 }

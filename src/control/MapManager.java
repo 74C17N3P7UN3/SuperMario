@@ -1,5 +1,6 @@
 package control;
 
+import model.Boost;
 import model.Map;
 import model.enemy.Enemy;
 import model.hero.Mario;
@@ -19,6 +20,7 @@ import java.awt.image.BufferedImage;
 public class MapManager {
     private Map map;
     private MapCreator mapCreator;
+    private Graphics2D g2D;
 
     public MapManager() {}
 
@@ -44,6 +46,7 @@ public class MapManager {
      * @param g2D The Graphics engine to draw the map.
      */
     public void drawMap(Graphics2D g2D) {
+        this.g2D = g2D;
         if (map != null) map.drawMap(g2D);
     }
 
@@ -65,9 +68,9 @@ public class MapManager {
         /*int blockRGB = new Color(127, 127, 127).getRGB();
         
         int ordinaryBrickRGB = new Color(185, 122, 87).getRGB();
+        int groundBrickRGB = new Color(237, 28, 36).getRGB();*/
         int surpriseBrickRGB = new Color(163, 73, 164).getRGB();
         int pipeHeadRGB = new Color(34, 177, 76).getRGB();
-        int groundBrickRGB = new Color(237, 28, 36).getRGB();*/
         int pipeBodyRGB = new Color(181, 230, 29).getRGB();
         int dead = new Color (255, 253, 85).getRGB();
         int marioRGB = new Color(255, 127, 39).getRGB();
@@ -84,90 +87,121 @@ public class MapManager {
 
         // Checks the block above Mario
         // FIXME: Bottom code needs to be revised
-        blockToCheck = new Point((int) marioBlockPosition.getX(), (int) marioBlockPosition.getY() - 1);
-        colorToCheck = mapCreator.getMapImage().getRGB(blockToCheck.x,blockToCheck.y);
+        if(marioBlockPosition.getY() > 1) {
+        	blockToCheck = new Point((int) marioBlockPosition.getX(), (int) marioBlockPosition.getY() - 1);
+        	colorToCheck = mapCreator.getMapImage().getRGB(blockToCheck.x,blockToCheck.y);
 
-        if (colorToCheck != air && colorToCheck != marioRGB) {
-            if (colorToCheck == goombaRGB || colorToCheck == koopaRGB) {
-                // TODO: FINISH HIM
-            } else {
-                // System.out.println(colorToCheck);
-                int startingX = (int) blockToCheck.getX() * 48;
-                int startingY = (int) blockToCheck.getY() * 48;
-                Rectangle above = new Rectangle(startingX, startingY, 48, 48);
-
-                if (above.intersects(mario.getTopBounds())) {
-                    if(mario.isJumping()) mario.setVelY(0);
-                	mario.setJumping(false);
-                    mario.setFalling(true);
+            if (colorToCheck != air && colorToCheck != marioRGB) {
+            		// System.out.println(colorToCheck);
+                    int startingX = (int) blockToCheck.getX() * 48;
+                    int startingY = (int) blockToCheck.getY() * 48;
+                    Rectangle above = new Rectangle(startingX, startingY, 48, 48);
                     
-                }
+                    
+                    if (colorToCheck == surpriseBrickRGB) {
+                    	if(above.intersects(mario.getTopBounds())) {
+                    		if(mario.isJumping()) mario.setVelY(0);
+                        	mario.setJumping(false);
+                            mario.setFalling(true);
+                            
+                            System.out.println("x: "+startingX+", y: "+(startingY-48));
+                            //Boost boost = new Boost(startingX, startingY-48, mapCreator.getSuperMushroom());
+                            //map.drawBoost(boost,this.g2D);
+                    	}
+                    }else if(checkCollisionRGB(colorToCheck)) {
+                    	if(above.intersects(mario.getTopBounds())) {
+                    		if(mario.isJumping()) mario.setVelY(0);
+                        	mario.setJumping(false);
+                            mario.setFalling(true);
+                    	}
+                    	
+                    }
             }
-        }
 
+        }
+        
         // Checks the block to the right of Mario
         blockToCheck = new Point((int) marioBlockPosition.getX() + 1, (int) marioBlockPosition.getY());
         colorToCheck = mapImage.getRGB((int) blockToCheck.getX(), (int) blockToCheck.getY());
-        if (colorToCheck != air) {
-            if (colorToCheck == goombaRGB || colorToCheck == koopaRGB) {
-                // TODO: FINISH HIM
-            } else {
+        if (colorToCheck != air && colorToCheck != koopaRGB && colorToCheck != goombaRGB) {
                 int startingX = (int) blockToCheck.getX() * 48;
                 int startingY = (int) blockToCheck.getY() * 48;
                 Rectangle right = new Rectangle(startingX, startingY, 48, 48);
 
                 if (right.intersects(mario.getRightBounds()) && mario.getVelX() > 0) {
                 	mario.setVelX(0);
-                	System.out.println("Ciao");
+                	//System.out.println("Ciao");
                 }
-            }
         }
 
         // Checks the block below Mario
         blockToCheck = new Point((int) marioBlockPosition.getX(), (int) marioBlockPosition.getY() + 1);
         colorToCheck = mapImage.getRGB((int) blockToCheck.getX(), (int) blockToCheck.getY());
+        int colorToCheckPipe = mapImage.getRGB((int) blockToCheck.getX() -1, (int) blockToCheck.getY());
         
-            if (colorToCheck == goombaRGB || colorToCheck == koopaRGB) {
-                // TODO: FINISH HIM
-            } else if(colorToCheck != marioRGB){
+            if(colorToCheck != marioRGB){
                 int startingX = (int) blockToCheck.getX() * 48;
-                int startingY = (int) blockToCheck.getY() * 48;
+                int startingY = (int) blockToCheck.getY() * 48 - 4;
                 Rectangle under = new Rectangle(startingX, startingY, 48, 48);
-
-                if (!mario.isFalling() && !checkCollisionRGB(colorToCheck)) {
-                	System.out.println("Hello");
+                Rectangle underpipe = new Rectangle(startingX-1,startingY,48,48);
+                if (!mario.isFalling() && !checkCollisionRGB(colorToCheck) && colorToCheckPipe != pipeHeadRGB) {
+                	//System.out.println("Hello");
                     mario.setFalling(true);
-                }else if(under.intersects(mario.getBottomBounds()) && checkCollisionRGB(colorToCheck)){
-                	if(mario.isFalling()) mario.setVelY(0);
-                	mario.setFalling(false);
+                }else if(checkCollisionRGB(colorToCheck) || colorToCheckPipe == pipeHeadRGB){
+                	if(under.intersects(mario.getBottomBounds())) {
+                    	if(mario.isFalling()) mario.setVelY(0);
+                    	mario.setFalling(false);	
+                	}
+                	else if(underpipe.intersects(mario.getBottomBounds())){
+                		if(mario.isFalling()) mario.setVelY(0);
+                    	mario.setFalling(false);	
+                	}
                 }
             }
 
 
         // Checks the block to the left of Mario
-        blockToCheck = new Point((int) marioBlockPosition.getX() - 1, (int) marioBlockPosition.getY());
-        colorToCheck = mapImage.getRGB((int) blockToCheck.getX(), (int) blockToCheck.getY());
-        if (colorToCheck != air) {
-            if (colorToCheck == goombaRGB || colorToCheck == koopaRGB) {
-                // TODO: FINISH HIM
-            } else {
-                int startingX = (int) blockToCheck.getX() * 48;
-                int startingY = (int) blockToCheck.getY() * 48;
-                Rectangle right = new Rectangle(startingX, startingY, 48, 48);
+        if(mario.getX() < 96) {
+        	mario.setLocation(106, mario.getY());
+        }else {
+        	blockToCheck = new Point((int) marioBlockPosition.getX() - 1, (int) marioBlockPosition.getY());
+            colorToCheck = mapImage.getRGB((int) blockToCheck.getX(), (int) blockToCheck.getY());
+            colorToCheckPipe = mapImage.getRGB((int)blockToCheck.getX() - 1, (int)blockToCheck.getY());
+            
+            if (colorToCheck != air || colorToCheckPipe == pipeBodyRGB || colorToCheckPipe == pipeHeadRGB) {
+            	if(colorToCheck != goombaRGB && koopaRGB != colorToCheck) {
+            		int startingX = (int) blockToCheck.getX() * 48;
+                    int startingY = (int) blockToCheck.getY() * 48;
+                    Rectangle right = new Rectangle(startingX, startingY, 48, 48);
 
-                if (right.intersects(mario.getLeftBounds()) && mario.getVelX() < 0) {
-                	mario.setVelX(0);
-                	
-                }
+                    if (right.intersects(mario.getLeftBounds()) && mario.getVelX() < 0) {
+                    	mario.setVelX(0);	
+                    }
+                    int startingXpipe = (int) (blockToCheck.getX()+1)*48;
+                    
+                    colorToCheck = mapImage.getRGB((int)blockToCheck.getX()-1, (int) blockToCheck.getY());
+                    
+                    if(colorToCheck == pipeBodyRGB || colorToCheck == pipeHeadRGB) {
+                    	right = new Rectangle(startingXpipe,startingY,48,48);
+                        if(right.intersects(mario.getLeftBounds()) && mario.getVelX() < 0) mario.setVelX(0);
+                    }
+            	}
+                                    
             }
-        }
 
+        }
+        
         //TODO: WE NEED TO TRANSFORM THIS IN METHODS BECAUSE IS SPAGHETTI
 
         for(Enemy enemy : mapCreator.getEnemies()){
             Point enemyPos = new Point(((int)enemy.getX()+24) /48, (int) (enemy.getY()+24) / 48);
 
-
+            
+            if(enemy.getBounds().intersects(mario.getBounds())) {
+            	if(enemy.getTopBounds().intersects(mario.getBottomBounds()) && mario.getVelY() > 0) System.out.println("enemy DEAD");
+            	else System.out.println("mario dead");
+            }
+            
             //Checks if the enemy has a block under them
             blockToCheck = new Point(enemyPos.x,enemyPos.y+1);
             colorToCheck = mapImage.getRGB(blockToCheck.x,blockToCheck.y);
