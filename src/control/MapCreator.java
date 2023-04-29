@@ -1,5 +1,6 @@
 package control;
 
+import model.EndFlag;
 import model.Map;
 import model.brick.*;
 import model.enemy.Enemy;
@@ -22,12 +23,16 @@ import java.util.ArrayList;
 public class MapCreator {
     private BufferedImage mapImage;
     private Map createdMap;
+    private final BufferedImage end;
     private final BufferedImage block, groundBrick, ordinaryBrick, surpriseBrick;
     private final BufferedImage pipeBody, pipeHead;
     private final BufferedImage goombaLeft, goombaRight, koopaLeft, koopaRight;
 
     public MapCreator(ImageLoader imageLoader) {
         BufferedImage sprite = ImageImporter.loadImage("sprite");
+
+        end = imageLoader.getImage(sprite, 4, 0, 48, 48);
+
         block = imageLoader.getImage(sprite, 1, 1, 48, 48);
         groundBrick = imageLoader.getImage(sprite, 4, 1, 48, 48);
         ordinaryBrick = imageLoader.getImage(sprite, 0, 0, 48, 48);
@@ -52,6 +57,7 @@ public class MapCreator {
         mapImage = ImageImporter.loadMap(mapName);
 
         int marioRGB = new Color(255, 127, 39).getRGB();
+        int endRGB = new Color(195, 195, 195).getRGB();
 
         int blockRGB = new Color(127, 127, 127).getRGB();
         int groundBrickRGB = new Color(237, 28, 36).getRGB();
@@ -70,6 +76,7 @@ public class MapCreator {
                 int yLocation = y * 48;
 
                 if (currentPixel == marioRGB) createdMap.setMario(new Mario(xLocation, yLocation));
+                if (currentPixel == endRGB) createdMap.setEndPoint(new EndFlag(xLocation - 24, yLocation, end));
 
                 Brick brick = null;
                 if (currentPixel == blockRGB) brick = new Block(xLocation, yLocation, block);

@@ -14,6 +14,7 @@ public class Map {
     private String name;
 
     private Mario mario;
+    private EndFlag endPoint;
 
     private ArrayList<Brick> bricks = new ArrayList<>();
 
@@ -34,9 +35,12 @@ public class Map {
 
     public void drawMap(Graphics2D g2D) {
         drawBackground(g2D);
+
+        mario.drawObject(g2D);
+        endPoint.drawObject(g2D);
+
         drawBricks(g2D);
         drawEnemies(g2D);
-        drawMario(g2D);
     }
 
     public void drawBackground(Graphics2D g2D) {
@@ -52,16 +56,15 @@ public class Map {
         for (Enemy enemy : enemies) enemy.drawObject(g2D);
     }
 
-    private void drawMario(Graphics2D g2D) {
-        mario.drawObject(g2D);
-    }
-
     public void updateLocations() {
         // Updates Mario's location
         mario.updateLocation();
 
         // Updates enemies' locations
         for (Enemy enemy : enemies) enemy.updateLocation();
+
+        // Updates flag's location
+        endPoint.updateLocation();
     }
 
     /* ---------- Getters / Setters ---------- */
@@ -80,5 +83,13 @@ public class Map {
 
     public ArrayList<Enemy> getEnemies() {
         return enemies;
+    }
+
+    public EndFlag getEndPoint() {
+        return endPoint;
+    }
+
+    public void setEndPoint(EndFlag endPoint) {
+        this.endPoint = endPoint;
     }
 }
