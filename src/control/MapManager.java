@@ -98,7 +98,6 @@ public class MapManager {
                     int startingY = (int) blockToCheck.getY() * 48;
                     Rectangle above = new Rectangle(startingX, startingY, 48, 48);
                     
-                    
                     if (colorToCheck == surpriseBrickRGB) {
                     	if(above.intersects(mario.getTopBounds())) {
                     		if(mario.isJumping()) mario.setVelY(0);
