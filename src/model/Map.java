@@ -49,8 +49,7 @@ public class Map {
     }
 
     private void drawEnemies(Graphics2D g2D) {
-        for (Enemy enemy : enemies)
-            g2D.drawImage(enemy.getStyle(), (int) enemy.getX(), (int) enemy.getY(), null);
+        for (Enemy enemy : enemies) enemy.drawObject(g2D);
     }
 
     private void drawMario(Graphics2D g2D) {
