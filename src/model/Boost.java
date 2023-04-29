@@ -8,6 +8,7 @@ public class Boost extends GameObject{
 
 	private BoostType type;
 	private MapCreator mapCreator;
+	private int[] positions = {32,44,47,51,148,174,213,214,241,248,249,256,296,300,427};
 	
 	private BufferedImage superMushroom, fireFlower, starMan, mushroom1Up;
 	
@@ -16,7 +17,7 @@ public class Boost extends GameObject{
 		setVelX(3);
 	}
 	
-	public void setType() {
+	public void setType(int n) {
 		this.superMushroom = mapCreator.getSuperMushroom();
 		this.fireFlower = mapCreator.getFireFlower();
 		this.starMan = mapCreator.getStarman();
