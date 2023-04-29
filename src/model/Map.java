@@ -1,6 +1,7 @@
 package model;
 
 import model.brick.Brick;
+import model.brick.SurpriseBrick;
 import model.enemy.Enemy;
 import model.hero.Mario;
 import utils.ImageImporter;
@@ -78,6 +79,18 @@ public class Map {
         // Updates flag's location
         endPoint.updateLocation();
     }
+    
+    public int getPositionBlock(int x, int y) {
+    	int pos=0;
+    	for(Brick brick : bricks) {
+    		if(brick instanceof SurpriseBrick) {
+    			if(brick.getX() == x && brick.getY() == y)
+    				return pos;
+    		}
+    		pos++;
+    	}
+    	return -1;
+    }
 
     /* ---------- Getters / Setters ---------- */
 
@@ -95,6 +108,14 @@ public class Map {
 
     public ArrayList<Enemy> getEnemies() {
         return enemies;
+    }
+    
+    public ArrayList<Boost> getBoosts(){
+    	return boosts;
+    }
+    
+    public ArrayList<Brick> getBricks(){
+    	return bricks;
     }
 
     public EndFlag getEndPoint() {

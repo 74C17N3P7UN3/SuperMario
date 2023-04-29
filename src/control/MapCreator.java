@@ -1,5 +1,6 @@
 package control;
 
+import model.Boost;
 import model.EndFlag;
 import model.Map;
 import model.brick.*;
@@ -24,7 +25,7 @@ public class MapCreator {
     private BufferedImage mapImage;
     private Map createdMap;
     private final BufferedImage end;
-    private final BufferedImage block, groundBrick, ordinaryBrick, surpriseBrick;
+    private final BufferedImage block, groundBrick, ordinaryBrick, surpriseBrick, voidSurpriseBrick;
     private final BufferedImage pipeBody, pipeHead;
     private final BufferedImage goombaLeft, goombaRight, koopaLeft, koopaRight;
     private final BufferedImage superMushroom, fireFlower, starMan, mushroom1Up;
@@ -41,6 +42,7 @@ public class MapCreator {
         surpriseBrick = imageLoader.getImage(sprite, 1, 0, 48, 48);
         pipeBody = imageLoader.getImage(sprite, 2, 1, 96, 48);
         pipeHead = imageLoader.getImage(sprite, 2, 0, 96, 48);
+        voidSurpriseBrick = imageLoader.getImage(sprite, 0, 1, 48, 48); 
 
         goombaLeft = imageLoader.getImage(sprite, 1, 3, 48, 48);
         goombaRight = imageLoader.getImage(sprite, 4, 3, 48, 48);
@@ -122,6 +124,12 @@ public class MapCreator {
     public ArrayList<Enemy> getEnemies() {
         return createdMap.getEnemies();
     }
+    public ArrayList<Boost> getBoosts(){
+    	return createdMap.getBoosts();
+    }
+    public ArrayList<Brick> getBricks(){
+    	return createdMap.getBricks();
+    }
 
     public BufferedImage getSuperMushroom() {
     	return superMushroom;
@@ -137,5 +145,8 @@ public class MapCreator {
 	}
 	public BufferedImage getVoidImage() {
 		return voidImage;
+	}
+	public BufferedImage getVoidSurpriseBrick() {
+		return voidSurpriseBrick;
 	}
 }

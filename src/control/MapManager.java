@@ -2,6 +2,7 @@ package control;
 
 import model.Boost;
 import model.Map;
+import model.brick.SurpriseBrick;
 import model.enemy.Enemy;
 import model.hero.Mario;
 import view.ImageLoader;
@@ -104,8 +105,17 @@ public class MapManager {
                         	mario.setJumping(false);
                             mario.setFalling(true);
                             
-                            Boost boost = new Boost(startingX, startingY-48, mapCreator.getSuperMushroom());
-                            map.addBoost(boost);
+                            //find the surprise brick above mario
+                            int n = map.getPositionBlock(startingX, startingY);
+                            
+                            //the surprise brick has the boost
+                            if(((SurpriseBrick) map.getBricks().get(n)).getBoost()) {
+                            	Boost boost = new Boost(startingX, startingY-48, mapCreator.getSuperMushroom());
+                                map.addBoost(boost);
+                                
+                                ((SurpriseBrick) map.getBricks().get(n)).setBoost(false);
+                                map.getBricks().get(n).setStyle(mapCreator.getVoidSurpriseBrick());
+                            }
                     	}
                     }else if(checkCollisionRGB(colorToCheck)) {
                     	if(above.intersects(mario.getTopBounds())) {
@@ -267,7 +277,84 @@ public class MapManager {
             }
         }
 
+        
+        //BOOSTS
+        
+        for(Boost boost : mapCreator.getBoosts()){
+            Point boostPos = new Point(((int)boost.getX()+24) /48, (int) (boost.getY()+24) / 48);
 
+            
+            /*if(boost.getBounds().intersects(mario.getBounds())) {
+            	if(boost.getTopBounds().intersects(mario.getBottomBounds()) && mario.getVelY() > 0) System.out.println("enemy DEAD");
+            	else System.out.println("mario dead");
+            }*/
+            
+            //Checks if the boost has a block under them
+            blockToCheck = new Point(boostPos.x,boostPos.y+1);
+            colorToCheck = mapImage.getRGB(blockToCheck.x,blockToCheck.y);
+            if(colorToCheck != goombaRGB && colorToCheck != koopaRGB){
+
+                if(checkCollisionRGB(colorToCheck)){
+                    Rectangle under = new Rectangle(blockToCheck.x*48,blockToCheck.y*48,48,48);
+                    if(boost.getBottomBounds().intersects(under)){
+                    	boost.setFalling(false);
+                    	boost.setJumping(false);
+                    	boost.setVelY(0);
+                    }
+                }else if(colorToCheck == dead) {
+                	boost.setFalling(false);
+                    	//System.out.println("dead");
+                }else if(colorToCheck == air){
+                	boost.setFalling(true);
+                    	//System.out.println(enemy.getVelY());
+                    }
+            }
+
+            //Checks if the boost has a block above them
+            blockToCheck = new Point(boostPos.x,boostPos.y+1);
+            colorToCheck = mapImage.getRGB(blockToCheck.x,blockToCheck.y);
+            Rectangle above = new Rectangle(blockToCheck.x*48,blockToCheck.y*48,48,48);
+            if(colorToCheck != air && colorToCheck != goombaRGB && colorToCheck != koopaRGB){
+                if(boost.getTopBounds().intersects(above)){
+                	boost.setFalling(true);
+                	boost.setJumping(false);
+                	boost.setVelY(0);
+                }
+            }
+
+            //Checks if the boost has a block at the right
+            blockToCheck = new Point(boostPos.x+1,boostPos.y);
+            colorToCheck = mapImage.getRGB(blockToCheck.x,blockToCheck.y);
+            Rectangle right = new Rectangle(blockToCheck.x*48,blockToCheck.y*48,48,48);
+            if(colorToCheck != air && colorToCheck != goombaRGB && colorToCheck != koopaRGB){
+                if(boost.getRightBounds().intersects(right)){
+                	boost.setVelX(-boost.getVelX());
+                }
+            }
+
+            //Checks if the boost has a block at the left
+            blockToCheck = new Point(boostPos.x-2,boostPos.y);
+            colorToCheck = mapImage.getRGB(blockToCheck.x,blockToCheck.y);
+            
+            if(blockToCheck.x == 0) boost.setVelX(-boost.getVelX());
+            
+            if(colorToCheck != air && colorToCheck != goombaRGB && colorToCheck != koopaRGB){
+            	if(colorToCheck == pipeBodyRGB){
+            		
+            		Rectangle left = new Rectangle(blockToCheck.x*48,blockToCheck.y*48,96,48);
+            		if(boost.getLeftBounds().intersects(left)) boost.setVelX(-boost.getVelX());
+            	
+            	}else {
+            		blockToCheck = new Point(boostPos.x-2,boostPos.y);
+            		Rectangle left = new Rectangle(blockToCheck.x*48,blockToCheck.y*48,60,48);
+            		
+                    if(boost.getLeftBounds().intersects(left)){
+                    	boost.setVelX(-boost.getVelX());
+                    }
+                }
+            }
+        }
+        
     }
 
     private boolean checkCollisionRGB(int colorToCheck){
