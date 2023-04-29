@@ -104,9 +104,8 @@ public class MapManager {
                         	mario.setJumping(false);
                             mario.setFalling(true);
                             
-                            System.out.println("x: "+startingX+", y: "+(startingY-48));
-                            //Boost boost = new Boost(startingX, startingY-48, mapCreator.getSuperMushroom());
-                            //map.drawBoost(boost,this.g2D);
+                            Boost boost = new Boost(startingX, startingY-48, mapCreator.getSuperMushroom());
+                            map.addBoost(boost);
                     	}
                     }else if(checkCollisionRGB(colorToCheck)) {
                     	if(above.intersects(mario.getTopBounds())) {

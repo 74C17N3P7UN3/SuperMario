@@ -19,6 +19,8 @@ public class Map {
     private ArrayList<Brick> bricks = new ArrayList<>();
 
     private ArrayList<Enemy> enemies = new ArrayList<>();
+    
+    private ArrayList<Boost> boosts = new ArrayList<>();
 
     public Map(String mapName) {
         backgroundImage = ImageImporter.loadImage("background");
@@ -32,6 +34,10 @@ public class Map {
     public void addEnemy(Enemy enemy) {
         this.enemies.add(enemy);
     }
+    
+    public void addBoost(Boost boost) {
+    	this.boosts.add(boost);
+    }
 
     public void drawMap(Graphics2D g2D) {
         drawBackground(g2D);
@@ -41,6 +47,7 @@ public class Map {
 
         drawBricks(g2D);
         drawEnemies(g2D);
+        drawBoosts(g2D);
     }
 
     public void drawBackground(Graphics2D g2D) {
@@ -55,6 +62,10 @@ public class Map {
     private void drawEnemies(Graphics2D g2D) {
         for (Enemy enemy : enemies) enemy.drawObject(g2D);
     }
+    
+    private void drawBoosts(Graphics2D g2D) {
+        for (Boost boost : boosts) boost.drawObject(g2D);
+    }
 
     public void updateLocations() {
         // Updates Mario's location
@@ -62,6 +73,7 @@ public class Map {
 
         // Updates enemies' locations
         for (Enemy enemy : enemies) enemy.updateLocation();
+        for (Boost boost: boosts) boost.updateLocation();
 
         // Updates flag's location
         endPoint.updateLocation();
