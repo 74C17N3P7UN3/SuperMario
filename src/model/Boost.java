@@ -7,20 +7,34 @@ import control.MapCreator;
 public class Boost extends GameObject{
 
 	private BoostType type;
-	private MapCreator mapCreator;
-	private int[] positions = {32,44,47,51,148,174,213,214,241,248,249,256,296,300,427};
-	
-	private BufferedImage superMushroom, fireFlower, starMan, mushroom1Up;
 	
 	public Boost(double x, double y, BufferedImage style) {
 		super(x, y, style);
-		setVelX(3);
 	}
 	
-	public void setType(int n) {
-		this.superMushroom = mapCreator.getSuperMushroom();
-		this.fireFlower = mapCreator.getFireFlower();
-		this.starMan = mapCreator.getStarman();
-		this.mushroom1Up = mapCreator.getMushroom1Up();
+	public void setType(MapCreator mapCreator, int n) {
+		if(n==32 || n==47 || n==51 || n==213 /*n==213*/ || n==241 || n==249 || n==256 || n==296 || n==300 || n==427) {
+			type = BoostType.money;
+			setStyle(mapCreator.getMoney());
+		}
+		if(n==44 || n==174 || n==248) {
+			type = BoostType.superMushroom;
+			setStyle(mapCreator.getSuperMushroom());
+			setVelX(3);
+		}
+		if(n==230){
+			type = BoostType.starMan;
+			setStyle(mapCreator.getStarMan());
+			setVelX(3);
+		}
+		if(n==148){
+			type = BoostType.mushroom1Up;
+			setStyle(mapCreator.getMushroom1Up());
+			setVelX(3);
+		}
+	}
+	
+	public BoostType getType() {
+		return type;
 	}
 }

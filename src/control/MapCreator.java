@@ -28,7 +28,7 @@ public class MapCreator {
     private final BufferedImage block, groundBrick, ordinaryBrick, surpriseBrick, voidSurpriseBrick;
     private final BufferedImage pipeBody, pipeHead;
     private final BufferedImage goombaLeft, goombaRight, koopaLeft, koopaRight;
-    private final BufferedImage superMushroom, fireFlower, starMan, mushroom1Up;
+    private final BufferedImage superMushroom, fireFlower, starMan, mushroom1Up, money;
     private final BufferedImage voidImage;
 
     public MapCreator(ImageLoader imageLoader) {
@@ -51,8 +51,9 @@ public class MapCreator {
 
         superMushroom = imageLoader.getImage(sprite, 1, 4, 48, 48);
         fireFlower = imageLoader.getImage(sprite, 3, 4, 48, 48);
-        starMan = imageLoader.getImage(sprite, 1, 4, 48, 48);
+        starMan = imageLoader.getImage(sprite, 4, 4, 48, 48);
         mushroom1Up = imageLoader.getImage(sprite, 2, 4, 48, 48);
+        money = imageLoader.getImage(sprite, 0, 4, 48, 48);
         
         voidImage = imageLoader.getImage(sprite, 4, 2, 48, 48);
     }
@@ -86,16 +87,28 @@ public class MapCreator {
                 int xLocation = x * 48;
                 int yLocation = y * 48;
 
-                if (currentPixel == marioRGB) createdMap.setMario(new Mario(xLocation, yLocation));
-                if (currentPixel == endRGB) createdMap.setEndPoint(new EndFlag(xLocation - 24, yLocation, end));
+                if (currentPixel == marioRGB)
+                	createdMap.setMario(new Mario(xLocation, yLocation));
+                if (currentPixel == endRGB)
+                	createdMap.setEndPoint(new EndFlag(xLocation - 24, yLocation, end));
 
                 Brick brick = null;
-                if (currentPixel == blockRGB) brick = new Block(xLocation, yLocation, block);
-                if (currentPixel == groundBrickRGB) brick = new GroundBrick(xLocation, yLocation, groundBrick);
-                if (currentPixel == ordinaryBrickRGB) brick = new OrdinaryBrick(xLocation, yLocation, ordinaryBrick);
-                if (currentPixel == surpriseBrickRGB) brick = new SurpriseBrick(xLocation, yLocation, surpriseBrick);
-                if (currentPixel == pipeBodyRGB) brick = new PipeBody(xLocation, yLocation, pipeBody);
-                if (currentPixel == pipeHeadRGB) brick = new PipeHead(xLocation, yLocation, pipeHead);
+                if (currentPixel == blockRGB)
+                	brick = new Block(xLocation, yLocation, block);
+                if (currentPixel == groundBrickRGB)
+                	brick = new GroundBrick(xLocation, yLocation, groundBrick);
+                if (currentPixel == ordinaryBrickRGB)
+                	brick = new OrdinaryBrick(xLocation, yLocation, ordinaryBrick);
+                if (currentPixel == surpriseBrickRGB) {
+                	if(yLocation == 432 && (xLocation == 4512 || xLocation == 4848))
+                		brick = new SurpriseBrick(xLocation, yLocation, ordinaryBrick);
+                	else
+                		brick = new SurpriseBrick(xLocation, yLocation, surpriseBrick);
+                }
+                if (currentPixel == pipeBodyRGB)
+                	brick = new PipeBody(xLocation, yLocation, pipeBody);
+                if (currentPixel == pipeHeadRGB)
+                	brick = new PipeHead(xLocation, yLocation, pipeHead);
 
                 Enemy enemy = null;
                 if (currentPixel == goombaRGB) {
@@ -107,8 +120,10 @@ public class MapCreator {
                     ((Koopa) enemy).setRightImage(koopaRight);
                 }
 
-                if (brick != null) createdMap.addBrick(brick);
-                if (enemy != null) createdMap.addEnemy(enemy);
+                if (brick != null)
+                	createdMap.addBrick(brick);
+                if (enemy != null)
+                	createdMap.addEnemy(enemy);
             }
         }
 
@@ -137,7 +152,7 @@ public class MapCreator {
 	public BufferedImage getFireFlower() {
 	    return fireFlower;
 	}
-	public BufferedImage getStarman() {
+	public BufferedImage getStarMan() {
 		return starMan;
 	}
 	public BufferedImage getMushroom1Up() {
@@ -148,5 +163,8 @@ public class MapCreator {
 	}
 	public BufferedImage getVoidSurpriseBrick() {
 		return voidSurpriseBrick;
+	}
+	public BufferedImage getMoney() {
+		return money;
 	}
 }

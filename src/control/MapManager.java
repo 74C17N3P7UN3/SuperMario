@@ -1,6 +1,7 @@
 package control;
 
 import model.Boost;
+import model.BoostType;
 import model.Map;
 import model.brick.SurpriseBrick;
 import model.enemy.Enemy;
@@ -109,8 +110,9 @@ public class MapManager {
                             
                             //the surprise brick has the boost
                             if(((SurpriseBrick) map.getBricks().get(n)).getBoost()) {
-                            	Boost boost = new Boost(startingX, startingY-48, mapCreator.getSuperMushroom());
-                                map.addBoost(boost);
+                            	Boost boost = new Boost(startingX, startingY-48, mapCreator.getVoidImage());
+                            	boost.setType(mapCreator, n);
+                            	map.addBoost(boost);
                                 
                                 ((SurpriseBrick) map.getBricks().get(n)).setBoost(false);
                                 map.getBricks().get(n).setStyle(mapCreator.getVoidSurpriseBrick());
@@ -281,12 +283,18 @@ public class MapManager {
         
         for(Boost boost : mapCreator.getBoosts()){
             Point boostPos = new Point(((int)boost.getX()+24) /48, (int) (boost.getY()+24) / 48);
-
             
-            /*if(boost.getBounds().intersects(mario.getBounds())) {
-            	if(boost.getTopBounds().intersects(mario.getBottomBounds()) && mario.getVelY() > 0) System.out.println("enemy DEAD");
-            	else System.out.println("mario dead");
-            }*/
+            if(boost.getBounds().intersects(mario.getBounds())) {
+            	if(boost.getType() == BoostType.superMushroom)
+            		System.out.println("superMushroom");
+            	if(boost.getType() == BoostType.mushroom1Up)
+            		System.out.println("mushroom1Up");
+            	if(boost.getType() == BoostType.starMan)
+            		System.out.println("starMan");
+            	if(boost.getType() == BoostType.fireFlower)
+            		System.out.println("fireFlower");
+        		//map.getBoosts().remove(boost);
+            }
             
             //Checks if the boost has a block under them
             blockToCheck = new Point(boostPos.x,boostPos.y+1);
