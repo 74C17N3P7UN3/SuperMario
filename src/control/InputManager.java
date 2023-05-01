@@ -47,6 +47,8 @@ public class InputManager implements KeyListener, MouseListener {
             currentAction = ButtonAction.M_RIGHT;
         if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A)
             currentAction = ButtonAction.M_LEFT;
+        if (keyCode == KeyEvent.VK_C)
+            currentAction = ButtonAction.CHEAT;
 
         notifyInput(currentAction);
     }

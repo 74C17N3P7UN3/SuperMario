@@ -13,10 +13,10 @@ public class EndFlag extends GameObject {
     @Override
     public void updateLocation() {
         if (touched) {
-            if (getY() + getDimension().getHeight() >= 432) {
+            if (getY() + getDimension().getHeight() >= 528) {
                 setFalling(false);
                 setVelY(0);
-                setY(432 - getDimension().getHeight());
+                setY(528);
             }
 
             super.updateLocation();

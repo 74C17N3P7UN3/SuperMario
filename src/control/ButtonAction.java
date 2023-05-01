@@ -21,4 +21,6 @@ public enum ButtonAction {
     PAUSE_RESUME,
     SELECT,
     START,
+    CHEAT,
+
 }

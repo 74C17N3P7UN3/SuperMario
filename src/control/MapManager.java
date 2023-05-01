@@ -2,14 +2,17 @@ package control;
 
 import model.Boost;
 import model.BoostType;
+import model.EndFlag;
 import model.Map;
 import model.brick.SurpriseBrick;
 import model.enemy.Enemy;
 import model.hero.Mario;
+import model.hero.MarioForm;
 import view.ImageLoader;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 /**
  * Creates and handles all the game-level collisions and
@@ -133,7 +136,10 @@ public class MapManager {
         // Checks the block to the right of Mario
         blockToCheck = new Point((int) marioBlockPosition.getX() + 1, (int) marioBlockPosition.getY());
         colorToCheck = mapImage.getRGB((int) blockToCheck.getX(), (int) blockToCheck.getY());
-        if (colorToCheck != air && colorToCheck != koopaRGB && colorToCheck != goombaRGB) {
+        if(mario.getX() >= 48*198 - 20){
+            map.getEndPoint().setTouched(true);
+        }
+        else if (colorToCheck != air && colorToCheck != koopaRGB && colorToCheck != goombaRGB) {
                 int startingX = (int) blockToCheck.getX() * 48;
                 int startingY = (int) blockToCheck.getY() * 48;
                 Rectangle right = new Rectangle(startingX, startingY, 48, 48);
@@ -158,9 +164,17 @@ public class MapManager {
                 	//System.out.println("Hello");
                     mario.setFalling(true);
                 }else if(checkCollisionRGB(colorToCheck) || colorToCheckPipe == pipeHeadRGB){
+
                 	if(under.intersects(mario.getBottomBounds())) {
-                    	if(mario.isFalling()) mario.setVelY(0);
-                    	mario.setFalling(false);	
+                    	if(mario.isFalling()) {
+                            mario.setVelY(0);
+                            //FIXME:mario under hitboxed in superform isnt the right ones, need a fix
+                            /*if(mario.getMarioForm().isSuper()){
+
+                            }*/
+                        }
+                    	mario.setFalling(false);
+
                 	}
                 	else if(underpipe.intersects(mario.getBottomBounds())){
                 		if(mario.isFalling()) mario.setVelY(0);
@@ -280,20 +294,28 @@ public class MapManager {
 
         
         //BOOSTS
+
+        ArrayList<Boost> disposal = new ArrayList<>();
         
         for(Boost boost : mapCreator.getBoosts()){
             Point boostPos = new Point(((int)boost.getX()+24) /48, (int) (boost.getY()+24) / 48);
-            
+
             if(boost.getBounds().intersects(mario.getBounds())) {
-            	if(boost.getType() == BoostType.superMushroom)
-            		System.out.println("superMushroom");
+            	if(boost.getType() == BoostType.superMushroom){
+                    System.out.println("superMushroom");
+                    MarioForm temp = new MarioForm(mario.getAnimation(),true,false);
+                    mario.setMarioForm(temp);
+                    mario.setMarioBig();
+                    mario.getMarioForm().setSuper(true);
+                }
+
             	if(boost.getType() == BoostType.mushroom1Up)
             		System.out.println("mushroom1Up");
             	if(boost.getType() == BoostType.starMan)
             		System.out.println("starMan");
             	if(boost.getType() == BoostType.fireFlower)
             		System.out.println("fireFlower");
-        		//map.getBoosts().remove(boost);
+        		disposal.add(boost);
             }
             
             //Checks if the boost has a block under them
@@ -360,6 +382,10 @@ public class MapManager {
                     }
                 }
             }
+        }
+
+        for(Boost boost : disposal){
+            map.getBoosts().remove(boost);
         }
         
     }

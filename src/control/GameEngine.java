@@ -160,7 +160,8 @@ public class GameEngine implements Runnable {
         	mario.jump(this);
         if (input == ButtonAction.ACTION_COMPLETED)
         	mario.setVelX(0);
-            
+        if (input == ButtonAction.CHEAT)
+            mario.setVelX(100);
     }
 
     /**

@@ -17,7 +17,7 @@ import java.awt.image.BufferedImage;
  */
 public class Mario extends GameObject {
     private MarioForm marioForm;
-
+    private Animation animation;
     private boolean toRight;
 
     public Mario(double x, double y) {
@@ -29,7 +29,7 @@ public class Mario extends GameObject {
         BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.SMALL);
         BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.SMALL);
 
-        Animation animation = new Animation(leftFrames, rightFrames);
+        this.animation = new Animation(leftFrames, rightFrames);
         marioForm = new MarioForm(animation, false, false);
         setStyle(marioForm.getCurrentStyle(toRight, false, false));
     }
@@ -89,6 +89,18 @@ public class Mario extends GameObject {
         setJumping(false);
     }
 
+    public void setMarioBig(){
+        setDimension(96,48);
+
+        ImageLoader imageLoader = new ImageLoader();
+        BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.SUPER);
+        BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.SUPER);
+
+        this.animation = new Animation(leftFrames, rightFrames);
+        marioForm = new MarioForm(animation, false, false);
+        setStyle(marioForm.getCurrentStyle(toRight, false, false));
+    }
+
     /* ---------- Getters / Setters ---------- */
 
     public MarioForm getMarioForm() {
@@ -106,4 +118,6 @@ public class Mario extends GameObject {
     public boolean isToRight() {
         return toRight;
     }
+
+    public Animation getAnimation(){return this.animation;}
 }
