@@ -41,14 +41,15 @@ public class InputManager implements KeyListener, MouseListener {
         int keyCode = e.getKeyCode();
         ButtonAction currentAction = ButtonAction.NO_ACTION;
 
+        // TODO: Remove
+        if (keyCode == KeyEvent.VK_C)
+            currentAction = ButtonAction.CHEAT;
         if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_SPACE)
             currentAction = ButtonAction.JUMP;
         if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D)
             currentAction = ButtonAction.M_RIGHT;
         if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A)
             currentAction = ButtonAction.M_LEFT;
-        if (keyCode == KeyEvent.VK_C)
-            currentAction = ButtonAction.CHEAT;
 
         notifyInput(currentAction);
     }
@@ -62,7 +63,8 @@ public class InputManager implements KeyListener, MouseListener {
     public void keyReleased(KeyEvent e) {
         int keyCode = e.getKeyCode();
 
-        if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_LEFT)
+        // TODO: Remove the cheat key
+        if (keyCode == KeyEvent.VK_C || keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_LEFT)
             notifyInput(ButtonAction.ACTION_COMPLETED);
     }
 

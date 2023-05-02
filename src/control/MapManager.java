@@ -1,9 +1,6 @@
 package control;
 
-import model.Boost;
-import model.BoostType;
-import model.EndFlag;
-import model.Map;
+import model.*;
 import model.brick.SurpriseBrick;
 import model.enemy.Enemy;
 import model.hero.Mario;
@@ -71,7 +68,7 @@ public class MapManager {
         BufferedImage mapImage = mapCreator.getMapImage();
 
         /*int blockRGB = new Color(127, 127, 127).getRGB();
-        
+
         int ordinaryBrickRGB = new Color(185, 122, 87).getRGB();
         int groundBrickRGB = new Color(237, 28, 36).getRGB();*/
         int surpriseBrickRGB = new Color(163, 73, 164).getRGB();
@@ -90,6 +87,8 @@ public class MapManager {
         Point blockToCheck;
         int colorToCheck;
 
+        ArrayList<GameObject> disposal = new ArrayList<>();
+
         // Checks the block above Mario
         // FIXME: Bottom code needs to be revised
         if(marioBlockPosition.getY() > 1) {
@@ -101,22 +100,22 @@ public class MapManager {
                     int startingX = (int) blockToCheck.getX() * 48;
                     int startingY = (int) blockToCheck.getY() * 48;
                     Rectangle above = new Rectangle(startingX, startingY, 48, 48);
-                    
+
                     if (colorToCheck == surpriseBrickRGB) {
                     	if(above.intersects(mario.getTopBounds())) {
                     		if(mario.isJumping()) mario.setVelY(0);
                         	mario.setJumping(false);
                             mario.setFalling(true);
-                            
+
                             //find the surprise brick above mario
                             int n = map.getPositionBlock(startingX, startingY);
-                            
+
                             //the surprise brick has the boost
                             if(((SurpriseBrick) map.getBricks().get(n)).getBoost()) {
                             	Boost boost = new Boost(startingX, startingY-48, mapCreator.getVoidImage());
                             	boost.setType(mapCreator, n);
                             	map.addBoost(boost);
-                                
+
                                 ((SurpriseBrick) map.getBricks().get(n)).setBoost(false);
                                 map.getBricks().get(n).setStyle(mapCreator.getVoidSurpriseBrick());
                             }
@@ -127,12 +126,12 @@ public class MapManager {
                         	mario.setJumping(false);
                             mario.setFalling(true);
                     	}
-                    	
+
                     }
             }
 
         }
-        
+
         // Checks the block to the right of Mario
         blockToCheck = new Point((int) marioBlockPosition.getX() + 1, (int) marioBlockPosition.getY());
         colorToCheck = mapImage.getRGB((int) blockToCheck.getX(), (int) blockToCheck.getY());
@@ -154,7 +153,7 @@ public class MapManager {
         blockToCheck = new Point((int) marioBlockPosition.getX(), (int) marioBlockPosition.getY() + 1);
         colorToCheck = mapImage.getRGB((int) blockToCheck.getX(), (int) blockToCheck.getY());
         int colorToCheckPipe = mapImage.getRGB((int) blockToCheck.getX() -1, (int) blockToCheck.getY());
-        
+
             if(colorToCheck != marioRGB){
                 int startingX = (int) blockToCheck.getX() * 48;
                 int startingY = (int) blockToCheck.getY() * 48 - 4;
@@ -178,7 +177,7 @@ public class MapManager {
                 	}
                 	else if(underpipe.intersects(mario.getBottomBounds())){
                 		if(mario.isFalling()) mario.setVelY(0);
-                    	mario.setFalling(false);	
+                    	mario.setFalling(false);
                 	}
                 }
             }
@@ -191,7 +190,7 @@ public class MapManager {
         	blockToCheck = new Point((int) marioBlockPosition.getX() - 1, (int) marioBlockPosition.getY());
             colorToCheck = mapImage.getRGB((int) blockToCheck.getX(), (int) blockToCheck.getY());
             colorToCheckPipe = mapImage.getRGB((int)blockToCheck.getX() - 1, (int)blockToCheck.getY());
-            
+
             if (colorToCheck != air || colorToCheckPipe == pipeBodyRGB || colorToCheckPipe == pipeHeadRGB) {
             	if(colorToCheck != goombaRGB && koopaRGB != colorToCheck) {
             		int startingX = (int) blockToCheck.getX() * 48;
@@ -199,33 +198,34 @@ public class MapManager {
                     Rectangle right = new Rectangle(startingX, startingY, 48, 48);
 
                     if (right.intersects(mario.getLeftBounds()) && mario.getVelX() < 0) {
-                    	mario.setVelX(0);	
+                    	mario.setVelX(0);
                     }
                     int startingXpipe = (int) (blockToCheck.getX()+1)*48;
-                    
+
                     colorToCheck = mapImage.getRGB((int)blockToCheck.getX()-1, (int) blockToCheck.getY());
-                    
+
                     if(colorToCheck == pipeBodyRGB || colorToCheck == pipeHeadRGB) {
                     	right = new Rectangle(startingXpipe,startingY,48,48);
                         if(right.intersects(mario.getLeftBounds()) && mario.getVelX() < 0) mario.setVelX(0);
                     }
             	}
-                                    
+
             }
 
         }
-        
+
         //TODO: WE NEED TO TRANSFORM THIS IN METHODS BECAUSE IS SPAGHETTI
 
         for(Enemy enemy : mapCreator.getEnemies()){
             Point enemyPos = new Point(((int)enemy.getX()+24) /48, (int) (enemy.getY()+24) / 48);
 
-            
             if(enemy.getBounds().intersects(mario.getBounds())) {
-            	if(enemy.getTopBounds().intersects(mario.getBottomBounds()) && mario.getVelY() > 0) System.out.println("enemy DEAD");
-            	else System.out.println("mario dead");
+            	if(enemy.getTopBounds().intersects(mario.getBottomBounds()) && mario.getVelY() > 0)
+                    disposal.add(enemy);
+                else if (mario.isSuper() || mario.isFire()) { /* TODO: Logic */ }
+            	else { /* TODO: Death screen */ }
             }
-            
+
             //Checks if the enemy has a block under them
             blockToCheck = new Point(enemyPos.x,enemyPos.y+1);
             colorToCheck = mapImage.getRGB(blockToCheck.x,blockToCheck.y);
@@ -240,7 +240,7 @@ public class MapManager {
                     }
                 }else if(colorToCheck == dead) {
                     enemy.setFalling(false);
-                    	//System.out.println("dead");
+                    	disposal.add(enemy);
                 }else if(colorToCheck == air){
                     enemy.setFalling(true);
                     	//System.out.println(enemy.getVelY());
@@ -272,19 +272,19 @@ public class MapManager {
             //Checks if the enemy has a block at the left
             blockToCheck = new Point(enemyPos.x-2,enemyPos.y);
             colorToCheck = mapImage.getRGB(blockToCheck.x,blockToCheck.y);
-            
+
             if(blockToCheck.x == 0) enemy.setVelX(-enemy.getVelX());
-            
+
             if(colorToCheck != air && colorToCheck != goombaRGB && colorToCheck != koopaRGB){
             	if(colorToCheck == pipeBodyRGB){
-            		
+
             		Rectangle left = new Rectangle(blockToCheck.x*48,blockToCheck.y*48,96,48);
             		if(enemy.getLeftBounds().intersects(left)) enemy.setVelX(-enemy.getVelX());
-            	
+
             	}else {
             		blockToCheck = new Point(enemyPos.x-2,enemyPos.y);
             		Rectangle left = new Rectangle(blockToCheck.x*48,blockToCheck.y*48,60,48);
-            		
+
                     if(enemy.getLeftBounds().intersects(left)){
                         enemy.setVelX(-enemy.getVelX());
                     }
@@ -292,11 +292,10 @@ public class MapManager {
             }
         }
 
-        
+
         //BOOSTS
 
-        ArrayList<Boost> disposal = new ArrayList<>();
-        
+
         for(Boost boost : mapCreator.getBoosts()){
             Point boostPos = new Point(((int)boost.getX()+24) /48, (int) (boost.getY()+24) / 48);
 
@@ -317,7 +316,7 @@ public class MapManager {
             		System.out.println("fireFlower");
         		disposal.add(boost);
             }
-            
+
             //Checks if the boost has a block under them
             blockToCheck = new Point(boostPos.x,boostPos.y+1);
             colorToCheck = mapImage.getRGB(blockToCheck.x,blockToCheck.y);
@@ -364,19 +363,19 @@ public class MapManager {
             //Checks if the boost has a block at the left
             blockToCheck = new Point(boostPos.x-2,boostPos.y);
             colorToCheck = mapImage.getRGB(blockToCheck.x,blockToCheck.y);
-            
+
             if(blockToCheck.x == 0) boost.setVelX(-boost.getVelX());
-            
+
             if(colorToCheck != air && colorToCheck != goombaRGB && colorToCheck != koopaRGB){
             	if(colorToCheck == pipeBodyRGB){
-            		
+
             		Rectangle left = new Rectangle(blockToCheck.x*48,blockToCheck.y*48,96,48);
             		if(boost.getLeftBounds().intersects(left)) boost.setVelX(-boost.getVelX());
-            	
+
             	}else {
             		blockToCheck = new Point(boostPos.x-2,boostPos.y);
             		Rectangle left = new Rectangle(blockToCheck.x*48,blockToCheck.y*48,60,48);
-            		
+
                     if(boost.getLeftBounds().intersects(left)){
                     	boost.setVelX(-boost.getVelX());
                     }
@@ -384,10 +383,11 @@ public class MapManager {
             }
         }
 
-        for(Boost boost : disposal){
-            map.getBoosts().remove(boost);
+        for(GameObject object : disposal) {
+            if (object instanceof Boost) map.getBoosts().remove((Boost) object);
+            if (object instanceof Enemy) map.getEnemies().remove((Enemy) object);
         }
-        
+
     }
 
     private boolean checkCollisionRGB(int colorToCheck){

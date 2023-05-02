@@ -89,8 +89,8 @@ public class Mario extends GameObject {
         setJumping(false);
     }
 
-    public void setMarioBig(){
-        setDimension(96,48);
+    public void setMarioBig() {
+        setDimension(96, 48);
 
         ImageLoader imageLoader = new ImageLoader();
         BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.SUPER);
@@ -111,6 +111,10 @@ public class Mario extends GameObject {
         this.marioForm = marioForm;
     }
 
+    public boolean isFire() {
+        return marioForm.isFire();
+    }
+
     public boolean isSuper() {
         return marioForm.isSuper();
     }
@@ -119,5 +123,7 @@ public class Mario extends GameObject {
         return toRight;
     }
 
-    public Animation getAnimation(){return this.animation;}
+    public Animation getAnimation() {
+        return animation;
+    }
 }
