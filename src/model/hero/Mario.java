@@ -73,7 +73,7 @@ public class Mario extends GameObject {
      */
     public void move(boolean toRight, Camera camera) {
         if (toRight) setVelX(5);
-        else if (camera.getX() < getX()) setVelX(-5);
+        else if (camera.getX() < getX() - 96) setVelX(-5);
 
         this.toRight = toRight;
     }

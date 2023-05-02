@@ -203,6 +203,13 @@ public class GameEngine implements Runnable {
             shiftAmount = marioVelX;
 
         camera.moveCam(shiftAmount, 0);
+
+        // Also provide a check if mario goes out of the camera
+        System.out.println(camera.getX() + " " + mario.getX());
+        if (camera.getX() > mario.getX() - 96) {
+            mario.setVelX(0);
+            mario.setX(camera.getX() + 96);
+        }
     }
 
     /**
