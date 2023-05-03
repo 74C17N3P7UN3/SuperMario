@@ -115,7 +115,7 @@ public class MapManager {
                         //the surprise brick has the boost
                         if(((SurpriseBrick) map.getBricks().get(n)).getBoost()) {
                             Boost boost = new Boost(startingX, startingY-48, mapCreator.getStar());
-                            boost.setType(mapCreator, n);
+                            boost.setType(mapCreator, n, mario);
                             map.addBoost(boost);
 
                             ((SurpriseBrick) map.getBricks().get(n)).setBoost(false);
@@ -225,15 +225,11 @@ public class MapManager {
                     disposal.add(enemy);
                 else if (mario.isSuper() || mario.isFire()) {
                     /* TODO: Logic */
-                    if(mario.isSuper()){
-                        mario.setInvincible(true);
-                        mario.setFalling(true);
-                        mario.setMarioMini();
-                    }else{
-                        mario.setMarioBig();
-                    }
+                    mario.setInvincible(true);
+                    mario.setFalling(true);
+                    mario.setMarioMini();
                 }
-            	else {
+            	else if (!mario.isStar() && !mario.isSuper()){
                     /* TODO: Death screen */
                     //mario.remove();
                 }
@@ -313,22 +309,29 @@ public class MapManager {
             Point boostPos = new Point(((int)boost.getX()+24) /48, (int) (boost.getY()+24) / 48);
 
             if(boost.getBounds().intersects(mario.getBounds())) {
+            	
             	if(boost.getType() == BoostType.superMushroom){
-                    System.out.println("superMushroom");
                     mario.setY(mario.getY()-48);
                     mario.setFalling(true);
-                    MarioForm temp = new MarioForm(mario.getAnimation(),true,false);
+                    MarioForm temp = new MarioForm(mario.getAnimation(),true,false,false);
                     mario.setMarioForm(temp);
                     mario.setMarioBig();
                     mario.getMarioForm().setSuper(true);
                 }
+            	
+            	if(boost.getType() == BoostType.fireFlower){
+                    mario.setMarioFire();
+                    mario.getMarioForm().setFire(true);
+                }
+            	
+            	if(boost.getType() == BoostType.starMan) {
+            		mario.setMarioStar();
+            		mario.getMarioForm().setStar(true);
+            	}
 
             	if(boost.getType() == BoostType.mushroom1Up)
             		System.out.println("mushroom1Up");
-            	if(boost.getType() == BoostType.starMan)
-            		System.out.println("starMan");
-            	if(boost.getType() == BoostType.fireFlower)
-            		System.out.println("fireFlower");
+            	
         		disposal.add(boost);
             }
 

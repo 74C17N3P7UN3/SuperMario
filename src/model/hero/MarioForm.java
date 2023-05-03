@@ -14,17 +14,18 @@ import java.awt.image.BufferedImage;
  * @version 0.1.0
  */
 public class MarioForm {
-    public static final int SMALL = 0, SUPER = 1, FIRE = 2;
+    public static final int SMALL = 0, SUPER = 1, FIRE = 2, star = 3, STAR = 4;
 
     private Animation animation;
     private BufferedImage fireballStyle;
 
-    private boolean isSuper, isFire;
+    private boolean isSuper, isFire, isStar;
 
-    public MarioForm(Animation animation, boolean isSuper, boolean isFire) {
+    public MarioForm(Animation animation, boolean isSuper, boolean isFire, boolean isStar) {
         this.animation = animation;
         this.isSuper = isSuper;
         this.isFire = isFire;
+        this.isStar = isStar;
 
         ImageLoader imageLoader = new ImageLoader();
         BufferedImage sprite = ImageImporter.loadImage("sprite");
@@ -67,7 +68,7 @@ public class MarioForm {
         BufferedImage[] rightFrames = imageLoader.getRightFrames(0);
         Animation newAnimation = new Animation(leftFrames, rightFrames);
 
-        return new MarioForm(newAnimation, false, false);
+        return new MarioForm(newAnimation, false, false, false);
     }
 
     /**
@@ -95,8 +96,16 @@ public class MarioForm {
     public boolean isFire() {
         return isFire;
     }
+    
+    public boolean isStar() {
+    	return isStar;
+    }
 
     public void setFire(boolean isFire) {
         this.isFire = isFire;
+    }
+    
+    public void setStar(boolean isStar) {
+    	this.isStar = isStar;
     }
 }
