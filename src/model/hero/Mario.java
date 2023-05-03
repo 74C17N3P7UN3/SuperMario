@@ -18,12 +18,11 @@ import java.awt.image.BufferedImage;
 public class Mario extends GameObject {
     private MarioForm marioForm;
     private Animation animation;
-    private boolean toRight;
-    private boolean invincible;
+    private boolean invincible, toRight;
 
     public Mario(double x, double y) {
         super(x, y, null);
-        invincible=false;
+        invincible = false;
         toRight = true;
         setMarioMini();
     }
@@ -83,7 +82,7 @@ public class Mario extends GameObject {
         setJumping(false);
     }
 
-    public void setMarioMini(){
+    public void setMarioMini() {
         setDimension(48, 48);
 
         ImageLoader imageLoader = new ImageLoader();
@@ -125,15 +124,15 @@ public class Mario extends GameObject {
         return marioForm.isSuper();
     }
 
-    public boolean isToRight() {
-        return toRight;
-    }
-
     public Animation getAnimation() {
         return animation;
     }
 
-    public boolean getInvincible(){return invincible;}
+    public boolean isInvincible() {
+        return invincible;
+    }
 
-    public void setInvincible(boolean invincible){this.invincible=invincible;}
+    public void setInvincible(boolean invincible) {
+        this.invincible = invincible;
+    }
 }

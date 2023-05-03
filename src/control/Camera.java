@@ -3,15 +3,15 @@ package control;
 /**
  * The camera that follows the player.
  *
- * @author TheInfernalNick
- * @version 0.1.0
+ * @author TacitNeptune
+ * @version 0.1.1
  */
 public class Camera {
     private double x, y;
 
     public Camera() {
-        this.x = 0;
-        this.y = 0;
+        x = 0;
+        y = 0;
     }
 
     /**

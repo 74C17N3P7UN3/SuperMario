@@ -1,4 +1,4 @@
-package model;
+package model.prize;
 
 public enum BoostType {
 	superMushroom,

@@ -81,32 +81,30 @@ public class GameEngine implements Runnable {
         double amountOfTicks = 60.0;
         double ns = 1000000000 / amountOfTicks;
         double delta = 0;
+
+        // TODO: Remove
         long totalFrames = 0;
         long lastFpsCheck = 0;
 
         while (isRunning && !thread.isInterrupted()) {
-
-
             long now = System.nanoTime();
             delta += (now - lastTime) / ns;
             lastTime = now;
 
             while (delta > 0) {
-                if (gameStatus == GameStatus.RUNNING)
-                    gameLoop();
+                if (gameStatus == GameStatus.RUNNING) gameLoop();
+
                 delta--;
                 render();
 
+                // TODO: Remove
                 totalFrames++;
-                if(System.nanoTime() > lastFpsCheck+1000000000){
+                if (System.nanoTime() > lastFpsCheck + 1000000000) {
                     lastFpsCheck = System.nanoTime();
                     System.out.println(totalFrames);
                     totalFrames = 0;
                 }
             }
-            if(mapManager.getMario().getInvincible()) mapManager.getMario().setInvincible(false);
-
-            //render();
         }
     }
 
@@ -142,7 +140,8 @@ public class GameEngine implements Runnable {
         updateCollisions();
         updateLocations();
 
-        // TODO: Add game logic
+        if (mapManager.getMario().isInvincible())
+            mapManager.getMario().setInvincible(false);
     }
 
     /**
@@ -168,7 +167,7 @@ public class GameEngine implements Runnable {
         if (input == ButtonAction.CHEAT)
             mario.setVelX(100);
         if (input == ButtonAction.M_RIGHT)
-            mario.move(true, this.camera);
+            mario.move(true, camera);
         if (input == ButtonAction.M_LEFT)
             mario.move(false, camera);
         if (input == ButtonAction.JUMP)
@@ -218,7 +217,6 @@ public class GameEngine implements Runnable {
         camera.moveCam(shiftAmount, 0);
 
         // Also provide a check if mario goes out of the camera
-        //System.out.println(camera.getX() + " " + mario.getX());
         if (camera.getX() > mario.getX() - 96) {
             mario.setVelX(0);
             mario.setX(camera.getX() + 96);
@@ -245,10 +243,6 @@ public class GameEngine implements Runnable {
 
     public Point getCameraPosition() {
         return new Point((int) camera.getX(), (int) camera.getY());
-    }
-
-    public GameStatus getGameStatus() {
-        return gameStatus;
     }
 
     public void setGameStatus(GameStatus gameStatus) {

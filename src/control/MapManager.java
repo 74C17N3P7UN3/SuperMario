@@ -5,6 +5,8 @@ import model.brick.SurpriseBrick;
 import model.enemy.Enemy;
 import model.hero.Mario;
 import model.hero.MarioForm;
+import model.prize.Boost;
+import model.prize.BoostType;
 import view.ImageLoader;
 
 import java.awt.*;
@@ -96,40 +98,38 @@ public class MapManager {
         	colorToCheck = mapCreator.getMapImage().getRGB(blockToCheck.x,blockToCheck.y);
 
             if (colorToCheck != air && colorToCheck != marioRGB) {
-            		// System.out.println(colorToCheck);
-                    int startingX = (int) blockToCheck.getX() * 48;
-                    int startingY = (int) blockToCheck.getY() * 48;
-                    Rectangle above = new Rectangle(startingX, startingY, 48, 48);
+                // System.out.println(colorToCheck);
+                int startingX = (int) blockToCheck.getX() * 48;
+                int startingY = (int) blockToCheck.getY() * 48;
+                Rectangle above = new Rectangle(startingX, startingY, 48, 48);
 
-                    if (colorToCheck == surpriseBrickRGB) {
-                    	if(above.intersects(mario.getTopBounds())) {
-                    		if(mario.isJumping()) mario.setVelY(0);
-                        	mario.setJumping(false);
-                            mario.setFalling(true);
+                if (colorToCheck == surpriseBrickRGB) {
+                    if(above.intersects(mario.getTopBounds())) {
+                        if(mario.isJumping()) mario.setVelY(0);
+                        mario.setJumping(false);
+                        mario.setFalling(true);
 
-                            //find the surprise brick above mario
-                            int n = map.getPositionBlock(startingX, startingY);
+                        //find the surprise brick above mario
+                        int n = map.getPositionBlock(startingX, startingY);
 
-                            //the surprise brick has the boost
-                            if(((SurpriseBrick) map.getBricks().get(n)).getBoost()) {
-                            	Boost boost = new Boost(startingX, startingY-48, mapCreator.getVoidImage());
-                            	boost.setType(mapCreator, n);
-                            	map.addBoost(boost);
+                        //the surprise brick has the boost
+                        if(((SurpriseBrick) map.getBricks().get(n)).getBoost()) {
+                            Boost boost = new Boost(startingX, startingY-48, mapCreator.getStar());
+                            boost.setType(mapCreator, n);
+                            map.addBoost(boost);
 
-                                ((SurpriseBrick) map.getBricks().get(n)).setBoost(false);
-                                map.getBricks().get(n).setStyle(mapCreator.getVoidSurpriseBrick());
-                            }
-                    	}
-                    }else if(checkCollisionRGB(colorToCheck)) {
-                    	if(above.intersects(mario.getTopBounds())) {
-                    		if(mario.isJumping()) mario.setVelY(0);
-                        	mario.setJumping(false);
-                            mario.setFalling(true);
-                    	}
-
+                            ((SurpriseBrick) map.getBricks().get(n)).setBoost(false);
+                            map.getBricks().get(n).setStyle(mapCreator.getEmptySurpriseBrick());
+                        }
                     }
+                }else if(checkCollisionRGB(colorToCheck)) {
+                    if(above.intersects(mario.getTopBounds())) {
+                        if(mario.isJumping()) mario.setVelY(0);
+                        mario.setJumping(false);
+                        mario.setFalling(true);
+                    }
+                }
             }
-
         }
 
         // Checks the block to the right of Mario
@@ -219,7 +219,7 @@ public class MapManager {
         for(Enemy enemy : mapCreator.getEnemies()){
             Point enemyPos = new Point(((int)enemy.getX()+24) /48, (int) (enemy.getY()+24) / 48);
 
-            if(enemy.getBounds().intersects(mario.getBounds()) && !mario.getInvincible()) {
+            if(enemy.getBounds().intersects(mario.getBounds()) && !mario.isInvincible()) {
 
             	if(enemy.getTopBounds().intersects(mario.getBottomBounds()) && !mario.isJumping())
                     disposal.add(enemy);

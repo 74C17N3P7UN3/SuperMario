@@ -3,6 +3,7 @@ package control;
 import utils.SoundImporter;
 
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 
 /**
  * Responsible for retrieving and playing the
@@ -17,6 +18,7 @@ public class SoundManager {
 
     public SoundManager() {
         themeClip = SoundImporter.loadTrack("theme");
+        setClipVolume(themeClip, 0.6);
         themeClip.loop(Clip.LOOP_CONTINUOUSLY);
     }
 
@@ -50,6 +52,21 @@ public class SoundManager {
      * @param soundName The name of the sound to be played.
      */
     public void playSound(String soundName) {
-        SoundImporter.loadTrack(soundName).start();
+        Clip clip = SoundImporter.loadTrack(soundName);
+        setClipVolume(clip, 0.4);
+        clip.start();
+    }
+
+    /**
+     * Sets the volume of a given track
+     * to the given gain percentage.
+     *
+     * @param clip The clip which the volume
+     *             needs to be adjusted
+     * @param gain The volume percentage
+     */
+    private void setClipVolume(Clip clip, double gain) {
+        FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        gainControl.setValue(20f * (float) Math.log10(gain));
     }
 }
