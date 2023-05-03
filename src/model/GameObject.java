@@ -23,7 +23,9 @@ public abstract class GameObject {
     public GameObject(double x, double y, BufferedImage style) {
         setLocation(x, y);
         setStyle(style);
-        setDimension(style.getHeight(), style.getWidth());
+
+        if (style != null)
+            setDimension(style.getHeight(), style.getWidth());
 
         setVelX(0);
         setVelY(0);
@@ -144,7 +146,7 @@ public abstract class GameObject {
     }
 
     public Rectangle getTopBounds() {
-        return new Rectangle((int) x + dimension.width / 6, (int) y, 2 * dimension.width / 3, dimension.height / 2);
+        return new Rectangle((int) x + dimension.width / 6, (int) y, 2 * dimension.width / 3, dimension.height / 2 - 2);
     }
 
     public Rectangle getBottomBounds() {

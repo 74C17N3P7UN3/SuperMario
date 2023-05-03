@@ -1,22 +1,23 @@
 package control;
 
-import javax.sound.sampled.Clip;
+import utils.SoundImporter;
 
-import static utils.SoundImporter.loadTrack;
+import javax.sound.sampled.Clip;
 
 /**
  * Responsible for retrieving and playing the
  * requested tracks from the media's package.
  *
  * @author TacitNeptune
- * @version 0.1.0
+ * @version 1.0.0
  */
 public class SoundManager {
     private final Clip themeClip;
     private long clipTime;
 
     public SoundManager() {
-        themeClip = loadTrack("theme");
+        themeClip = SoundImporter.loadTrack("theme");
+        themeClip.loop(Clip.LOOP_CONTINUOUSLY);
     }
 
     /**
@@ -43,9 +44,12 @@ public class SoundManager {
         resumeTheme();
     }
 
-    /* ---------- Play single sounds ---------- */
-
-    public void playCoin() {
-        loadTrack("coin").start();
+    /**
+     * Plays a specific sound by the given name.
+     *
+     * @param soundName The name of the sound to be played.
+     */
+    public void playSound(String soundName) {
+        SoundImporter.loadTrack(soundName).start();
     }
 }
