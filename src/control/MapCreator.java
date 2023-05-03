@@ -142,6 +142,10 @@ public class MapCreator {
     public BufferedImage getEmptySurpriseBrick() {
         return emptySurpriseBrick;
     }
+    
+    public BufferedImage getFireFlower() {
+    	return fireFlower;
+    }
 
     public BufferedImage getHeartMushroom() {
         return heartMushroom;

@@ -153,7 +153,6 @@ public class MapManager {
                             ((SurpriseBrick) map.getBricks().get(n)).setBoost(false);
                             map.getBricks().get(n).setStyle(mapCreator.getEmptySurpriseBrick());
                         }
-
                     }
 
                     toCheck.setVelY(0);
