@@ -55,8 +55,6 @@ public class MarioForm {
         return style;
     }
 
-
-
     /**
      * The Fireball that needs to be rendered when Mario is in its Fire form.
      *

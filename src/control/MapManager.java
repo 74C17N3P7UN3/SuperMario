@@ -3,6 +3,7 @@ package control;
 import model.*;
 import model.brick.*;
 import model.enemy.Enemy;
+import model.hero.Fireball;
 import model.hero.Mario;
 import model.hero.MarioForm;
 import model.prize.Boost;
@@ -95,8 +96,12 @@ public class MapManager {
             map.getEndPoint().setTouched(true);
         }
 
-        for(Enemy enemy : mapCreator.getEnemies()) {
+        for(Enemy enemy : map.getEnemies()) {
             checkBlockCollisions(enemy);
+        }
+        
+        for(Fireball fireball : map.getFireballs()) {
+        	checkFireballCollisions(fireball);
         }
 
         //BOOSTS
@@ -107,14 +112,15 @@ public class MapManager {
                     mario.setY(mario.getY()-48);
                     mario.setMarioBig();
                 }
-                if(boost.getType() == BoostType.mushroom1Up)
                 if(boost.getType() == BoostType.starMan){
-                    System.out.println(boost.getType());
                     mario.setMarioStar();
                 }
                 if(boost.getType() == BoostType.fireFlower){
                     mario.setMarioFire();
                 }
+                if(boost.getType() == BoostType.mushroom1Up) {
+                	//ciao;
+                }	
                 disposal.add(boost);
             }
 
@@ -192,7 +198,7 @@ public class MapManager {
     public void checkEnemyCollision(Mario mario){
         ArrayList<Enemy> disposal = new ArrayList<Enemy>();
         for(Enemy enemy : map.getEnemies()){
-            if(mario.isStar() || mario.isBabyStar()) disposal.add(enemy);
+            if((mario.isStar() || mario.isBabyStar()) && mario.getBounds().intersects(enemy.getBounds())) disposal.add(enemy);
             else if(mario.getVerticalBounds().intersects(enemy.getVerticalBounds()) && mario.getVelY() < 0){
                 disposal.add(enemy);
             }else if(mario.getVerticalBounds().intersects(enemy.getVerticalBounds()) && !mario.isInvincible()){
@@ -210,6 +216,25 @@ public class MapManager {
             map.getEnemies().remove(enemy);
         }
     }
+    
+    //TODO: sistemare metodo per il movimento delle fireball
+    public void checkFireballCollisions(GameObject toCheck) {
+    	ArrayList<Fireball> disposal = new ArrayList<Fireball>();
+    	for(Brick block : map.getBricks()){
+    		//checks bottom and upper collision
+            if(toCheck.getVerticalBounds().intersects(block.getBounds())){
+            	toCheck.setVelY(3);
+            }
+    		
+        	//checks right and left collision
+            if(toCheck.getHorizontalBounds().intersects(block.getHorizontalBounds())){
+            	disposal.add((Fireball) toCheck);
+            }
+    	}
+    	for(Fireball fireball : disposal) {
+    		map.getFireballs().remove(fireball);
+    	}
+    }
 
     /**
      * Updates all entity/tiles locations
@@ -218,10 +243,19 @@ public class MapManager {
     public void updateLocations() {
         if (map != null) map.updateLocations();
     }
-
+    
+    public void addFireball(Fireball fireball) {
+    	map.addFireBall(fireball);
+    }
+    
     /* ---------- Getters / Setters ---------- */
 
     public Mario getMario() {
         return map.getMario();
     }
+    
+    public BufferedImage getFireball() {
+    	return mapCreator.getFireball();
+    }
+    
 }

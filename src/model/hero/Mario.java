@@ -2,6 +2,7 @@ package model.hero;
 
 import control.Camera;
 import control.GameEngine;
+import control.MapManager;
 import model.GameObject;
 import view.Animation;
 import view.ImageLoader;
@@ -115,7 +116,7 @@ public class Mario extends GameObject {
     }
 
     public void setMarioFire() {
-        setDimension(96, 48);
+        //setDimension(96, 48);
 
         ImageLoader imageLoader = new ImageLoader();
         BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.FIRE);
@@ -125,6 +126,7 @@ public class Mario extends GameObject {
         marioForm = new MarioForm(animation, false, true , false,false);
         setStyle(marioForm.getCurrentStyle(toRight, false, false));
     }
+    
     public void setMarioStar() {
         ImageLoader imageLoader = new ImageLoader();
 
@@ -142,6 +144,11 @@ public class Mario extends GameObject {
 
         setStyle(marioForm.getCurrentStyle(toRight, false, false));
     }
+
+	public void fire(MapManager mapManager) {
+		Fireball fireball = new Fireball(mapManager.getFireball(), getX(), getY(), true);
+		mapManager.addFireball(fireball);
+	}
 
     /* ---------- Getters / Setters ---------- */
 
@@ -176,4 +183,5 @@ public class Mario extends GameObject {
     public boolean isStar (){return marioForm.isStar();}
 
     public boolean isBabyStar(){return marioForm.isBabyStar();}
+
 }
