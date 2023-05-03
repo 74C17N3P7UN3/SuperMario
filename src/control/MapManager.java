@@ -204,6 +204,7 @@ public class MapManager {
                     mario.setMarioBig();
                     mario.setInvincible(true);
                 }
+
             }
         }
         for(Enemy enemy : disposal){

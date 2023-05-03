@@ -57,6 +57,7 @@ public class MarioForm {
 
 
 
+
     /**
      * The Fireball that needs to be rendered when Mario is in its Fire form.
      *
@@ -81,6 +82,10 @@ public class MarioForm {
 
     public boolean isFire() {
         return isFire;
+    }
+    
+    public boolean isStar() {
+    	return isStar;
     }
 
     public void setFire(boolean isFire) {
