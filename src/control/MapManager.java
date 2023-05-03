@@ -219,11 +219,24 @@ public class MapManager {
         for(Enemy enemy : mapCreator.getEnemies()){
             Point enemyPos = new Point(((int)enemy.getX()+24) /48, (int) (enemy.getY()+24) / 48);
 
-            if(enemy.getBounds().intersects(mario.getBounds())) {
-            	if(enemy.getTopBounds().intersects(mario.getBottomBounds()) && mario.getVelY() > 0)
+            if(enemy.getBounds().intersects(mario.getBounds()) && !mario.getInvincible()) {
+
+            	if(enemy.getTopBounds().intersects(mario.getBottomBounds()) && !mario.isJumping())
                     disposal.add(enemy);
-                else if (mario.isSuper() || mario.isFire()) { /* TODO: Logic */ }
-            	else { /* TODO: Death screen */ }
+                else if (mario.isSuper() || mario.isFire()) {
+                    /* TODO: Logic */
+                    if(mario.isSuper()){
+                        mario.setInvincible(true);
+                        mario.setFalling(true);
+                        mario.setMarioMini();
+                    }else{
+                        mario.setMarioBig();
+                    }
+                }
+            	else {
+                    /* TODO: Death screen */
+                    //mario.remove();
+                }
             }
 
             //Checks if the enemy has a block under them
@@ -302,6 +315,8 @@ public class MapManager {
             if(boost.getBounds().intersects(mario.getBounds())) {
             	if(boost.getType() == BoostType.superMushroom){
                     System.out.println("superMushroom");
+                    mario.setY(mario.getY()-48);
+                    mario.setFalling(true);
                     MarioForm temp = new MarioForm(mario.getAnimation(),true,false);
                     mario.setMarioForm(temp);
                     mario.setMarioBig();

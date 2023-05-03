@@ -81,8 +81,12 @@ public class GameEngine implements Runnable {
         double amountOfTicks = 60.0;
         double ns = 1000000000 / amountOfTicks;
         double delta = 0;
+        long totalFrames = 0;
+        long lastFpsCheck = 0;
 
         while (isRunning && !thread.isInterrupted()) {
+
+
             long now = System.nanoTime();
             delta += (now - lastTime) / ns;
             lastTime = now;
@@ -91,9 +95,18 @@ public class GameEngine implements Runnable {
                 if (gameStatus == GameStatus.RUNNING)
                     gameLoop();
                 delta--;
-            }
+                render();
 
-            render();
+                totalFrames++;
+                if(System.nanoTime() > lastFpsCheck+1000000000){
+                    lastFpsCheck = System.nanoTime();
+                    System.out.println(totalFrames);
+                    totalFrames = 0;
+                }
+            }
+            if(mapManager.getMario().getInvincible()) mapManager.getMario().setInvincible(false);
+
+            //render();
         }
     }
 
@@ -205,7 +218,7 @@ public class GameEngine implements Runnable {
         camera.moveCam(shiftAmount, 0);
 
         // Also provide a check if mario goes out of the camera
-        System.out.println(camera.getX() + " " + mario.getX());
+        //System.out.println(camera.getX() + " " + mario.getX());
         if (camera.getX() > mario.getX() - 96) {
             mario.setVelX(0);
             mario.setX(camera.getX() + 96);

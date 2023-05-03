@@ -19,19 +19,13 @@ public class Mario extends GameObject {
     private MarioForm marioForm;
     private Animation animation;
     private boolean toRight;
+    private boolean invincible;
 
     public Mario(double x, double y) {
         super(x, y, null);
-        setDimension(48, 48);
+        invincible=false;
         toRight = true;
-
-        ImageLoader imageLoader = new ImageLoader();
-        BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.SMALL);
-        BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.SMALL);
-
-        this.animation = new Animation(leftFrames, rightFrames);
-        marioForm = new MarioForm(animation, false, false);
-        setStyle(marioForm.getCurrentStyle(toRight, false, false));
+        setMarioMini();
     }
 
     /**
@@ -89,6 +83,18 @@ public class Mario extends GameObject {
         setJumping(false);
     }
 
+    public void setMarioMini(){
+        setDimension(48, 48);
+
+        ImageLoader imageLoader = new ImageLoader();
+        BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.SMALL);
+        BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.SMALL);
+
+        this.animation = new Animation(leftFrames, rightFrames);
+        marioForm = new MarioForm(animation, false, false);
+        setStyle(marioForm.getCurrentStyle(toRight, false, false));
+    }
+
     public void setMarioBig() {
         setDimension(96, 48);
 
@@ -97,7 +103,7 @@ public class Mario extends GameObject {
         BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.SUPER);
 
         this.animation = new Animation(leftFrames, rightFrames);
-        marioForm = new MarioForm(animation, false, false);
+        marioForm = new MarioForm(animation, true, false);
         setStyle(marioForm.getCurrentStyle(toRight, false, false));
     }
 
@@ -126,4 +132,8 @@ public class Mario extends GameObject {
     public Animation getAnimation() {
         return animation;
     }
+
+    public boolean getInvincible(){return invincible;}
+
+    public void setInvincible(boolean invincible){this.invincible=invincible;}
 }
