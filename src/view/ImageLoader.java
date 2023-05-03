@@ -40,10 +40,16 @@ public class ImageLoader {
             col = 7;
             width = 48;
             height = 96;
+        } else if (marioForm == 3) {
+        	col = 10;
+        } else if (marioForm == 4) {
+        	col = 13;
+        	width = 48;
+        	height = 96;
         }
 
         for (int i = 0; i < 5; i++)
-            leftFrames[i] = marioForms.getSubimage((col - 1) * width, i * height, width, height);
+            leftFrames[i] = marioForms.getSubimage((col - 1) * 48, i * height, width, height);
         return leftFrames;
     }
 
@@ -60,10 +66,16 @@ public class ImageLoader {
             col = 8;
             width = 48;
             height = 96;
+        } else if (marioForm == 3) {
+        	col = 11;
+        } else if (marioForm == 4) {
+        	col = 14;
+        	width = 48;
+        	height = 96;
         }
 
         for (int i = 0; i < 5; i++)
-            rightFrames[i] = marioForms.getSubimage((col - 1) * width, (i) * height, width, height);
+            rightFrames[i] = marioForms.getSubimage((col - 1) * 48, (i) * height, width, height);
         return rightFrames;
     }
 

@@ -100,7 +100,7 @@ public class Mario extends GameObject {
 
         ImageLoader imageLoader = new ImageLoader();
 
-        if(this.isStar()) {
+        if(this.isBabyStar()) {
             BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.STAR);
             BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.STAR);
             this.animation = new Animation(leftFrames, rightFrames);
@@ -146,8 +146,7 @@ public class Mario extends GameObject {
     }
 
 	public void fire(MapManager mapManager) {
-		Fireball fireball = new Fireball(mapManager.getFireball(), getX(), getY(), true);
-		mapManager.addFireball(fireball);
+		mapManager.addFireball(marioForm.fire(true, getVelX(), getY()));
 	}
 
     /* ---------- Getters / Setters ---------- */
