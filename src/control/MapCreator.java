@@ -31,6 +31,8 @@ public class MapCreator {
     private final BufferedImage goombaLeft, goombaRight, koopaLeft, koopaRight;
     private final BufferedImage coin, fireFlower, heartMushroom, star, superMushroom;
 
+    private final BufferedImage voidBoost;
+
     public MapCreator(ImageLoader imageLoader) {
         BufferedImage sprite = ImageImporter.loadImage("sprite");
 
@@ -55,6 +57,8 @@ public class MapCreator {
         heartMushroom = imageLoader.getImage(sprite, 2, 4, 48, 48);
         star = imageLoader.getImage(sprite, 4, 4, 48, 48);
         superMushroom = imageLoader.getImage(sprite, 1, 4, 48, 48);
+
+        voidBoost = imageLoader.getImage(sprite,4,2,48,48);
     }
 
     /**
@@ -153,5 +157,13 @@ public class MapCreator {
 
     public BufferedImage getSuperMushroom() {
         return superMushroom;
+    }
+
+    public BufferedImage getFireFlower(){
+        return fireFlower;
+    }
+
+    public BufferedImage getVoidBoost(){
+        return voidBoost;
     }
 }

@@ -52,15 +52,19 @@ public abstract class GameObject {
      * the horizontal position regardless every game tick.
      */
     public void updateLocation() {
-        if (jumping && velY <= 0) {
-            setFalling(true);
-            setJumping(false);
-        } else if (jumping) {
-            velY -= gravityAcc;
-            y -= velY;
-        } else if (falling) {
-            y += velY;
-            velY += gravityAcc;
+        if(isFalling() || isJumping() && velY > -13f)
+            velY-=gravityAcc;
+        y -= velY;
+
+        if(velY < 0){
+            falling = true;
+            jumping = false;
+        }else if(velY > 0){
+            jumping = true;
+            falling = false;
+        }else{
+            jumping = false;
+            falling = false;
         }
 
         x += velX;
@@ -145,22 +149,22 @@ public abstract class GameObject {
         this.dimension = new Dimension(width, height);
     }
 
-    public Rectangle getTopBounds() {
-        return new Rectangle((int) x + dimension.width / 6, (int) y, 2 * dimension.width / 3, dimension.height / 2 - 2);
+    public Rectangle getVerticalBounds(){
+        double bx = x;
+        double by = y - velY;
+        double bw = dimension.width;
+        double bh = dimension.height+velY/3 + 2;
+
+        return new Rectangle((int)bx,(int)by,(int)bw,(int)bh);
     }
 
-    public Rectangle getBottomBounds() {
-        return new Rectangle((int) x + dimension.width / 6, (int) y + dimension.height / 2, 2 * dimension.width / 3,
-                dimension.height / 2);
-    }
+    public Rectangle getHorizontalBounds(){
+        double bx = x+velX;
+        double by = y - 4;
+        double bw = dimension.width+velX/2;
+        double bh = dimension.height;
 
-    public Rectangle getLeftBounds() {
-        return new Rectangle((int) x, (int) y + dimension.height / 4, dimension.width / 4, dimension.height / 2);
-    }
-
-    public Rectangle getRightBounds() {
-        return new Rectangle((int) x + 3 * dimension.width / 4, (int) y + dimension.height / 4, dimension.width / 4,
-                dimension.height / 2);
+        return new Rectangle((int)bx,(int)by,(int)bw,(int)bh);
     }
 
     public Rectangle getBounds() {
