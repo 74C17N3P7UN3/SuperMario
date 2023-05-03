@@ -1,6 +1,7 @@
 package view;
 
 import control.GameEngine;
+import model.GameObject;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,6 +30,11 @@ public class UIManager extends JPanel {
         g2D.translate(-camLocation.getX(), -camLocation.getY());
         engine.drawMap(g2D);
         g2D.translate(camLocation.getX(), camLocation.getY());
+
+
+        //g2D.setColor(Color.red);
+        //g2D.fill(engine.getMario().getVerticalBounds());
+
 
         g2D.dispose();
     }

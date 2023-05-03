@@ -90,7 +90,7 @@ public class Mario extends GameObject {
         BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.SMALL);
 
         this.animation = new Animation(leftFrames, rightFrames);
-        marioForm = new MarioForm(animation, false, false, false);
+        marioForm = new MarioForm(animation, false, false, false, false);
         setStyle(marioForm.getCurrentStyle(toRight, false, false));
     }
 
@@ -98,22 +98,22 @@ public class Mario extends GameObject {
         setDimension(96, 48);
 
         ImageLoader imageLoader = new ImageLoader();
-        
+
         if(this.isStar()) {
             BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.STAR);
             BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.STAR);
             this.animation = new Animation(leftFrames, rightFrames);
-            marioForm = new MarioForm(animation, true, false, true);
+            marioForm = new MarioForm(animation, true, false, true, false);
         }else {
             BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.SUPER);
             BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.SUPER);
             this.animation = new Animation(leftFrames, rightFrames);
-            marioForm = new MarioForm(animation, true, false, false);
+            marioForm = new MarioForm(animation, true, false, false, false);
         }
-        
+
         setStyle(marioForm.getCurrentStyle(toRight, false, false));
     }
-    
+
     public void setMarioFire() {
         setDimension(96, 48);
 
@@ -122,25 +122,23 @@ public class Mario extends GameObject {
         BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.FIRE);
 
         this.animation = new Animation(leftFrames, rightFrames);
-        marioForm = new MarioForm(animation, false, true, false);
+        marioForm = new MarioForm(animation, false, true, false, false);
         setStyle(marioForm.getCurrentStyle(toRight, false, false));
     }
-    
     public void setMarioStar() {
         ImageLoader imageLoader = new ImageLoader();
-        
-    	if(this.isSuper()) {
-    		BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.STAR);
-    		BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.STAR);
-    	    this.animation = new Animation(leftFrames, rightFrames);
-    	    marioForm = new MarioForm(animation, true, false, true);
-    	}else {
-	   		BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.star);
-	   		BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.star);
-	        this.animation = new Animation(leftFrames, rightFrames);
-	     	marioForm = new MarioForm(animation, false, false, true);
-    	}
-    	
+
+        if(this.isSuper()) {
+            BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.STAR);
+            BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.STAR);
+            this.animation = new Animation(leftFrames, rightFrames);
+            marioForm = new MarioForm(animation, true, false, true,false);
+        }else {
+            BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.star);
+            BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.star);
+            this.animation = new Animation(leftFrames, rightFrames);
+            marioForm = new MarioForm(animation, false, false, false,true);
+        }
         setStyle(marioForm.getCurrentStyle(toRight, false, false));
     }
 
@@ -177,4 +175,8 @@ public class Mario extends GameObject {
     public void setInvincible(boolean invincible) {
         this.invincible = invincible;
     }
+
+    public boolean isStar (){return marioForm.isStar();}
+
+    public boolean isBabyStar(){return marioForm.isBabyStar();}
 }

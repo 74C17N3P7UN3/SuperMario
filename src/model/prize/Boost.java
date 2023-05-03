@@ -15,7 +15,7 @@ public class Boost extends GameObject {
 	}
 
 	public void setType(MapCreator mapCreator, int n, Mario mario) {
-		if(n==32 || n==47 || n==51 || n==213 || n==213 || n==241 || n==249 || n==256 || n==296 || n==300 || n==427) {
+		if(n==32 || n==47 || n==51 || n==213 || n==241 || n==249 || n==256 || n==296 || n==300 || n==427) {
 			type = BoostType.money;
 			setStyle(mapCreator.getCoin());
 		}

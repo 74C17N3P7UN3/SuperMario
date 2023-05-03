@@ -19,13 +19,14 @@ public class MarioForm {
     private Animation animation;
     private BufferedImage fireballStyle;
 
-    private boolean isSuper, isFire, isStar;
+    private boolean isSuper, isFire, isStar, isBabyStar;
 
-    public MarioForm(Animation animation, boolean isSuper, boolean isFire, boolean isStar) {
+    public MarioForm(Animation animation, boolean isSuper, boolean isFire,boolean isStar, boolean isBabyStar) {
         this.animation = animation;
         this.isSuper = isSuper;
         this.isFire = isFire;
         this.isStar = isStar;
+        this.isBabyStar = isBabyStar;
 
         ImageLoader imageLoader = new ImageLoader();
         BufferedImage sprite = ImageImporter.loadImage("sprite");
@@ -52,23 +53,6 @@ public class MarioForm {
             style = toRight ? animation.getRightFrames()[1] : animation.getLeftFrames()[1];
 
         return style;
-    }
-
-    /**
-     * Renders the new MarioForm if it touches an enemy. This is called
-     * only if Mario is in one of its bigger forms, otherwise it means
-     * that it was normal and has lost a life or died.
-     *
-     * @param imageLoader The {@link ImageLoader} responsible for returning
-     *                    the frames of the new MarioForm.
-     * @return The new MarioForm to be rendered.
-     */
-    public MarioForm onTouchEnemy(ImageLoader imageLoader) {
-        BufferedImage[] leftFrames = imageLoader.getLeftFrames(0);
-        BufferedImage[] rightFrames = imageLoader.getRightFrames(0);
-        Animation newAnimation = new Animation(leftFrames, rightFrames);
-
-        return new MarioForm(newAnimation, false, false, false);
     }
 
     /**
@@ -104,8 +88,20 @@ public class MarioForm {
     public void setFire(boolean isFire) {
         this.isFire = isFire;
     }
-    
+
+    public boolean isStar() {
+        return isStar;
+    }
+
     public void setStar(boolean isStar) {
-    	this.isStar = isStar;
+        this.isStar = isStar;
+    }
+
+    public boolean isBabyStar() {
+        return isBabyStar;
+    }
+
+    public void setBabyStar(boolean isBabyStar) {
+        this.isBabyStar = isBabyStar;
     }
 }

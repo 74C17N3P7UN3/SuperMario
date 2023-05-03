@@ -252,4 +252,8 @@ public class GameEngine implements Runnable {
     public ImageLoader getImageLoader() {
         return imageLoader;
     }
+
+    public Mario getMario(){
+        return mapManager.getMario();
+    }
 }
