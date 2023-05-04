@@ -1,6 +1,7 @@
 package view;
 
 import control.GameEngine;
+import control.GameStatus;
 import model.GameObject;
 
 import javax.swing.*;
@@ -25,16 +26,15 @@ public class UIManager extends JPanel {
 
         Graphics2D g2D = (Graphics2D) g.create();
         // TODO: We need to add the game status if we're going to have some menus
-
-        Point camLocation = engine.getCameraPosition();
-        g2D.translate(-camLocation.getX(), -camLocation.getY());
-        engine.drawMap(g2D);
-        g2D.translate(camLocation.getX(), camLocation.getY());
-
-
-        //g2D.setColor(Color.red);
-        //g2D.fill(engine.getMario().getVerticalBounds());
-
+        
+        if(engine.getGameStatus() == GameStatus.GAME_OVER) {
+        	engine.drawDeadScreen(g2D);
+        }else {
+        	Point camLocation = engine.getCameraPosition();
+            g2D.translate(-camLocation.getX(), -camLocation.getY());
+            engine.drawMap(g2D);
+            g2D.translate(camLocation.getX(), camLocation.getY());
+        }
 
         g2D.dispose();
     }

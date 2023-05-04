@@ -159,10 +159,6 @@ public class Mario extends GameObject {
     public boolean isSuper() {
         return marioForm.isSuper();
     }
-    
-    public boolean isStar() {
-    	return marioForm.isStar();
-    }
 
     public Animation getAnimation() {
         return animation;
@@ -176,7 +172,7 @@ public class Mario extends GameObject {
         this.invincible = invincible;
     }
 
-    public boolean isStar (){return marioForm.isStar();}
+    public boolean isStar(){return marioForm.isStar();}
 
     public boolean isBabyStar(){return marioForm.isBabyStar();}
 }

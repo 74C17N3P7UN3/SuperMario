@@ -80,10 +80,6 @@ public class MarioForm {
     public boolean isFire() {
         return isFire;
     }
-    
-    public boolean isStar() {
-    	return isStar;
-    }
 
     public void setFire(boolean isFire) {
         this.isFire = isFire;

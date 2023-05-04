@@ -8,6 +8,8 @@ import model.hero.MarioForm;
 import model.prize.Boost;
 import model.prize.BoostType;
 import view.ImageLoader;
+import control.GameEngine;
+import control.GameStatus;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -64,37 +66,21 @@ public class MapManager {
         createMap(engine.getImageLoader(), map.getName());
     }
 
-    public void checkCollisions() {
-        BufferedImage mapImage = mapCreator.getMapImage();
-
-        /*int blockRGB = new Color(127, 127, 127).getRGB();
-
-        int ordinaryBrickRGB = new Color(185, 122, 87).getRGB();
-        int groundBrickRGB = new Color(237, 28, 36).getRGB();*/
-        int surpriseBrickRGB = new Color(163, 73, 164).getRGB();
-        int pipeHeadRGB = new Color(34, 177, 76).getRGB();
-        int pipeBodyRGB = new Color(181, 230, 29).getRGB();
-        int dead = new Color (255, 253, 85).getRGB();
-        int marioRGB = new Color(255, 127, 39).getRGB();
-        int air = new Color(0, 0, 0).getRGB();
-
-        int goombaRGB = new Color(63, 72, 204).getRGB();
-        int koopaRGB = new Color(255, 174, 201).getRGB();
-
+    public void checkCollisions(GameEngine e) {
         Mario mario = getMario();
-        Point marioBlockPosition = new Point((int) (mario.getX() + 24) / 48, (int) (mario.getY() + 24) / 48);
-
-        Point blockToCheck;
-        int colorToCheck;
 
         ArrayList<GameObject> disposal = new ArrayList<>();
 
         checkBlockCollisions(mario);
-        checkEnemyCollision(mario);
+        checkEnemyCollision(mario,e);
         if(mario.getX() >= 48*198 - 20){
             map.getEndPoint().setTouched(true);
         }
-
+        if(mario.getY() >= 48*14) {
+        	e.setGameStatus(GameStatus.GAME_OVER);
+        }
+        
+        
         for(Enemy enemy : mapCreator.getEnemies()) {
             checkBlockCollisions(enemy);
         }
@@ -188,7 +174,7 @@ public class MapManager {
 
     }
 
-    public void checkEnemyCollision(Mario mario){
+    public void checkEnemyCollision(Mario mario,GameEngine e){
         ArrayList<Enemy> disposal = new ArrayList<Enemy>();
         for(Enemy enemy : map.getEnemies()){
             if(mario.isStar() || mario.isBabyStar()) disposal.add(enemy);
@@ -196,12 +182,15 @@ public class MapManager {
                 disposal.add(enemy);
             }else if(mario.getVerticalBounds().intersects(enemy.getVerticalBounds()) && !mario.isInvincible()){
                 if(mario.isSuper()){
+                	mario.setMarioMini();
                     mario.setY(mario.getY()+48);
-                    mario.setMarioMini();
                     mario.setInvincible(true);
+                    System.out.println("HEllo");
                 }else if(mario.isFire()){
                     mario.setMarioBig();
                     mario.setInvincible(true);
+                }else {
+                	e.setGameStatus(GameStatus.GAME_OVER);
                 }
             }
         }

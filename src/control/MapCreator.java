@@ -163,10 +163,6 @@ public class MapCreator {
         return superMushroom;
     }
 
-    public BufferedImage getFireFlower(){
-        return fireFlower;
-    }
-
     public BufferedImage getVoidBoost(){
         return voidBoost;
     }
