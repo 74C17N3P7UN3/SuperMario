@@ -8,6 +8,7 @@ import view.UIManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * The core class of the program. It's responsible for handling the
@@ -81,6 +82,7 @@ public class GameEngine implements Runnable {
         double amountOfTicks = 60.0;
         double ns = 1000000000 / amountOfTicks;
         double delta = 0;
+        long lastTimeInvincible = 0;
 
         // TODO: Remove
         long totalFrames = 0;
@@ -90,10 +92,17 @@ public class GameEngine implements Runnable {
             long now = System.nanoTime();
             delta += (now - lastTime) / ns;
             lastTime = now;
+            if (mapManager.getMario().isInvincible()) {
+            	if(lastTimeInvincible == 0)lastTimeInvincible = now / 1000000000;
+            	if((System.nanoTime()/1000000000 - lastTimeInvincible) > 0.5) {
+            		mapManager.getMario().setInvincible(false);
+            		lastTimeInvincible = 0;
+            	}
+            }
+                
 
             while (delta > 0) {
                 if (gameStatus == GameStatus.RUNNING) gameLoop();
-
                 delta--;
                 render();
 
@@ -105,6 +114,7 @@ public class GameEngine implements Runnable {
                     totalFrames = 0;
                 }
             }
+            
         }
     }
 
@@ -132,16 +142,18 @@ public class GameEngine implements Runnable {
         mapManager.drawMap(g2D);
     }
 
+    public void drawDeadScreen(Graphics2D g2D) {
+    	BufferedImage deadImage = ImageImporter.loadImage("game-over");
+    	g2D.drawImage(deadImage, 0,0, null);
+    }
+    
     /**
      * Runs the game until the game is over or the player dies.
      */
     private void gameLoop() {
         updateCamera();
-        updateCollisions();
+        updateCollisions(this);
         updateLocations();
-
-        if (mapManager.getMario().isInvincible())
-            mapManager.getMario().setInvincible(false);
     }
 
     /**
@@ -235,8 +247,8 @@ public class GameEngine implements Runnable {
      * Check for all entity collisions with other entities
      * or blocks with {@link MapManager#checkCollisions()}.
      */
-    private void updateCollisions() {
-        mapManager.checkCollisions();
+    private void updateCollisions(GameEngine e) {
+        mapManager.checkCollisions(e);
     }
 
     /* ---------- Getters / Setters ---------- */
@@ -255,5 +267,9 @@ public class GameEngine implements Runnable {
 
     public Mario getMario(){
         return mapManager.getMario();
+    }
+    
+    public GameStatus getGameStatus() {
+    	return this.gameStatus;
     }
 }
