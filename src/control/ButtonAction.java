@@ -16,4 +16,5 @@ public enum ButtonAction {
     M_LEFT,
     M_RIGHT,
     NO_ACTION,
+    RUN,
 }

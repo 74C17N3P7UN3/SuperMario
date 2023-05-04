@@ -20,7 +20,7 @@ public class Boost extends GameObject {
 			setStyle(mapCreator.getCoin());
 		}
 		if(n==44 || n==174 || n==248) {
-			if(mario.getMarioForm().isSuper()) {
+			if(mario.getMarioForm().isSuper() || mario.getMarioForm().isFire()) {
 				type = BoostType.fireFlower;
 				setStyle(mapCreator.getFireFlower());
 				setVelX(0);

@@ -20,6 +20,7 @@ public class MarioForm {
     private BufferedImage fireballStyle;
 
     private boolean isSuper, isFire, isStar, isBabyStar;
+    private int starAnimation;
 
     public MarioForm(Animation animation, boolean isSuper, boolean isFire,boolean isStar, boolean isBabyStar) {
         this.animation = animation;
@@ -27,6 +28,7 @@ public class MarioForm {
         this.isFire = isFire;
         this.isStar = isStar;
         this.isBabyStar = isBabyStar;
+        this.starAnimation = 0;
 
         ImageLoader imageLoader = new ImageLoader();
         BufferedImage sprite = ImageImporter.loadImage("sprite");
@@ -45,12 +47,33 @@ public class MarioForm {
      */
     public BufferedImage getCurrentStyle(boolean toRight, boolean movingInX, boolean movingInY) {
         BufferedImage style = null;
+        
+        //TODO: ottimizzare sta roba
+        if(isBabyStar || isStar) {
+        	if(starAnimation == 0) {
+        		if (movingInX) style = animation.animate(5, toRight);
+                if (movingInY) style = animation.getLeftFrames()[0];
+                if (movingInY && toRight) style = animation.getRightFrames()[0];
+                if (!movingInX && !movingInY)
+                    style = toRight ? animation.getRightFrames()[1] : animation.getLeftFrames()[1];
+                starAnimation++;
+        	}
+        	if(starAnimation == 1) {
+        		if (movingInX) style = animation.animate(5, toRight);
+                if (movingInY) style = animation.getLeftFrames()[5];
+                if (movingInY && toRight) style = animation.getRightFrames()[5];
+                if (!movingInX && !movingInY)
+                    style = toRight ? animation.getRightFrames()[6] : animation.getLeftFrames()[6];
+                starAnimation--;
+        	}
+        }else {
+            if (movingInX) style = animation.animate(5, toRight);
+            if (movingInY) style = animation.getLeftFrames()[0];
+            if (movingInY && toRight) style = animation.getRightFrames()[0];
+            if (!movingInX && !movingInY)
+                style = toRight ? animation.getRightFrames()[1] : animation.getLeftFrames()[1];
+        }
 
-        if (movingInX) style = animation.animate(5, toRight);
-        if (movingInY) style = animation.getLeftFrames()[0];
-        if (movingInY && toRight) style = animation.getRightFrames()[0];
-        if (!movingInX && !movingInY)
-            style = toRight ? animation.getRightFrames()[1] : animation.getLeftFrames()[1];
 
         return style;
     }

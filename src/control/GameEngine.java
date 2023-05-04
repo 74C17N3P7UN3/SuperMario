@@ -1,6 +1,7 @@
 package control;
 
 import model.Map;
+import model.hero.Fireball;
 import model.hero.Mario;
 import utils.ImageImporter;
 import view.ImageLoader;
@@ -38,7 +39,7 @@ public class GameEngine implements Runnable {
         camera = new Camera();
         imageLoader = new ImageLoader();
         inputManager = new InputManager(this);
-        mapManager = new MapManager();
+        mapManager = new MapManager(camera);
         soundManager = new SoundManager();
         uiManager = new UIManager(this, HEIGHT, WIDTH);
 
@@ -186,6 +187,10 @@ public class GameEngine implements Runnable {
             mario.jump(this);
         if (input == ButtonAction.ACTION_COMPLETED)
             mario.setVelX(0);
+        if (input == ButtonAction.FIRE) {
+        	if(mario.isFire())
+        		mario.fire(mapManager);
+        }
     }
 
     /**
@@ -271,5 +276,9 @@ public class GameEngine implements Runnable {
     
     public GameStatus getGameStatus() {
     	return this.gameStatus;
+    }
+    
+    public int getWidth() {
+    	return WIDTH;
     }
 }

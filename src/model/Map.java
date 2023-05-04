@@ -3,8 +3,10 @@ package model;
 import model.brick.Brick;
 import model.brick.SurpriseBrick;
 import model.enemy.Enemy;
+import model.hero.Fireball;
 import model.hero.Mario;
 import model.prize.Boost;
+import model.prize.BoostType;
 import utils.ImageImporter;
 
 import java.awt.*;
@@ -23,6 +25,8 @@ public class Map {
     private ArrayList<Enemy> enemies = new ArrayList<>();
 
     private ArrayList<Boost> boosts = new ArrayList<>();
+    
+    private ArrayList<Fireball> fireballs = new ArrayList<>();
 
     public Map(String mapName) {
         backgroundImage = ImageImporter.loadImage("background");
@@ -40,6 +44,10 @@ public class Map {
     public void addBoost(Boost boost) {
     	this.boosts.add(boost);
     }
+    
+    public void addFireBall(Fireball fireball) {
+    	this.fireballs.add(fireball);
+    }
 
     public void drawMap(Graphics2D g2D) {
         drawBackground(g2D);
@@ -50,6 +58,7 @@ public class Map {
         drawBricks(g2D);
         drawEnemies(g2D);
         drawBoosts(g2D);
+        drawFireballs(g2D);
     }
 
     public void drawBackground(Graphics2D g2D) {
@@ -66,7 +75,18 @@ public class Map {
     }
 
     private void drawBoosts(Graphics2D g2D) {
-        for (Boost boost : boosts) boost.drawObject(g2D);
+        for (int i = boosts.size() - 1; i >= 0; i--) {
+            Boost boost = boosts.get(i);
+            if (boost.getType() == BoostType.money && boost.getVelY() == 0) {
+                boosts.remove(boost);
+            } else {
+                boost.drawObject(g2D);
+            }
+        }
+    }
+    
+    private void drawFireballs(Graphics2D g2D) {
+    	for (Fireball fireball : fireballs) fireball.drawObject(g2D);
     }
 
     public void updateLocations() {
@@ -76,6 +96,7 @@ public class Map {
         // Updates enemies' locations
         for (Enemy enemy : enemies) enemy.updateLocation();
         for (Boost boost: boosts) boost.updateLocation();
+        for (Fireball fireball : fireballs) fireball.updateLocation();
 
         // Updates flag's location
         endPoint.updateLocation();
@@ -117,6 +138,10 @@ public class Map {
 
     public ArrayList<Brick> getBricks(){
     	return bricks;
+    }
+    
+    public ArrayList<Fireball> getFireballs(){
+    	return fireballs;
     }
 
     public EndFlag getEndPoint() {
