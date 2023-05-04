@@ -38,7 +38,7 @@ public class GameEngine implements Runnable {
         camera = new Camera();
         imageLoader = new ImageLoader();
         inputManager = new InputManager(this);
-        mapManager = new MapManager();
+        mapManager = new MapManager(camera);
         soundManager = new SoundManager();
         uiManager = new UIManager(this, HEIGHT, WIDTH);
 
@@ -262,4 +262,7 @@ public class GameEngine implements Runnable {
         return mapManager.getMario();
     }
     
+    public int getWidth() {
+    	return WIDTH;
+    }
 }

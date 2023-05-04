@@ -28,7 +28,11 @@ public class ImageLoader {
     }
 
     public BufferedImage[] getLeftFrames(int marioForm) {
-        BufferedImage[] leftFrames = new BufferedImage[5];
+    	int dim = 5;
+    	if(marioForm == 3 || marioForm == 4)
+    		dim = 10;
+    	
+        BufferedImage[] leftFrames = new BufferedImage[dim];
         int col = 1;
         int width = 52, height = 48;
 
@@ -50,11 +54,19 @@ public class ImageLoader {
 
         for (int i = 0; i < 5; i++)
             leftFrames[i] = marioForms.getSubimage((col - 1) * 48, i * height, width, height);
+        if(marioForm == 3) {
+        	for(int i = 5; i<10; i++)
+        		leftFrames[i] = marioForms.getSubimage(0, i * height, width, height);
+        }
         return leftFrames;
     }
 
     public BufferedImage[] getRightFrames(int marioForm) {
-        BufferedImage[] rightFrames = new BufferedImage[5];
+    	int dim = 5;
+    	if(marioForm == 3 || marioForm == 4)
+    		dim = 10;
+    	
+        BufferedImage[] rightFrames = new BufferedImage[dim];
         int col = 2;
         int width = 52, height = 48;
 
@@ -76,6 +88,10 @@ public class ImageLoader {
 
         for (int i = 0; i < 5; i++)
             rightFrames[i] = marioForms.getSubimage((col - 1) * 48, (i) * height, width, height);
+        if(marioForm == 4) {
+        	for(int i = 5; i<10; i++)
+        		rightFrames[i] = marioForms.getSubimage(192, (i) * height, width, height);
+        }
         return rightFrames;
     }
 

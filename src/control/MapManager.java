@@ -25,8 +25,11 @@ import java.util.ArrayList;
 public class MapManager {
     private Map map;
     private MapCreator mapCreator;
+    private Camera camera;
 
-    public MapManager() {}
+    public MapManager(Camera camera) {
+    	this.camera = camera;
+    }
 
     /**
      * Creates the map using the {@link MapCreator}.
@@ -37,7 +40,7 @@ public class MapManager {
      * @return If the map was created successfully.
      */
     public boolean createMap(ImageLoader imageLoader, String mapName) {
-        mapCreator = new MapCreator(imageLoader);
+        mapCreator = new MapCreator(imageLoader, camera);
         map = mapCreator.createMap(mapName);
 
         return map != null;
@@ -50,6 +53,10 @@ public class MapManager {
      * @param g2D The Graphics engine to draw the map.
      */
     public void drawMap(Graphics2D g2D) {
+    	for(Enemy enemy : map.getEnemies()) {
+    		if(enemy.getX() < camera.getX() + 1267)
+    			enemy.setVelX(-3);
+    	}
         if (map != null) map.drawMap(g2D);
     }
 
