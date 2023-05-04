@@ -22,7 +22,7 @@ import java.awt.image.BufferedImage;
 public class GameEngine implements Runnable {
     private final static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private final static int HEIGHT = 720; // Height is fixed because of the map's size
-    private final static int WIDTH = ((int) screenSize.getWidth()) - 80;
+    public final static int WIDTH = ((int) screenSize.getWidth()) - 80;
 
     private final Camera camera;
     private final ImageLoader imageLoader;
@@ -190,6 +190,12 @@ public class GameEngine implements Runnable {
         if (input == ButtonAction.FIRE) {
         	if(mario.isFire())
         		mario.fire(mapManager);
+        }
+        if (input == ButtonAction.RUN) {
+        	if(mario.getVelX() < 0)
+        		mario.setVelX(-7.5);
+        	if(mario.getVelX() > 0)
+        		mario.setVelX(7.5);
         }
     }
 

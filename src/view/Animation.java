@@ -36,12 +36,12 @@ public class Animation {
      * @return The current frame that needs to be rendered
      * of the full animation.
      */
-    public BufferedImage animate(int speed, boolean toRight) {
+    public BufferedImage animate(int speed, boolean toRight, boolean isStar) {
         count++;
         BufferedImage[] frames = toRight ? rightFrames : leftFrames;
 
         if (count > speed) {
-            nextFrame(frames);
+            nextFrame(frames, isStar);
             count = 0;
         }
 
@@ -55,7 +55,7 @@ public class Animation {
      *
      * @param frames The frames of the animation sequence.
      */
-    private void nextFrame(BufferedImage[] frames) {
+    private void nextFrame(BufferedImage[] frames, boolean isStar) {
         if (index + 2 >= frames.length) index = 0;
 
         currentFrame = frames[index + 2];

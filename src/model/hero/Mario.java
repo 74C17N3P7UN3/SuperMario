@@ -130,11 +130,11 @@ public class Mario extends GameObject {
     public void setMarioStar() {
         ImageLoader imageLoader = new ImageLoader();
 
-        if(this.isSuper()) {
+        if(this.isSuper() || this.isFire()) {
             BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.STAR);
             BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.STAR);
             this.animation = new Animation(leftFrames, rightFrames);
-            marioForm = new MarioForm(animation, true, false, true,false);
+            marioForm = new MarioForm(animation, true, false, true, false);
         }else {
             BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.star);
             BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.star);

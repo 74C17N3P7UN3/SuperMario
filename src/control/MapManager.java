@@ -56,7 +56,7 @@ public class MapManager {
      */
     public void drawMap(Graphics2D g2D) {
     	for(Enemy enemy : map.getEnemies()) {
-    		if(enemy.getX() < camera.getX() + 1267)
+    		if(enemy.getX() < camera.getX() + GameEngine.WIDTH && enemy.getVelX() == 0)
     			enemy.setVelX(-3);
     	}
         if (map != null) map.drawMap(g2D);
@@ -202,7 +202,7 @@ public class MapManager {
                     mario.setMarioBig();
                     mario.setInvincible(true);
                 }else {
-                	e.setGameStatus(GameStatus.GAME_OVER);
+                	//e.setGameStatus(GameStatus.GAME_OVER);
                 }
             }
         }

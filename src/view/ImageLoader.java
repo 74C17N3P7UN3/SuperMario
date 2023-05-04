@@ -54,9 +54,9 @@ public class ImageLoader {
 
         for (int i = 0; i < 5; i++)
             leftFrames[i] = marioForms.getSubimage((col - 1) * 48, i * height, width, height);
-        if(marioForm == 3) {
+        if(marioForm == 3 || marioForm == 4) {
         	for(int i = 5; i<10; i++)
-        		leftFrames[i] = marioForms.getSubimage(0, i * height, width, height);
+        		leftFrames[i] = marioForms.getSubimage((col - 10) * 48, (i-5) * height, width, height);
         }
         return leftFrames;
     }
@@ -87,10 +87,10 @@ public class ImageLoader {
         }
 
         for (int i = 0; i < 5; i++)
-            rightFrames[i] = marioForms.getSubimage((col - 1) * 48, (i) * height, width, height);
-        if(marioForm == 4) {
+            rightFrames[i] = marioForms.getSubimage((col - 1) * 48, i * height, width, height);
+        if(marioForm == 3 || marioForm == 4) {
         	for(int i = 5; i<10; i++)
-        		rightFrames[i] = marioForms.getSubimage(192, (i) * height, width, height);
+        		rightFrames[i] = marioForms.getSubimage((col - 10) * 48, (i-5) * height, width, height);
         }
         return rightFrames;
     }

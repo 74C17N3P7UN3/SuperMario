@@ -114,13 +114,13 @@ public class MapCreator {
                 if (currentPixel == goombaRGB) {
                     enemy = new Goomba(xLocation, yLocation, goombaLeft);
                     ((Goomba) enemy).setRightImage(goombaRight);
-                    if(((Goomba)enemy).getX() > camera.getX() + 1267)
+                    if(((Goomba)enemy).getX() > camera.getX() + GameEngine.WIDTH)
                     	((Goomba) enemy).setVelX(0);
                 }
                 if (currentPixel == koopaRGB) {
                     enemy = new Koopa(xLocation, yLocation, koopaLeft);
                     ((Koopa) enemy).setRightImage(koopaRight);
-                    if(((Koopa)enemy).getX() > camera.getX() + 1267)
+                    if(((Koopa)enemy).getX() > camera.getX() + GameEngine.WIDTH)
                     	((Koopa) enemy).setVelX(0);
                 }
 
