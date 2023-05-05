@@ -6,6 +6,8 @@ import view.ImageLoader;
 
 import java.awt.image.BufferedImage;
 
+import control.MapManager;
+
 /**
  * Defines the possible states in which Mario could be found. Those
  * states are Normal, Super and Fire, each with its animated sprite.
@@ -32,7 +34,7 @@ public class MarioForm {
 
         ImageLoader imageLoader = new ImageLoader();
         BufferedImage sprite = ImageImporter.loadImage("sprite");
-        fireballStyle = imageLoader.getImage(sprite, 2, 3, 25, 22);
+        fireballStyle = imageLoader.getImage(sprite, 2, 3, 24, 24);
     }
 
     /**
@@ -95,7 +97,7 @@ public class MarioForm {
      * @return The Fireball object to be rendered, if Mario is in the Fire form.
      */
     public Fireball fire(boolean toRight, double x, double y) {
-        return isFire ? new Fireball(fireballStyle, x, y + 48, toRight) : null;
+        return new Fireball(fireballStyle, x, y + 48, toRight);
     }
 
     /* ---------- Getters / Setters ---------- */

@@ -2,6 +2,7 @@ package model.hero;
 
 import control.Camera;
 import control.GameEngine;
+import control.MapCreator;
 import control.MapManager;
 import model.GameObject;
 import view.Animation;
@@ -145,7 +146,10 @@ public class Mario extends GameObject {
     }
 
 	public void fire(MapManager mapManager) {
-		mapManager.addFireball(marioForm.fire(true, getVelX(), getY()));
+		//if(TODO: verificare se mario ha come style un immagine di sinistra o di destra)
+		//	mapManager.addFireball(marioForm.fire(true, getX(), getY()));
+		//else
+			mapManager.addFireball(marioForm.fire(false, getX(), getY()));
 	}
 
     /* ---------- Getters / Setters ---------- */

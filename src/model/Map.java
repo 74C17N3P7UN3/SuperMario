@@ -86,7 +86,9 @@ public class Map {
     }
     
     private void drawFireballs(Graphics2D g2D) {
-    	for (Fireball fireball : fireballs) fireball.drawObject(g2D);
+    	for (Fireball fireball : fireballs) {
+    		fireball.drawObject(g2D);
+    	}
     }
 
     public void updateLocations() {

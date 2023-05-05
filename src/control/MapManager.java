@@ -94,9 +94,9 @@ public class MapManager {
             checkBlockCollisions(enemy);
         }
         
-        for(Fireball fireball : map.getFireballs()) {
+        /*for(Fireball fireball : map.getFireballs()) {
         	checkFireballCollisions(fireball);
-        }
+        }*/
 
         //BOOSTS
 
@@ -214,7 +214,7 @@ public class MapManager {
     }
     
     //TODO: sistemare metodo per il movimento delle fireball
-    public void checkFireballCollisions(GameObject toCheck) {
+    /*public void checkFireballCollisions(GameObject toCheck) {
     	ArrayList<Fireball> disposal = new ArrayList<Fireball>();
     	for(Brick block : map.getBricks()){
     		//checks bottom and upper collision
@@ -230,7 +230,7 @@ public class MapManager {
     	for(Fireball fireball : disposal) {
     		map.getFireballs().remove(fireball);
     	}
-    }
+    }*/
 
     /**
      * Updates all entity/tiles locations
@@ -249,9 +249,4 @@ public class MapManager {
     public Mario getMario() {
         return map.getMario();
     }
-    
-    public BufferedImage getFireball() {
-    	return mapCreator.getFireball();
-    }
-    
 }
