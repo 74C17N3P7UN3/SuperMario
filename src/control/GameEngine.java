@@ -93,16 +93,17 @@ public class GameEngine implements Runnable {
             delta += (now - lastTime) / ns;
             lastTime = now;
             if (mapManager.getMario().isInvincible()) {
-            	if(lastTimeInvincible == 0)lastTimeInvincible = now / 1000000000;
-            	if((System.nanoTime()/1000000000 - lastTimeInvincible) > 0.5) {
-            		mapManager.getMario().setInvincible(false);
-            		lastTimeInvincible = 0;
-            	}
+                if (lastTimeInvincible == 0) lastTimeInvincible = now / 1000000000;
+                if (((double) System.nanoTime() / 1000000000 - lastTimeInvincible) > 0.5) {
+                    mapManager.getMario().setInvincible(false);
+                    lastTimeInvincible = 0;
+                }
             }
-                
+
 
             while (delta > 0) {
                 if (gameStatus == GameStatus.RUNNING) gameLoop();
+
                 delta--;
                 render();
 
@@ -114,7 +115,6 @@ public class GameEngine implements Runnable {
                     totalFrames = 0;
                 }
             }
-            
         }
     }
 
@@ -143,10 +143,10 @@ public class GameEngine implements Runnable {
     }
 
     public void drawDeadScreen(Graphics2D g2D) {
-    	BufferedImage deadImage = ImageImporter.loadImage("game-over");
-    	g2D.drawImage(deadImage, 0,0, null);
+        BufferedImage deadImage = ImageImporter.loadImage("game-over");
+        g2D.drawImage(deadImage, 0, 0, null);
     }
-    
+
     /**
      * Runs the game until the game is over or the player dies.
      */
@@ -154,6 +154,15 @@ public class GameEngine implements Runnable {
         updateCamera();
         updateCollisions(this);
         updateLocations();
+
+        Mario mario = mapManager.getMario();
+        if (mario.getX() > 9792) {
+            mario.setVelX(0);
+            mario.setX(9792);
+            mario.jump();
+        }
+        if (mario.getX() == 9792 && !mario.isJumping() && !mario.isFalling())
+            gameStatus = GameStatus.GAME_OVER;
     }
 
     /**
@@ -161,8 +170,8 @@ public class GameEngine implements Runnable {
      *
      * @param soundName The name of the sound to be played.
      */
-    public void playSound(String soundName) {
-        soundManager.playSound(soundName);
+    public static void playSound(String soundName) {
+        SoundManager.playSound(soundName);
     }
 
     /**
@@ -173,6 +182,8 @@ public class GameEngine implements Runnable {
      * @param input The inputted key-press.
      */
     public void receiveInput(ButtonAction input) {
+        if (mapManager.getEndPoint().isTouched()) return;
+
         Mario mario = mapManager.getMario();
 
         // TODO: Remove
@@ -183,7 +194,7 @@ public class GameEngine implements Runnable {
         if (input == ButtonAction.M_LEFT)
             mario.move(false, camera);
         if (input == ButtonAction.JUMP)
-            mario.jump(this);
+            mario.jump();
         if (input == ButtonAction.ACTION_COMPLETED)
             mario.setVelX(0);
     }
@@ -219,6 +230,8 @@ public class GameEngine implements Runnable {
      * It also prevents the player from going back past the camera view.
      */
     private void updateCamera() {
+        if (mapManager.getEndPoint().isTouched()) return;
+
         Mario mario = mapManager.getMario();
         double marioVelX = mario.getVelX();
 
@@ -245,7 +258,7 @@ public class GameEngine implements Runnable {
 
     /**
      * Check for all entity collisions with other entities
-     * or blocks with {@link MapManager#checkCollisions()}.
+     * or blocks with {@link MapManager#checkCollisions}.
      */
     private void updateCollisions(GameEngine e) {
         mapManager.checkCollisions(e);
@@ -265,11 +278,7 @@ public class GameEngine implements Runnable {
         return imageLoader;
     }
 
-    public Mario getMario(){
-        return mapManager.getMario();
-    }
-    
     public GameStatus getGameStatus() {
-    	return this.gameStatus;
+        return this.gameStatus;
     }
 }

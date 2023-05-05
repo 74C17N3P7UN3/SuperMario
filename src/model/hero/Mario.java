@@ -45,14 +45,12 @@ public class Mario extends GameObject {
 
     /**
      * Makes Mario jump vertically.
-     *
-     * @param engine The {@link GameEngine}.
      */
-    public void jump(GameEngine engine) {
+    public void jump() {
         if (!isFalling() && !isJumping()) {
             setJumping(true);
             setVelY(13);
-            engine.playSound("jump");
+            GameEngine.playSound("jump");
         }
     }
 

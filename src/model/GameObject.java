@@ -52,17 +52,17 @@ public abstract class GameObject {
      * the horizontal position regardless every game tick.
      */
     public void updateLocation() {
-        if(isFalling() || isJumping() && velY > -13f)
-            velY-=gravityAcc;
+        if(isFalling() || isJumping() && velY > -13)
+            velY -= gravityAcc;
         y -= velY;
 
-        if(velY < 0){
+        if (velY < 0) {
             falling = true;
             jumping = false;
-        }else if(velY > 0){
+        } else if (velY > 0) {
             jumping = true;
             falling = false;
-        }else{
+        } else {
             jumping = false;
             falling = false;
         }

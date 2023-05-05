@@ -10,7 +10,7 @@ import javax.sound.sampled.FloatControl;
  * requested tracks from the media's package.
  *
  * @author TacitNeptune
- * @version 1.0.0
+ * @version 1.1.0
  */
 public class SoundManager {
     private final Clip themeClip;
@@ -51,7 +51,7 @@ public class SoundManager {
      *
      * @param soundName The name of the sound to be played.
      */
-    public void playSound(String soundName) {
+    public static void playSound(String soundName) {
         Clip clip = SoundImporter.loadTrack(soundName);
         setClipVolume(clip, 0.4);
         clip.start();
@@ -65,7 +65,7 @@ public class SoundManager {
      *             needs to be adjusted
      * @param gain The volume percentage
      */
-    private void setClipVolume(Clip clip, double gain) {
+    private static void setClipVolume(Clip clip, double gain) {
         FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
         gainControl.setValue(20f * (float) Math.log10(gain));
     }

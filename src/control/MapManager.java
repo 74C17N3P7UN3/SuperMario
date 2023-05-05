@@ -73,14 +73,14 @@ public class MapManager {
 
         checkBlockCollisions(mario);
         checkEnemyCollision(mario,e);
-        if(mario.getX() >= 48*198 - 20){
-            map.getEndPoint().setTouched(true);
+        if(mario.getX() >= ((48 * 198) - 20)){
+            getEndPoint().setTouched(true);
         }
-        if(mario.getY() >= 48*14) {
+        if(mario.getY() >= (48 * 14)) {
         	e.setGameStatus(GameStatus.GAME_OVER);
         }
-        
-        
+
+
         for(Enemy enemy : mapCreator.getEnemies()) {
             checkBlockCollisions(enemy);
         }
@@ -208,6 +208,10 @@ public class MapManager {
     }
 
     /* ---------- Getters / Setters ---------- */
+
+    public EndFlag getEndPoint() {
+        return map.getEndPoint();
+    }
 
     public Mario getMario() {
         return map.getMario();
