@@ -194,12 +194,12 @@ public class MapManager {
             if((mario.isStar() || mario.isBabyStar()) && mario.getBounds().intersects(enemy.getBounds())) disposal.add(enemy);
             else if(mario.getVerticalBounds().intersects(enemy.getVerticalBounds()) && mario.getVelY() < 0){
                 disposal.add(enemy);
+                mario.setVelY(4);
             }else if(mario.getVerticalBounds().intersects(enemy.getVerticalBounds()) && !mario.isInvincible()){
                 if(mario.isSuper()){
                 	mario.setMarioMini();
                     mario.setY(mario.getY()+48);
                     mario.setInvincible(true);
-                    System.out.println("HEllo");
                 }else if(mario.isFire()){
                     mario.setMarioBig();
                     mario.setInvincible(true);

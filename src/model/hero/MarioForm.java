@@ -49,26 +49,38 @@ public class MarioForm {
     	
     	BufferedImage style = null;
         
-        //TODO: ottimizzare sta roba
+        //TODO: ottimizzare sta roba (no, è giusto)
     	if(isBabyStar || isStar) {
-    		if(starAnimation < 30)
+    		if(starAnimation < 20)
     			starAnimation++;
-    		else if(starAnimation == 30)
+    		else if(starAnimation == 20)
     			starAnimation=0;
     	}
     	
-        if(starAnimation < 15) {
-        	if (movingInX) style = animation.animate(5, toRight, false);
+        if(starAnimation < 5) {
+        	if (movingInX) style = animation.animate(5, toRight, 0);
             if (movingInY) style = animation.getLeftFrames()[0];
             if (movingInY && toRight) style = animation.getRightFrames()[0];
             if (!movingInX && !movingInY)
                 style = toRight ? animation.getRightFrames()[1] : animation.getLeftFrames()[1];
-        }else {
-            if (movingInX) style = animation.animate(5, toRight, true);
+        }else if(starAnimation < 10){
+            if (movingInX) style = animation.animate(5, toRight, 1);
             if (movingInY) style = animation.getLeftFrames()[5];
             if (movingInY && toRight) style = animation.getRightFrames()[5];
             if (!movingInX && !movingInY)
                 style = toRight ? animation.getRightFrames()[6] : animation.getLeftFrames()[6];
+        }else if(starAnimation < 15) {
+        	if (movingInX) style = animation.animate(5, toRight, 2);
+            if (movingInY) style = animation.getLeftFrames()[10];
+            if (movingInY && toRight) style = animation.getRightFrames()[10];
+            if (!movingInX && !movingInY)
+                style = toRight ? animation.getRightFrames()[11] : animation.getLeftFrames()[11];
+        }else {
+        	if (movingInX) style = animation.animate(5, toRight, 3);
+            if (movingInY) style = animation.getLeftFrames()[15];
+            if (movingInY && toRight) style = animation.getRightFrames()[15];
+            if (!movingInX && !movingInY)
+                style = toRight ? animation.getRightFrames()[16] : animation.getLeftFrames()[16];
         }
         
         return style;

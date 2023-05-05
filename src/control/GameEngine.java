@@ -83,7 +83,7 @@ public class GameEngine implements Runnable {
         double amountOfTicks = 60.0;
         double ns = 1000000000 / amountOfTicks;
         double delta = 0;
-        long lastTimeInvincible = 0;
+        long lastTimeInvincible = 0, lastTimeStar = 0;
 
         // TODO: Remove
         long totalFrames = 0;
@@ -94,13 +94,20 @@ public class GameEngine implements Runnable {
             delta += (now - lastTime) / ns;
             lastTime = now;
             if (mapManager.getMario().isInvincible()) {
-            	if(lastTimeInvincible == 0)lastTimeInvincible = now / 1000000000;
+            	if(lastTimeInvincible == 0) lastTimeInvincible = now / 1000000000;
             	if((System.nanoTime()/1000000000 - lastTimeInvincible) > 0.5) {
             		mapManager.getMario().setInvincible(false);
             		lastTimeInvincible = 0;
             	}
             }
-                
+            /*if (mapManager.getMario().isStar() || mapManager.getMario().isBabyStar()) {
+            	if(lastTimeStar == 0) lastTimeStar = now / 1000000000;
+	            if((System.nanoTime()/1000000000 - lastTimeStar) > 8) {
+            		if(mapManager.getMario().isStar()) mapManager.getMario().setMarioBig();
+            		if(mapManager.getMario().isBabyStar()) mapManager.getMario().setMarioMini();
+            		lastTimeStar = 0;
+            	}
+            }*/
 
             while (delta > 0) {
                 if (gameStatus == GameStatus.RUNNING) gameLoop();
