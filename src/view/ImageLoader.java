@@ -51,7 +51,7 @@ public class ImageLoader {
         	width = 48;
         	height = 96;
         }
-
+        
         for (int i = 0; i < 5; i++)
             leftFrames[i] = marioForms.getSubimage((col - 1) * 48, i * height, width, height);
         if(marioForm == 3 || marioForm == 4) {

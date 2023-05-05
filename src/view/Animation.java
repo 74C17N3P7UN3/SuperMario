@@ -56,9 +56,12 @@ public class Animation {
      * @param frames The frames of the animation sequence.
      */
     private void nextFrame(BufferedImage[] frames, boolean isStar) {
-        if (index + 2 >= frames.length) index = 0;
-
-        currentFrame = frames[index + 2];
+        if (index + 2 >= 5 || index + 7 >=10) index = 0;
+        
+        if(isStar)
+        	currentFrame = frames[index + 7];
+        else
+        	currentFrame = frames[index + 2];
         index++;
     }
 

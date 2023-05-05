@@ -55,11 +55,13 @@ public class MapManager {
      * @param g2D The Graphics engine to draw the map.
      */
     public void drawMap(Graphics2D g2D) {
-    	for(Enemy enemy : map.getEnemies()) {
-    		if(enemy.getX() < camera.getX() + GameEngine.WIDTH && enemy.getVelX() == 0)
-    			enemy.setVelX(-3);
-    	}
-        if (map != null) map.drawMap(g2D);
+        if (map != null) {
+            for(Enemy enemy : map.getEnemies()) {
+                if(enemy.getX() < camera.getX() + GameEngine.WIDTH && enemy.getVelX() == 0)
+                    enemy.setVelX(-3);
+            }
+            map.drawMap(g2D);
+        }
     }
 
     /**
