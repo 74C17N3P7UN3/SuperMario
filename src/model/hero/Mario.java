@@ -115,25 +115,27 @@ public class Mario extends GameObject {
     }
 
     public void setMarioFire() {
-        //setDimension(96, 48);
-
         ImageLoader imageLoader = new ImageLoader();
+        
         BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.FIRE);
         BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.FIRE);
 
         this.animation = new Animation(leftFrames, rightFrames);
-        marioForm = new MarioForm(animation, false, true, false, false);
+        marioForm = new MarioForm(animation, true, true, false, false);
         setStyle(marioForm.getCurrentStyle(toRight, false, false));
     }
     
     public void setMarioStar() {
         ImageLoader imageLoader = new ImageLoader();
 
-        if(this.isSuper() || this.isFire()) {
+        if(this.isSuper()) {
             BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.STAR);
             BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.STAR);
             this.animation = new Animation(leftFrames, rightFrames);
-            marioForm = new MarioForm(animation, true, false, true, false);
+            if(isFire())
+            	marioForm = new MarioForm(animation, true, true, true, false);
+            else
+            	marioForm = new MarioForm(animation, true, false, true, false);
         }else {
             BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.star);
             BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.star);
@@ -177,8 +179,16 @@ public class Mario extends GameObject {
         this.invincible = invincible;
     }
 
-    public boolean isStar(){return marioForm.isStar();}
+    public boolean isStar(){
+    	return marioForm.isStar();
+    }
 
-    public boolean isBabyStar(){return marioForm.isBabyStar();}
+    public boolean isBabyStar(){
+    	return marioForm.isBabyStar();
+    }
+    
+    public void setIsFire(boolean isFire) {
+    	marioForm.setIsFire(isFire);
+    }
 
 }

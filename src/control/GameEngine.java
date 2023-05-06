@@ -105,7 +105,10 @@ public class GameEngine implements Runnable {
             if (mapManager.getMario().isStar() || mapManager.getMario().isBabyStar()) {
             	if(lastTimeStar == 0) lastTimeStar = now / 1000000000;
 	            if((System.nanoTime()/1000000000 - lastTimeStar) > 9) {
-            		if(mapManager.getMario().isStar()) mapManager.getMario().setMarioBig();
+            		if(mapManager.getMario().isStar()) {
+            			if(mapManager.getMario().isFire()) mapManager.getMario().setMarioFire();
+            			else mapManager.getMario().setMarioBig();
+            		}
             		if(mapManager.getMario().isBabyStar()) mapManager.getMario().setMarioMini();
             		lastTimeStar = 0;
             	}

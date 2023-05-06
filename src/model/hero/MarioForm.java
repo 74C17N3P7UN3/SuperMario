@@ -133,4 +133,8 @@ public class MarioForm {
     public void setBabyStar(boolean isBabyStar) {
         this.isBabyStar = isBabyStar;
     }
+    
+    public void setIsFire(boolean isFire) {
+    	this.isFire = isFire;
+    }
 }
