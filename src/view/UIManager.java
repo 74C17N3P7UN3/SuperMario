@@ -29,6 +29,7 @@ public class UIManager extends JPanel {
         
         if(engine.getGameStatus() == GameStatus.GAME_OVER) {
         	engine.drawDeadScreen(g2D);
+        	engine.getSoundManager().pauseTheme();
         }else {
         	Point camLocation = engine.getCameraPosition();
             g2D.translate(-camLocation.getX(), -camLocation.getY());

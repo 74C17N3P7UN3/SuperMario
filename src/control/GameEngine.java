@@ -281,4 +281,8 @@ public class GameEngine implements Runnable {
     public GameStatus getGameStatus() {
         return this.gameStatus;
     }
+    
+    public SoundManager getSoundManager() {
+    	return this.soundManager;
+    }
 }
