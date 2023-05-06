@@ -1,6 +1,7 @@
 package control;
 
 import model.Map;
+import model.hero.Fireball;
 import model.hero.Mario;
 import utils.ImageImporter;
 import view.ImageLoader;
@@ -21,7 +22,7 @@ import java.awt.image.BufferedImage;
 public class GameEngine implements Runnable {
     private final static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private final static int HEIGHT = 720; // Height is fixed because of the map's size
-    private final static int WIDTH = ((int) screenSize.getWidth()) - 80;
+    public final static int WIDTH = ((int) screenSize.getWidth()) - 80;
 
     private final Camera camera;
     private final ImageLoader imageLoader;
@@ -38,7 +39,7 @@ public class GameEngine implements Runnable {
         camera = new Camera();
         imageLoader = new ImageLoader();
         inputManager = new InputManager(this);
-        mapManager = new MapManager();
+        mapManager = new MapManager(camera);
         soundManager = new SoundManager();
         uiManager = new UIManager(this, HEIGHT, WIDTH);
 
@@ -82,7 +83,7 @@ public class GameEngine implements Runnable {
         double amountOfTicks = 60.0;
         double ns = 1000000000 / amountOfTicks;
         double delta = 0;
-        long lastTimeInvincible = 0;
+        long lastTimeInvincible = 0, lastTimeStar = 0;
 
         // TODO: Remove
         long totalFrames = 0;
@@ -93,11 +94,19 @@ public class GameEngine implements Runnable {
             delta += (now - lastTime) / ns;
             lastTime = now;
             if (mapManager.getMario().isInvincible()) {
-                if (lastTimeInvincible == 0) lastTimeInvincible = now / 1000000000;
-                if (((double) System.nanoTime() / 1000000000 - lastTimeInvincible) > 0.5) {
-                    mapManager.getMario().setInvincible(false);
-                    lastTimeInvincible = 0;
-                }
+            	if(lastTimeInvincible == 0) lastTimeInvincible = now / 1000000000;
+            	if((System.nanoTime()/1000000000 - lastTimeInvincible) > 0.5) {
+            		mapManager.getMario().setInvincible(false);
+            		lastTimeInvincible = 0;
+            	}
+            }
+            if (mapManager.getMario().isStar() || mapManager.getMario().isBabyStar()) {
+            	if(lastTimeStar == 0) lastTimeStar = now / 1000000000;
+	            if((System.nanoTime()/1000000000 - lastTimeStar) > 9) {
+            		if(mapManager.getMario().isStar()) mapManager.getMario().setMarioBig();
+            		if(mapManager.getMario().isBabyStar()) mapManager.getMario().setMarioMini();
+            		lastTimeStar = 0;
+            	}
             }
 
 
@@ -197,6 +206,16 @@ public class GameEngine implements Runnable {
             mario.jump();
         if (input == ButtonAction.ACTION_COMPLETED)
             mario.setVelX(0);
+        if (input == ButtonAction.FIRE) {
+        	if(mario.isFire())
+        		mario.fire(mapManager);
+        }
+        if (input == ButtonAction.RUN) {
+        	if(mario.getVelX() < 0)
+        		mario.setVelX(-7.5);
+        	if(mario.getVelX() > 0)
+        		mario.setVelX(7.5);
+        }
     }
 
     /**
@@ -284,5 +303,9 @@ public class GameEngine implements Runnable {
     
     public SoundManager getSoundManager() {
     	return this.soundManager;
+    }
+    
+    public int getWidth() {
+    	return WIDTH;
     }
 }

@@ -24,16 +24,16 @@ import java.util.ArrayList;
 public class MapCreator {
     private Map createdMap;
     private BufferedImage mapImage;
+    private Camera camera;
 
     private final BufferedImage end;
     private final BufferedImage block, groundBrick, ordinaryBrick, surpriseBrick, emptySurpriseBrick;
     private final BufferedImage pipeBody, pipeHead;
     private final BufferedImage goombaLeft, goombaRight, koopaLeft, koopaRight;
     private final BufferedImage coin, fireFlower, heartMushroom, star, superMushroom;
+    private final BufferedImage voidBoost, fireball;
 
-    private final BufferedImage voidBoost;
-
-    public MapCreator(ImageLoader imageLoader) {
+    public MapCreator(ImageLoader imageLoader, Camera camera) {
         BufferedImage sprite = ImageImporter.loadImage("sprite");
 
         end = imageLoader.getImage(sprite, 4, 0, 48, 48);
@@ -59,6 +59,9 @@ public class MapCreator {
         superMushroom = imageLoader.getImage(sprite, 1, 4, 48, 48);
 
         voidBoost = imageLoader.getImage(sprite,4,2,48,48);
+        fireball = imageLoader.getImage(sprite, 2, 3, 48, 48);
+        
+        this.camera = camera;
     }
 
     /**
@@ -111,10 +114,14 @@ public class MapCreator {
                 if (currentPixel == goombaRGB) {
                     enemy = new Goomba(xLocation, yLocation, goombaLeft);
                     ((Goomba) enemy).setRightImage(goombaRight);
+                    if(((Goomba)enemy).getX() > camera.getX() + GameEngine.WIDTH)
+                    	((Goomba) enemy).setVelX(0);
                 }
                 if (currentPixel == koopaRGB) {
                     enemy = new Koopa(xLocation, yLocation, koopaLeft);
                     ((Koopa) enemy).setRightImage(koopaRight);
+                    if(((Koopa)enemy).getX() > camera.getX() + GameEngine.WIDTH)
+                    	((Koopa) enemy).setVelX(0);
                 }
 
                 if (brick != null) createdMap.addBrick(brick);
@@ -165,5 +172,9 @@ public class MapCreator {
 
     public BufferedImage getVoidBoost(){
         return voidBoost;
+    }
+    
+    public BufferedImage getFireball() {
+    	return fireball;
     }
 }

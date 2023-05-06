@@ -6,6 +6,8 @@ import view.ImageLoader;
 
 import java.awt.image.BufferedImage;
 
+import control.MapManager;
+
 /**
  * Defines the possible states in which Mario could be found. Those
  * states are Normal, Super and Fire, each with its animated sprite.
@@ -20,17 +22,19 @@ public class MarioForm {
     private BufferedImage fireballStyle;
 
     private boolean isSuper, isFire, isStar, isBabyStar;
+    private int starAnimation;
 
     public MarioForm(Animation animation, boolean isSuper, boolean isFire,boolean isStar, boolean isBabyStar) {
-        this.animation = animation;
+    	this.animation = animation;
         this.isSuper = isSuper;
         this.isFire = isFire;
         this.isStar = isStar;
         this.isBabyStar = isBabyStar;
+        this.starAnimation = 0;
 
         ImageLoader imageLoader = new ImageLoader();
         BufferedImage sprite = ImageImporter.loadImage("sprite");
-        fireballStyle = imageLoader.getImage(sprite, 2, 3, 25, 22);
+        fireballStyle = imageLoader.getImage(sprite, 2, 3, 24, 24);
     }
 
     /**
@@ -44,14 +48,43 @@ public class MarioForm {
      * @return The frame of the style to be rendered.
      */
     public BufferedImage getCurrentStyle(boolean toRight, boolean movingInX, boolean movingInY) {
-        BufferedImage style = null;
-
-        if (movingInX) style = animation.animate(5, toRight);
-        if (movingInY) style = animation.getLeftFrames()[0];
-        if (movingInY && toRight) style = animation.getRightFrames()[0];
-        if (!movingInX && !movingInY)
-            style = toRight ? animation.getRightFrames()[1] : animation.getLeftFrames()[1];
-
+    	
+    	BufferedImage style = null;
+        
+        //TODO: ottimizzare sta roba (no, è giusto)
+    	if(isBabyStar || isStar) {
+    		if(starAnimation < 20)
+    			starAnimation++;
+    		else if(starAnimation == 20)
+    			starAnimation=0;
+    	}
+    	
+        if(starAnimation < 5) {
+        	if (movingInX) style = animation.animate(5, toRight, 0);
+            if (movingInY) style = animation.getLeftFrames()[0];
+            if (movingInY && toRight) style = animation.getRightFrames()[0];
+            if (!movingInX && !movingInY)
+                style = toRight ? animation.getRightFrames()[1] : animation.getLeftFrames()[1];
+        }else if(starAnimation < 10){
+            if (movingInX) style = animation.animate(5, toRight, 1);
+            if (movingInY) style = animation.getLeftFrames()[5];
+            if (movingInY && toRight) style = animation.getRightFrames()[5];
+            if (!movingInX && !movingInY)
+                style = toRight ? animation.getRightFrames()[6] : animation.getLeftFrames()[6];
+        }else if(starAnimation < 15) {
+        	if (movingInX) style = animation.animate(5, toRight, 2);
+            if (movingInY) style = animation.getLeftFrames()[10];
+            if (movingInY && toRight) style = animation.getRightFrames()[10];
+            if (!movingInX && !movingInY)
+                style = toRight ? animation.getRightFrames()[11] : animation.getLeftFrames()[11];
+        }else {
+        	if (movingInX) style = animation.animate(5, toRight, 3);
+            if (movingInY) style = animation.getLeftFrames()[15];
+            if (movingInY && toRight) style = animation.getRightFrames()[15];
+            if (!movingInX && !movingInY)
+                style = toRight ? animation.getRightFrames()[16] : animation.getLeftFrames()[16];
+        }
+        
         return style;
     }
 
@@ -64,7 +97,7 @@ public class MarioForm {
      * @return The Fireball object to be rendered, if Mario is in the Fire form.
      */
     public Fireball fire(boolean toRight, double x, double y) {
-        return isFire ? new Fireball(fireballStyle, x, y + 48, toRight) : null;
+        return new Fireball(fireballStyle, x, y + 48, toRight);
     }
 
     /* ---------- Getters / Setters ---------- */

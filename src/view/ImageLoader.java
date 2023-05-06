@@ -28,7 +28,11 @@ public class ImageLoader {
     }
 
     public BufferedImage[] getLeftFrames(int marioForm) {
-        BufferedImage[] leftFrames = new BufferedImage[5];
+    	int dim = 5;
+    	if(marioForm == 3 || marioForm == 4)
+    		dim = 20;
+    	
+        BufferedImage[] leftFrames = new BufferedImage[dim];
         int col = 1;
         int width = 52, height = 48;
 
@@ -40,15 +44,33 @@ public class ImageLoader {
             col = 7;
             width = 48;
             height = 96;
+        } else if (marioForm == 4) {
+        	col = 4;
+        	width = 48;
+        	height = 96;
         }
-
+        
         for (int i = 0; i < 5; i++)
-            leftFrames[i] = marioForms.getSubimage((col - 1) * width, i * height, width, height);
+            leftFrames[i] = marioForms.getSubimage((col - 1) * 48, i * height, width, height);
+        if(marioForm == 3 || marioForm == 4) {
+        	int count = 5;
+        	for(int n = 0; n<3; n++) {
+	        	for(int i = 0; i<5; i++) {
+	        		leftFrames[count] = marioForms.getSubimage((col+8 + n*6) * 48, i * height, width, height);
+	        		count++;
+	        	}
+        	}
+        }
+        
         return leftFrames;
     }
 
     public BufferedImage[] getRightFrames(int marioForm) {
-        BufferedImage[] rightFrames = new BufferedImage[5];
+    	int dim = 5;
+    	if(marioForm == 3 || marioForm == 4)
+    		dim = 20;
+    	
+        BufferedImage[] rightFrames = new BufferedImage[dim];
         int col = 2;
         int width = 52, height = 48;
 
@@ -60,10 +82,23 @@ public class ImageLoader {
             col = 8;
             width = 48;
             height = 96;
+        } else if (marioForm == 4) {
+        	col = 5;
+        	width = 48;
+        	height = 96;
         }
 
         for (int i = 0; i < 5; i++)
-            rightFrames[i] = marioForms.getSubimage((col - 1) * width, (i) * height, width, height);
+            rightFrames[i] = marioForms.getSubimage((col - 1) * 48, i * height, width, height);
+        if(marioForm == 3 || marioForm == 4) {
+        	int count = 5;
+        	for(int n = 0; n<3; n++) {
+	        	for(int i = 0; i<5; i++) {
+	        		rightFrames[count] = marioForms.getSubimage((col+8 + n*6) * 48, i * height, width, height);
+	        		count++;
+	        	}
+        	}
+        }
         return rightFrames;
     }
 

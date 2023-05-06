@@ -2,6 +2,8 @@ package model.hero;
 
 import control.Camera;
 import control.GameEngine;
+import control.MapCreator;
+import control.MapManager;
 import model.GameObject;
 import view.Animation;
 import view.ImageLoader;
@@ -97,7 +99,7 @@ public class Mario extends GameObject {
 
         ImageLoader imageLoader = new ImageLoader();
 
-        if(this.isStar()) {
+        if(this.isBabyStar()) {
             BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.STAR);
             BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.STAR);
             this.animation = new Animation(leftFrames, rightFrames);
@@ -113,7 +115,7 @@ public class Mario extends GameObject {
     }
 
     public void setMarioFire() {
-        setDimension(96, 48);
+        //setDimension(96, 48);
 
         ImageLoader imageLoader = new ImageLoader();
         BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.FIRE);
@@ -123,14 +125,15 @@ public class Mario extends GameObject {
         marioForm = new MarioForm(animation, false, true, false, false);
         setStyle(marioForm.getCurrentStyle(toRight, false, false));
     }
+    
     public void setMarioStar() {
         ImageLoader imageLoader = new ImageLoader();
 
-        if(this.isSuper()) {
+        if(this.isSuper() || this.isFire()) {
             BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.STAR);
             BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.STAR);
             this.animation = new Animation(leftFrames, rightFrames);
-            marioForm = new MarioForm(animation, true, false, true,false);
+            marioForm = new MarioForm(animation, true, false, true, false);
         }else {
             BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.star);
             BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.star);
@@ -139,6 +142,13 @@ public class Mario extends GameObject {
         }
         setStyle(marioForm.getCurrentStyle(toRight, false, false));
     }
+
+	public void fire(MapManager mapManager) {
+		//if(TODO: verificare se mario ha come style un immagine di sinistra o di destra)
+		//	mapManager.addFireball(marioForm.fire(true, getX(), getY()));
+		//else
+			mapManager.addFireball(marioForm.fire(false, getX(), getY()));
+	}
 
     /* ---------- Getters / Setters ---------- */
 
@@ -173,4 +183,5 @@ public class Mario extends GameObject {
     public boolean isStar(){return marioForm.isStar();}
 
     public boolean isBabyStar(){return marioForm.isBabyStar();}
+
 }
