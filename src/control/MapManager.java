@@ -5,8 +5,8 @@ import model.brick.*;
 import model.enemy.Enemy;
 import model.hero.Fireball;
 import model.hero.Mario;
-import model.prize.Boost;
-import model.prize.BoostType;
+import model.boost.Boost;
+import model.boost.BoostType;
 import view.ImageLoader;
 
 import java.awt.*;
@@ -91,7 +91,7 @@ public class MapManager {
         for(Enemy enemy : map.getEnemies()) {
             checkBlockCollisions(enemy);
         }
-        
+
         for(Fireball fireball : map.getFireballs()) {
         	checkBlockCollisions(fireball);
         }
@@ -156,13 +156,13 @@ public class MapManager {
 
                                 ((SurpriseBrick) map.getBricks().get(n)).setBoost(false);
                                 map.getBricks().get(n).setStyle(mapCreator.getEmptySurpriseBrick());
-                            }  
+                            }
                         }
                     }
                     toCheck.setVelY(0);
                     toCheck.setFalling(true);
                 }
-                    
+
                 if(toCheck.getY()+48 > block.getY() && !toCheck.isJumping()){
                     toCheck.setY(block.getY()-48);
                 }
@@ -177,7 +177,7 @@ public class MapManager {
                         toCheck.setVelX(0);
                     else if(toCheck instanceof Enemy || toCheck instanceof Boost)
                         toCheck.setVelX(-toCheck.getVelX());
-                    
+
                 }else if(toCheck.getVelX() < 0){
 
                     if(toCheck instanceof Mario)
@@ -187,9 +187,9 @@ public class MapManager {
                 }
                 if(toCheck instanceof Fireball)  disposal.add(toCheck);
             }
-            
-            if(toCheck instanceof Fireball && toCheck.getY() >= 48*14) disposal.add(toCheck); 
-            
+
+            if(toCheck instanceof Fireball && toCheck.getY() >= 48*14) disposal.add(toCheck);
+
         }
         if(air){
             toCheck.setFalling(true);
@@ -215,7 +215,7 @@ public class MapManager {
                 	e.setGameStatus(GameStatus.GAME_OVER);
                 }
             }
-            
+
             for (Fireball fireball : map.getFireballs()) {
             	if(fireball.getHorizontalBounds().intersects(enemy.getHorizontalBounds())) {
             		disposal.add(enemy);

@@ -1,4 +1,4 @@
-package model.prize;
+package model.boost;
 
 import java.awt.image.BufferedImage;
 

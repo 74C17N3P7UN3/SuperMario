@@ -5,8 +5,8 @@ import model.brick.SurpriseBrick;
 import model.enemy.Enemy;
 import model.hero.Fireball;
 import model.hero.Mario;
-import model.prize.Boost;
-import model.prize.BoostType;
+import model.boost.Boost;
+import model.boost.BoostType;
 import utils.ImageImporter;
 
 import java.awt.*;

@@ -7,7 +7,7 @@ import model.enemy.Enemy;
 import model.enemy.Goomba;
 import model.enemy.Koopa;
 import model.hero.Mario;
-import model.prize.Boost;
+import model.boost.Boost;
 import utils.ImageImporter;
 import view.ImageLoader;
 
