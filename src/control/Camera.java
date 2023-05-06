@@ -25,6 +25,11 @@ public class Camera {
         y += yAmount;
     }
 
+	public void tp(boolean up) {
+		if(up)
+			setX(10752);
+	}
+	
     /* ---------- Getters / Setters ---------- */
 
     public double getX() {
@@ -34,4 +39,9 @@ public class Camera {
     public double getY() {
         return y;
     }
+    
+    public void setX(double x) {
+    	this.x = x;
+    }
+
 }

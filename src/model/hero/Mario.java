@@ -148,7 +148,14 @@ public class Mario extends GameObject {
 	public void fire(MapManager mapManager) {
 		mapManager.addFireball(marioForm.fire(toRight, getX(), getY()));
 	}
-
+	
+	public void tp(boolean up) {
+		if(up) {
+			setX(10848);
+			setY(0);
+		}
+	}
+	
     /* ---------- Getters / Setters ---------- */
 
     public MarioForm getMarioForm() {

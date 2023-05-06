@@ -16,4 +16,5 @@ public enum ButtonAction {
     M_RIGHT,
     NO_ACTION,
     RUN,
+    PIPE_ENTER,
 }

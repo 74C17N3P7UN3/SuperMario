@@ -45,6 +45,8 @@ public class InputManager implements KeyListener {
             currentAction = ButtonAction.M_RIGHT;
         if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A)
             currentAction = ButtonAction.M_LEFT;
+        if (keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_S)
+        	currentAction = ButtonAction.PIPE_ENTER;
 
         if (keyCode == KeyEvent.VK_Z)
             currentAction = ButtonAction.FIRE;
@@ -55,7 +57,7 @@ public class InputManager implements KeyListener {
 
         if (keyCode == KeyEvent.VK_ENTER)
         	currentAction = ButtonAction.ENTER;
-
+        
         notifyInput(currentAction);
     }
 

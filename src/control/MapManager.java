@@ -228,25 +228,6 @@ public class MapManager {
         }
     }
 
-    //TODO: sistemare metodo per il movimento delle fireball
-    /*public void checkFireballCollisions(GameObject toCheck) {
-    	ArrayList<Fireball> disposal = new ArrayList<Fireball>();
-    	for(Brick block : map.getBricks()){
-    		//checks bottom and upper collision
-            if(toCheck.getVerticalBounds().intersects(block.getBounds())){
-            	toCheck.setVelY(3);
-            }
-
-        	//checks right and left collision
-            if(toCheck.getHorizontalBounds().intersects(block.getHorizontalBounds())){
-            	disposal.add((Fireball) toCheck);
-            }
-    	}
-    	for(Fireball fireball : disposal) {
-    		map.getFireballs().remove(fireball);
-    	}
-    }*/
-
     /**
      * Updates all entity/tiles locations
      * with {@link Map#updateLocations()}.

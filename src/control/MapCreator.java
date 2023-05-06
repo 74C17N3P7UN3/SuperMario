@@ -27,10 +27,10 @@ public class MapCreator {
     private Camera camera;
 
     private final BufferedImage end;
-    private final BufferedImage block, groundBrick, ordinaryBrick, surpriseBrick, emptySurpriseBrick;
+    private final BufferedImage block, groundBrick, groundBrickBlue, ordinaryBrick, ordinaryBrickBlue, surpriseBrick, emptySurpriseBrick;
     private final BufferedImage pipeBody, pipeHead;
     private final BufferedImage goombaLeft, goombaRight, koopaLeft, koopaRight;
-    private final BufferedImage coin, fireFlower, heartMushroom, star, superMushroom;
+    private final BufferedImage coin, coinBlue, fireFlower, heartMushroom, star, superMushroom;
     private final BufferedImage voidBoost, fireball;
 
     public MapCreator(ImageLoader imageLoader, Camera camera) {
@@ -40,7 +40,9 @@ public class MapCreator {
 
         block = imageLoader.getImage(sprite, 1, 1, 48, 48);
         groundBrick = imageLoader.getImage(sprite, 4, 1, 48, 48);
+        groundBrickBlue = imageLoader.getImage(sprite, 2, 2, 48, 48);
         ordinaryBrick = imageLoader.getImage(sprite, 0, 0, 48, 48);
+        ordinaryBrickBlue = imageLoader.getImage(sprite, 1, 2, 48, 48);
         surpriseBrick = imageLoader.getImage(sprite, 1, 0, 48, 48);
         emptySurpriseBrick = imageLoader.getImage(sprite, 0, 1, 48, 48);
 
@@ -53,6 +55,7 @@ public class MapCreator {
         koopaRight = imageLoader.getImage(sprite, 3, 2, 48, 64);
 
         coin = imageLoader.getImage(sprite, 0, 4, 48, 48);
+        coinBlue = imageLoader.getImage(sprite, 4, 2, 48, 48);
         fireFlower = imageLoader.getImage(sprite, 3, 4, 48, 48);
         heartMushroom = imageLoader.getImage(sprite, 2, 4, 48, 48);
         star = imageLoader.getImage(sprite, 4, 4, 48, 48);
@@ -79,7 +82,9 @@ public class MapCreator {
 
         int blockRGB = new Color(127, 127, 127).getRGB();
         int groundBrickRGB = new Color(237, 28, 36).getRGB();
+        int groundBrickBlueRGB = new Color(112, 146, 190).getRGB();
         int ordinaryBrickRGB = new Color(185, 122, 87).getRGB();
+        int ordinaryBrickBlueRGB = new Color(0, 162, 232).getRGB();
         int surpriseBrickRGB = new Color(163, 73, 164).getRGB();
 
         int pipeBodyRGB = new Color(181, 230, 29).getRGB();
@@ -87,6 +92,8 @@ public class MapCreator {
 
         int goombaRGB = new Color(63, 72, 204).getRGB();
         int koopaRGB = new Color(255, 174, 201).getRGB();
+        
+        int coinBlueRGB = new Color(153, 217, 234).getRGB();
 
         for (int x = 0; x < mapImage.getWidth(); x++) {
             for (int y = 0; y < mapImage.getHeight(); y++) {
@@ -100,12 +107,15 @@ public class MapCreator {
                 Brick brick = null;
                 if (currentPixel == blockRGB) brick = new Block(xLocation, yLocation, block);
                 if (currentPixel == groundBrickRGB) brick = new GroundBrick(xLocation, yLocation, groundBrick);
+                if (currentPixel == groundBrickBlueRGB) brick = new GroundBrickBlue(xLocation, yLocation, groundBrickBlue);
                 if (currentPixel == ordinaryBrickRGB) brick = new OrdinaryBrick(xLocation, yLocation, ordinaryBrick);
+                if (currentPixel == ordinaryBrickBlueRGB) brick = new OrdinaryBrickBlue(xLocation, yLocation, ordinaryBrickBlue);
                 if (currentPixel == surpriseBrickRGB) {
                     if (yLocation == 432 && (xLocation == 4512 || xLocation == 4848))
                         brick = new SurpriseBrick(xLocation, yLocation, ordinaryBrick);
                     else brick = new SurpriseBrick(xLocation, yLocation, surpriseBrick);
                 }
+                if (currentPixel == coinBlueRGB) brick = new CoinBlue(xLocation, yLocation, coinBlue);
 
                 if (currentPixel == pipeBodyRGB) brick = new PipeBody(xLocation, yLocation, pipeBody);
                 if (currentPixel == pipeHeadRGB) brick = new PipeHead(xLocation, yLocation, pipeHead);

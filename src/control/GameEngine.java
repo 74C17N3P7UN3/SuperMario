@@ -186,6 +186,8 @@ public class GameEngine implements Runnable {
             gameStatus = GameStatus.MISSION_PASSED;
         if(time == 0)
         	gameStatus = GameStatus.GAME_OVER;
+        
+    	System.out.println("x: "+mario.getX()+", y: "+mario.getY());
     }
 
     /**
@@ -208,7 +210,6 @@ public class GameEngine implements Runnable {
         if (mapManager.getEndPoint().isTouched()) return;
 
         Mario mario = mapManager.getMario();
-        
 
         // TODO: Remove
         if (input == ButtonAction.CHEAT)
@@ -233,6 +234,10 @@ public class GameEngine implements Runnable {
         		mario.setVelX(-7.5);
         	if(mario.getVelX() > 0)
         		mario.setVelX(7.5);
+        }
+        if (input == ButtonAction.PIPE_ENTER) {
+        	mario.tp(true);
+        	camera.tp(true);
         }
     }
 
