@@ -9,11 +9,11 @@ package control;
 public enum ButtonAction {
     ACTION_COMPLETED,
     CHEAT,
+    ENTER,
     FIRE,
     JUMP,
     M_LEFT,
     M_RIGHT,
     NO_ACTION,
     RUN,
-    ENTER,
 }
