@@ -108,8 +108,11 @@ public class MapManager {
                     mario.setMarioStar();
                 }
                 if(boost.getType() == BoostType.FIRE_FLOWER){
-                	mario.setMarioBig();
-                    mario.setMarioFire();
+                    if(mario.isStar()) mario.setIsFire(true);
+                    else {
+                        mario.setMarioBig();
+                        mario.setMarioFire();
+                    }
                 }
                 if(boost.getType() == BoostType.HEART_MUSHROOM) {
                 	//ciao;
@@ -149,7 +152,7 @@ public class MapManager {
                                 boost.setType(mapCreator, n, (Mario)toCheck);
 
                                 map.addBoost(boost);
-                                if(boost.getType() == BoostType.money) {
+                                if(boost.getType() == BoostType.COIN) {
                                 	boost.setVelY(7);
                                 	e.setCoins(e.getCoins()+1);
                                 }
