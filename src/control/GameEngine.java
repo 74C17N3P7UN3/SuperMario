@@ -97,7 +97,7 @@ public class GameEngine implements Runnable {
             
             if (mapManager.getMario().isInvincible()) {
             	if(lastTimeInvincible == 0) lastTimeInvincible = now / 1000000000;
-            	if((System.nanoTime()/1000000000 - lastTimeInvincible) > 0.5) {
+            	if((System.nanoTime()/1000000000 - lastTimeInvincible) >= 2) {
             		mapManager.getMario().setInvincible(false);
             		lastTimeInvincible = 0;
             	}
@@ -205,6 +205,7 @@ public class GameEngine implements Runnable {
         if (mapManager.getEndPoint().isTouched()) return;
 
         Mario mario = mapManager.getMario();
+        
 
         // TODO: Remove
         if (input == ButtonAction.CHEAT)
@@ -220,6 +221,9 @@ public class GameEngine implements Runnable {
         if (input == ButtonAction.FIRE) {
         	if(mario.isFire())
         		mario.fire(mapManager);
+        }
+        if (input == ButtonAction.ENTER && (gameStatus == GameStatus.GAME_OVER || gameStatus == GameStatus.MISSION_PASSED)) {
+        	reset();
         }
         if (input == ButtonAction.RUN) {
         	if(mario.getVelX() < 0)
@@ -244,8 +248,10 @@ public class GameEngine implements Runnable {
     private void reset() {
         resetCamera();
         soundManager.restartTheme();
-
-        setGameStatus(GameStatus.START_SCREEN);
+        mapManager.resetMap(this);
+        createMap("map-01");
+        
+        setGameStatus(GameStatus.RUNNING);
     }
 
     /**

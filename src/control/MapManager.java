@@ -111,6 +111,7 @@ public class MapManager {
                     mario.setMarioStar();
                 }
                 if(boost.getType() == BoostType.fireFlower){
+                	mario.setMarioBig();
                     mario.setMarioFire();
                 }
                 if(boost.getType() == BoostType.mushroom1Up) {
@@ -214,7 +215,7 @@ public class MapManager {
                     mario.setMarioBig();
                     mario.setInvincible(true);
                 }else {
-                	//e.setGameStatus(GameStatus.GAME_OVER);
+                	e.setGameStatus(GameStatus.GAME_OVER);
                 }
             }
             

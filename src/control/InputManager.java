@@ -54,6 +54,9 @@ public class InputManager implements KeyListener, MouseListener {
         	currentAction = ButtonAction.FIRE;
         if (keyCode == KeyEvent.VK_X)
         	currentAction = ButtonAction.RUN;
+        if (keyCode == KeyEvent.VK_ENTER) {
+        	currentAction = ButtonAction.ENTER;
+        }
 
         notifyInput(currentAction);
     }
