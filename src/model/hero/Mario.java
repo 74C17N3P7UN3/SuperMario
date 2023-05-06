@@ -144,10 +144,7 @@ public class Mario extends GameObject {
     }
 
 	public void fire(MapManager mapManager) {
-		//if(TODO: verificare se mario ha come style un immagine di sinistra o di destra)
-		//	mapManager.addFireball(marioForm.fire(true, getX(), getY()));
-		//else
-			mapManager.addFireball(marioForm.fire(false, getX(), getY()));
+		mapManager.addFireball(marioForm.fire(toRight, getX(), getY()));
 	}
 
     /* ---------- Getters / Setters ---------- */

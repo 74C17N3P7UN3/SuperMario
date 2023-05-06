@@ -28,6 +28,8 @@ public class MapManager {
     private Map map;
     private MapCreator mapCreator;
     private Camera camera;
+    private GameEngine e;
+    ArrayList<GameObject> disposal = new ArrayList<>();
 
     public MapManager(Camera camera) {
     	this.camera = camera;
@@ -41,9 +43,10 @@ public class MapManager {
      * @param mapName     The name of the map to be loaded.
      * @return If the map was created successfully.
      */
-    public boolean createMap(ImageLoader imageLoader, String mapName) {
+    public boolean createMap(ImageLoader imageLoader, String mapName, GameEngine Engine) {
         mapCreator = new MapCreator(imageLoader, camera);
         map = mapCreator.createMap(mapName);
+        e = Engine;
 
         return map != null;
     }
@@ -73,13 +76,11 @@ public class MapManager {
         getMario().resetLocation();
         engine.resetCamera();
 
-        createMap(engine.getImageLoader(), map.getName());
+        createMap(engine.getImageLoader(), map.getName(),engine);
     }
 
     public void checkCollisions(GameEngine e) {
         Mario mario = getMario();
-
-        ArrayList<GameObject> disposal = new ArrayList<>();
 
         checkBlockCollisions(mario);
         checkEnemyCollision(mario,e);
@@ -94,9 +95,9 @@ public class MapManager {
             checkBlockCollisions(enemy);
         }
         
-        /*for(Fireball fireball : map.getFireballs()) {
-        	checkFireballCollisions(fireball);
-        }*/
+        for(Fireball fireball : map.getFireballs()) {
+        	checkBlockCollisions(fireball);
+        }
 
         //BOOSTS
 
@@ -125,6 +126,7 @@ public class MapManager {
         for(GameObject object : disposal) {
             if (object instanceof Boost) map.getBoosts().remove((Boost) object);
             if (object instanceof Enemy) map.getEnemies().remove((Enemy) object);
+            if (object instanceof Fireball) map.getFireballs().remove((Fireball) object);
         }
 
     }
@@ -134,30 +136,35 @@ public class MapManager {
         for(Brick block : map.getBricks()){
             //checks bottom and upper collision
             if(toCheck.getVerticalBounds().intersects(block.getBounds())){
-                if(toCheck.getVelY() < 0){
+                if(toCheck.getVelY() < 0 && !(toCheck instanceof Fireball)){
                     toCheck.setVelY(0);
                     toCheck.setFalling(false);
-                }
-                else if(toCheck.isJumping()){
+                }else if(toCheck instanceof Fireball) {
+                	toCheck.setVelY(3);
+                }else if(toCheck.isJumping()){
                     if(block instanceof SurpriseBrick){
+                    	if(toCheck instanceof Mario) {
+                    		int n = map.getPositionBlock((int)block.getX(),(int)block.getY());
+                            if(((SurpriseBrick) map.getBricks().get(n)).getBoost()){
+                                Boost boost = new Boost(block.getX(), block.getY()-48, mapCreator.getVoidBoost());
 
-                        int n = map.getPositionBlock((int)block.getX(),(int)block.getY());
-                        if(((SurpriseBrick) map.getBricks().get(n)).getBoost()){
-                            Boost boost = new Boost(block.getX(), block.getY()-48, mapCreator.getVoidBoost());
+                                boost.setType(mapCreator, n, (Mario)toCheck);
 
-                            boost.setType(mapCreator, n, (Mario)toCheck);
+                                map.addBoost(boost);
+                                if(boost.getType() == BoostType.money) {
+                                	boost.setVelY(7);
+                                	e.setCoins(e.getCoins()+1);
+                                }
 
-                            map.addBoost(boost);
-                            if(boost.getType() == BoostType.money)boost.setVelY(7);
-
-                            ((SurpriseBrick) map.getBricks().get(n)).setBoost(false);
-                            map.getBricks().get(n).setStyle(mapCreator.getEmptySurpriseBrick());
+                                ((SurpriseBrick) map.getBricks().get(n)).setBoost(false);
+                                map.getBricks().get(n).setStyle(mapCreator.getEmptySurpriseBrick());
+                            }  
                         }
                     }
-
                     toCheck.setVelY(0);
                     toCheck.setFalling(true);
                 }
+                    
                 if(toCheck.getY()+48 > block.getY() && !toCheck.isJumping()){
                     toCheck.setY(block.getY()-48);
                 }
@@ -172,7 +179,7 @@ public class MapManager {
                         toCheck.setVelX(0);
                     else if(toCheck instanceof Enemy || toCheck instanceof Boost)
                         toCheck.setVelX(-toCheck.getVelX());
-
+                    
                 }else if(toCheck.getVelX() < 0){
 
                     if(toCheck instanceof Mario)
@@ -180,7 +187,11 @@ public class MapManager {
                     else if(toCheck instanceof Enemy || toCheck instanceof Boost)
                         toCheck.setVelX(-toCheck.getVelX());
                 }
+                if(toCheck instanceof Fireball)  disposal.add(toCheck);
             }
+            
+            if(toCheck instanceof Fireball && toCheck.getY() >= 48*14) disposal.add(toCheck); 
+            
         }
         if(air){
             toCheck.setFalling(true);
@@ -189,7 +200,6 @@ public class MapManager {
     }
 
     public void checkEnemyCollision(Mario mario,GameEngine e){
-        ArrayList<Enemy> disposal = new ArrayList<Enemy>();
         for(Enemy enemy : map.getEnemies()){
             if((mario.isStar() || mario.isBabyStar()) && mario.getBounds().intersects(enemy.getBounds())) disposal.add(enemy);
             else if(mario.getVerticalBounds().intersects(enemy.getVerticalBounds()) && mario.getVelY() < 0){
@@ -207,9 +217,13 @@ public class MapManager {
                 	//e.setGameStatus(GameStatus.GAME_OVER);
                 }
             }
-        }
-        for(Enemy enemy : disposal){
-            map.getEnemies().remove(enemy);
+            
+            for (Fireball fireball : map.getFireballs()) {
+            	if(fireball.getHorizontalBounds().intersects(enemy.getHorizontalBounds())) {
+            		disposal.add(enemy);
+            		disposal.add(fireball);
+            	}
+            }
         }
     }
     

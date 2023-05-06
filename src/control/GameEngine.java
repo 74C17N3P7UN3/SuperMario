@@ -34,6 +34,7 @@ public class GameEngine implements Runnable {
     private GameStatus gameStatus;
     private Thread thread;
     private boolean isRunning;
+    private int time, coins;
 
     public GameEngine() {
         camera = new Camera();
@@ -83,7 +84,7 @@ public class GameEngine implements Runnable {
         double amountOfTicks = 60.0;
         double ns = 1000000000 / amountOfTicks;
         double delta = 0;
-        long lastTimeInvincible = 0, lastTimeStar = 0;
+        long lastTimeInvincible = 0, lastTimeStar = 0,lastTimeCheck = 0;
 
         // TODO: Remove
         long totalFrames = 0;
@@ -93,6 +94,7 @@ public class GameEngine implements Runnable {
             long now = System.nanoTime();
             delta += (now - lastTime) / ns;
             lastTime = now;
+            
             if (mapManager.getMario().isInvincible()) {
             	if(lastTimeInvincible == 0) lastTimeInvincible = now / 1000000000;
             	if((System.nanoTime()/1000000000 - lastTimeInvincible) > 0.5) {
@@ -108,7 +110,12 @@ public class GameEngine implements Runnable {
             		lastTimeStar = 0;
             	}
             }
-
+            
+            if(lastTimeCheck == 0) lastTimeCheck = now / 1000000000;
+            if(System.nanoTime() / 1000000000 - lastTimeCheck >= 1) {
+            	time--;
+            	lastTimeCheck = 0;
+            }
 
             while (delta > 0) {
                 if (gameStatus == GameStatus.RUNNING) gameLoop();
@@ -134,8 +141,10 @@ public class GameEngine implements Runnable {
      * @param mapName The name of the map to be loaded.
      */
     private void createMap(String mapName) {
-        boolean loaded = mapManager.createMap(imageLoader, mapName);
-
+        boolean loaded = mapManager.createMap(imageLoader, mapName,this);
+        time = 600;
+        coins = 0;
+        
         if (loaded) {
             setGameStatus(GameStatus.RUNNING);
             soundManager.restartTheme();
@@ -172,6 +181,8 @@ public class GameEngine implements Runnable {
         }
         if (mario.getX() == 9792 && !mario.isJumping() && !mario.isFalling())
             gameStatus = GameStatus.GAME_OVER;
+        if(time == 0)
+        	gameStatus = GameStatus.GAME_OVER;
     }
 
     /**
@@ -305,7 +316,15 @@ public class GameEngine implements Runnable {
     	return this.soundManager;
     }
     
-    public int getWidth() {
-    	return WIDTH;
+    public int getTime() {
+    	return time;
+    }
+    
+    public int getCoins() {
+    	return coins;
+    }
+    
+    public void setCoins(int coins) {
+    	this.coins = coins;
     }
 }
