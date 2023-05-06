@@ -94,7 +94,7 @@ public class GameEngine implements Runnable {
             long now = System.nanoTime();
             delta += (now - lastTime) / ns;
             lastTime = now;
-            
+
             if (mapManager.getMario().isInvincible()) {
             	if(lastTimeInvincible == 0) lastTimeInvincible = now / 1000000000;
             	if((System.nanoTime()/1000000000 - lastTimeInvincible) > 0.5) {
@@ -110,7 +110,7 @@ public class GameEngine implements Runnable {
             		lastTimeStar = 0;
             	}
             }
-            
+
             if(lastTimeCheck == 0) lastTimeCheck = now / 1000000000;
             if(System.nanoTime() / 1000000000 - lastTimeCheck >= 1) {
             	time--;
@@ -144,7 +144,7 @@ public class GameEngine implements Runnable {
         boolean loaded = mapManager.createMap(imageLoader, mapName,this);
         time = 600;
         coins = 0;
-        
+
         if (loaded) {
             setGameStatus(GameStatus.RUNNING);
             soundManager.restartTheme();
@@ -180,7 +180,7 @@ public class GameEngine implements Runnable {
             mario.jump();
         }
         if (mario.getX() == 9792 && !mario.isJumping() && !mario.isFalling())
-            gameStatus = GameStatus.GAME_OVER;
+            gameStatus = GameStatus.MISSION_PASSED;
         if(time == 0)
         	gameStatus = GameStatus.GAME_OVER;
     }
@@ -311,19 +311,19 @@ public class GameEngine implements Runnable {
     public GameStatus getGameStatus() {
         return this.gameStatus;
     }
-    
+
     public SoundManager getSoundManager() {
     	return this.soundManager;
     }
-    
+
     public int getTime() {
     	return time;
     }
-    
+
     public int getCoins() {
     	return coins;
     }
-    
+
     public void setCoins(int coins) {
     	this.coins = coins;
     }

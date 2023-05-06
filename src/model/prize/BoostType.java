@@ -1,9 +1,9 @@
 package model.prize;
 
 public enum BoostType {
-	superMushroom,
-	fireFlower,
-	starMan,
-	mushroom1Up,
-	money,
+	COIN,
+	FIRE_FLOWER,
+	HEART_MUSHROOM,
+	STAR,
+	SUPER_MUSHROOM,
 }

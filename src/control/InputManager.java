@@ -2,8 +2,6 @@ package control;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 /**
  * Handles all the key presses that the player performs to
@@ -12,7 +10,7 @@ import java.awt.event.MouseListener;
  * @author TheInfernalNick
  * @version 0.1.0
  */
-public class InputManager implements KeyListener, MouseListener {
+public class InputManager implements KeyListener {
     private final GameEngine engine;
 
     InputManager(GameEngine engine) {
@@ -20,11 +18,11 @@ public class InputManager implements KeyListener, MouseListener {
     }
 
     /**
-     * Signals the {@link GameEngine} with the currently
-     * pressed or clicked {@link ButtonAction}.
+     * Signals the {@link GameEngine} with the
+     * currently pressed {@link ButtonAction}.
      *
-     * @param input The action performed to be handled by the
-     *               {@link GameEngine#receiveInput(ButtonAction)}.
+     * @param input The action performed to be handled by
+     *              the {@link GameEngine#receiveInput}.
      */
     private void notifyInput(ButtonAction input) {
         if (input != ButtonAction.NO_ACTION)
@@ -41,9 +39,6 @@ public class InputManager implements KeyListener, MouseListener {
         int keyCode = e.getKeyCode();
         ButtonAction currentAction = ButtonAction.NO_ACTION;
 
-        // TODO: Remove
-        if (keyCode == KeyEvent.VK_C)
-            currentAction = ButtonAction.CHEAT;
         if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_SPACE)
             currentAction = ButtonAction.JUMP;
         if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D)
@@ -51,9 +46,11 @@ public class InputManager implements KeyListener, MouseListener {
         if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A)
             currentAction = ButtonAction.M_LEFT;
         if (keyCode == KeyEvent.VK_Z)
-        	currentAction = ButtonAction.FIRE;
+            currentAction = ButtonAction.FIRE;
         if (keyCode == KeyEvent.VK_X)
-        	currentAction = ButtonAction.RUN;
+            currentAction = ButtonAction.RUN;
+        if (keyCode == KeyEvent.VK_C)
+            currentAction = ButtonAction.CHEAT;
 
         notifyInput(currentAction);
     }
@@ -67,7 +64,6 @@ public class InputManager implements KeyListener, MouseListener {
     public void keyReleased(KeyEvent e) {
         int keyCode = e.getKeyCode();
 
-        // TODO: Remove the cheat key
         if (keyCode == KeyEvent.VK_C || keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_LEFT)
             notifyInput(ButtonAction.ACTION_COMPLETED);
     }
@@ -75,20 +71,5 @@ public class InputManager implements KeyListener, MouseListener {
     /* ---------- Not needed implemented methods ---------- */
 
     @Override
-    public void keyTyped(KeyEvent e) {}
-
-    @Override
-    public void mouseClicked(MouseEvent e) {}
-
-    @Override
-    public void mouseEntered(MouseEvent e) {}
-
-    @Override
-    public void mouseExited(MouseEvent e) {}
-
-    @Override
-    public void mousePressed(MouseEvent e) {}
-
-    @Override
-    public void mouseReleased(MouseEvent e) {}
+    public void keyTyped(KeyEvent e) { }
 }

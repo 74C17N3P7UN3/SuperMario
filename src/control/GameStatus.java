@@ -1,8 +1,7 @@
 package control;
 
 /**
- * Defines all the game states
- * and currently active view.
+ * The possible view states.
  *
  * @author TacitNeptune
  * @version 1.0.0

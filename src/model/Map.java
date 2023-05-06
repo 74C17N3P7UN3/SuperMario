@@ -25,7 +25,7 @@ public class Map {
     private ArrayList<Enemy> enemies = new ArrayList<>();
 
     private ArrayList<Boost> boosts = new ArrayList<>();
-    
+
     private ArrayList<Fireball> fireballs = new ArrayList<>();
 
     public Map(String mapName) {
@@ -44,7 +44,7 @@ public class Map {
     public void addBoost(Boost boost) {
     	this.boosts.add(boost);
     }
-    
+
     public void addFireBall(Fireball fireball) {
     	this.fireballs.add(fireball);
     }
@@ -77,14 +77,14 @@ public class Map {
     private void drawBoosts(Graphics2D g2D) {
         for (int i = boosts.size() - 1; i >= 0; i--) {
             Boost boost = boosts.get(i);
-            if (boost.getType() == BoostType.money && boost.getVelY() == 0) {
+            if (boost.getType() == BoostType.COIN && boost.getVelY() == 0) {
                 boosts.remove(boost);
             } else {
                 boost.drawObject(g2D);
             }
         }
     }
-    
+
     private void drawFireballs(Graphics2D g2D) {
     	for (Fireball fireball : fireballs) {
     		fireball.drawObject(g2D);
@@ -141,7 +141,7 @@ public class Map {
     public ArrayList<Brick> getBricks(){
     	return bricks;
     }
-    
+
     public ArrayList<Fireball> getFireballs(){
     	return fireballs;
     }

@@ -1,16 +1,14 @@
 package control;
 
 /**
- * Defines all the states that could be
- * inputted, modifying the game state.
+ * The states that can be inputted.
  *
  * @author TacitNeptune
- * @version 0.1.2
+ * @version 1.0.0
  */
 public enum ButtonAction {
     ACTION_COMPLETED,
-    CHEAT, // TODO: Remove
-    CROUCH,
+    CHEAT,
     FIRE,
     JUMP,
     M_LEFT,

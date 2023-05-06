@@ -5,15 +5,11 @@ import model.brick.*;
 import model.enemy.Enemy;
 import model.hero.Fireball;
 import model.hero.Mario;
-import model.hero.MarioForm;
 import model.prize.Boost;
 import model.prize.BoostType;
 import view.ImageLoader;
-import control.GameEngine;
-import control.GameStatus;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
@@ -86,6 +82,7 @@ public class MapManager {
         checkEnemyCollision(mario,e);
         if(mario.getX() >= ((48 * 198) - 20)){
             getEndPoint().setTouched(true);
+            mario.setVelX(5);
         }
         if(mario.getY() >= (48 * 14)) {
         	e.setGameStatus(GameStatus.GAME_OVER);
@@ -103,19 +100,19 @@ public class MapManager {
 
         for(Boost boost : mapCreator.getBoosts()){
             if(boost.getBounds().intersects(mario.getBounds())) {
-                if(boost.getType() == BoostType.superMushroom){
+                if(boost.getType() == BoostType.SUPER_MUSHROOM){
                     mario.setY(mario.getY()-48);
                     mario.setMarioBig();
                 }
-                if(boost.getType() == BoostType.starMan){
+                if(boost.getType() == BoostType.STAR){
                     mario.setMarioStar();
                 }
-                if(boost.getType() == BoostType.fireFlower){
+                if(boost.getType() == BoostType.FIRE_FLOWER){
                     mario.setMarioFire();
                 }
-                if(boost.getType() == BoostType.mushroom1Up) {
+                if(boost.getType() == BoostType.HEART_MUSHROOM) {
                 	//ciao;
-                }	
+                }
                 disposal.add(boost);
             }
 
@@ -226,7 +223,7 @@ public class MapManager {
             }
         }
     }
-    
+
     //TODO: sistemare metodo per il movimento delle fireball
     /*public void checkFireballCollisions(GameObject toCheck) {
     	ArrayList<Fireball> disposal = new ArrayList<Fireball>();
@@ -235,7 +232,7 @@ public class MapManager {
             if(toCheck.getVerticalBounds().intersects(block.getBounds())){
             	toCheck.setVelY(3);
             }
-    		
+
         	//checks right and left collision
             if(toCheck.getHorizontalBounds().intersects(block.getHorizontalBounds())){
             	disposal.add((Fireball) toCheck);
@@ -253,11 +250,11 @@ public class MapManager {
     public void updateLocations() {
         if (map != null) map.updateLocations();
     }
-    
+
     public void addFireball(Fireball fireball) {
     	map.addFireBall(fireball);
     }
-    
+
     /* ---------- Getters / Setters ---------- */
 
     public EndFlag getEndPoint() {

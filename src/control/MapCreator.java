@@ -60,7 +60,7 @@ public class MapCreator {
 
         voidBoost = imageLoader.getImage(sprite,4,2,48,48);
         fireball = imageLoader.getImage(sprite, 2, 3, 48, 48);
-        
+
         this.camera = camera;
     }
 
@@ -114,14 +114,14 @@ public class MapCreator {
                 if (currentPixel == goombaRGB) {
                     enemy = new Goomba(xLocation, yLocation, goombaLeft);
                     ((Goomba) enemy).setRightImage(goombaRight);
-                    if(((Goomba)enemy).getX() > camera.getX() + GameEngine.WIDTH)
-                    	((Goomba) enemy).setVelX(0);
+                    if(enemy.getX() > camera.getX() + GameEngine.WIDTH)
+                    	enemy.setVelX(0);
                 }
                 if (currentPixel == koopaRGB) {
                     enemy = new Koopa(xLocation, yLocation, koopaLeft);
                     ((Koopa) enemy).setRightImage(koopaRight);
-                    if(((Koopa)enemy).getX() > camera.getX() + GameEngine.WIDTH)
-                    	((Koopa) enemy).setVelX(0);
+                    if(enemy.getX() > camera.getX() + GameEngine.WIDTH)
+                    	enemy.setVelX(0);
                 }
 
                 if (brick != null) createdMap.addBrick(brick);
@@ -149,7 +149,7 @@ public class MapCreator {
     public BufferedImage getEmptySurpriseBrick() {
         return emptySurpriseBrick;
     }
-    
+
     public BufferedImage getFireFlower() {
     	return fireFlower;
     }
@@ -173,7 +173,7 @@ public class MapCreator {
     public BufferedImage getVoidBoost(){
         return voidBoost;
     }
-    
+
     public BufferedImage getFireball() {
     	return fireball;
     }
