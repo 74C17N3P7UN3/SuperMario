@@ -48,9 +48,10 @@ public class InputManager implements KeyListener {
         if (keyCode == KeyEvent.VK_Z)
             currentAction = ButtonAction.FIRE;
         if (keyCode == KeyEvent.VK_X)
-            currentAction = ButtonAction.RUN;
-        if (keyCode == KeyEvent.VK_C)
-            currentAction = ButtonAction.CHEAT;
+        	currentAction = ButtonAction.RUN;
+        if (keyCode == KeyEvent.VK_ENTER) {
+        	currentAction = ButtonAction.ENTER;
+        }
 
         notifyInput(currentAction);
     }
