@@ -190,7 +190,7 @@ public class GameEngine implements Runnable {
      * @param input The inputted key-press.
      */
     public void receiveInput(ButtonAction input) {
-        if (mapManager.getEndPoint().isTouched()) return;
+        if (mapManager.getEndPoint().isTouched() && input != ButtonAction.ENTER) return;
 
         Mario mario = mapManager.getMario();
 
