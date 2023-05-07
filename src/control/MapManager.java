@@ -7,24 +7,23 @@ import model.hero.Fireball;
 import model.hero.Mario;
 import model.boost.Boost;
 import model.boost.BoostType;
-import view.ImageLoader;
 
 import java.awt.*;
 import java.util.ArrayList;
 
+// FIXME: Calza Reminder
 /**
  * Creates and handles all the game-level collisions and
  * behaviours. It provides checks and low-level conditions
  * for working in sync with the {@link GameEngine}.
  *
- * @author TacitNeptune
  * @version 0.1.0
  */
 public class MapManager {
     private Map map;
     private MapCreator mapCreator;
     private Camera camera;
-    private GameEngine e;
+    private GameEngine engine;
     ArrayList<GameObject> disposal = new ArrayList<>();
 
     public MapManager(Camera camera) {
@@ -34,15 +33,13 @@ public class MapManager {
     /**
      * Creates the map using the {@link MapCreator}.
      *
-     * @param imageLoader The loader responsible for
-     *                    drawing the map in the creator.
      * @param mapName     The name of the map to be loaded.
      * @return If the map was created successfully.
      */
-    public boolean createMap(ImageLoader imageLoader, String mapName, GameEngine Engine) {
-        mapCreator = new MapCreator(imageLoader, camera);
+    public boolean createMap(String mapName, GameEngine engine) {
+        mapCreator = new MapCreator(camera);
         map = mapCreator.createMap(mapName);
-        e = Engine;
+        this.engine = engine;
 
         return map != null;
     }
@@ -54,13 +51,7 @@ public class MapManager {
      * @param g2D The Graphics engine to draw the map.
      */
     public void drawMap(Graphics2D g2D) {
-        if (map != null) {
-            for(Enemy enemy : map.getEnemies()) {
-                if(enemy.getX() < camera.getX() + GameEngine.WIDTH && enemy.getVelX() == 0)
-                    enemy.setVelX(-3);
-            }
-            map.drawMap(g2D);
-        }
+        if (map != null) map.drawMap(g2D);
     }
 
     /**
@@ -72,20 +63,20 @@ public class MapManager {
         getMario().resetLocation();
         engine.resetCamera();
 
-        createMap(engine.getImageLoader(), map.getName(),engine);
+        createMap(map.getName(),engine);
     }
 
-    public void checkCollisions(GameEngine e) {
+    public void checkCollisions(GameEngine gameEngine) {
         Mario mario = getMario();
 
         checkBlockCollisions(mario);
-        checkEnemyCollision(mario,e);
-        if(mario.getX() >= ((48 * 198) - 20)){
+        checkEnemyCollision(mario, gameEngine);
+        if(mario.getX() >= ((48 * 198) - 20) && mario.getX() < 10992){
             getEndPoint().setTouched(true);
             mario.setVelX(5);
         }
         if(mario.getY() >= (48 * 14)) {
-        	e.setGameStatus(GameStatus.GAME_OVER);
+        	gameEngine.setGameStatus(GameStatus.GAME_OVER);
         }
 
         for(Enemy enemy : map.getEnemies()) {
@@ -102,7 +93,7 @@ public class MapManager {
             if(boost.getBounds().intersects(mario.getBounds())) {
                 if(boost.getType() == BoostType.SUPER_MUSHROOM){
                     mario.setY(mario.getY()-48);
-                    mario.setMarioBig();
+                    mario.setMarioSuper();
                 }
                 if(boost.getType() == BoostType.STAR){
                     mario.setMarioStar();
@@ -110,12 +101,12 @@ public class MapManager {
                 if(boost.getType() == BoostType.FIRE_FLOWER){
                     if(mario.isStar()) mario.setIsFire(true);
                     else {
-                        mario.setMarioBig();
+                        mario.setMarioSuper();
                         mario.setMarioFire();
                     }
                 }
                 if(boost.getType() == BoostType.HEART_MUSHROOM) {
-                	//ciao;
+                	// TODO
                 }
                 disposal.add(boost);
             }
@@ -145,20 +136,20 @@ public class MapManager {
                 }else if(toCheck.isJumping()){
                     if(block instanceof SurpriseBrick){
                     	if(toCheck instanceof Mario) {
-                    		int n = map.getPositionBlock((int)block.getX(),(int)block.getY());
-                            if(((SurpriseBrick) map.getBricks().get(n)).getBoost()){
-                                Boost boost = new Boost(block.getX(), block.getY()-48, mapCreator.getVoidBoost());
+                    		int n = map.getBlockPosition((int)block.getX(),(int)block.getY());
+                            if(((SurpriseBrick) map.getBricks().get(n)).isBoost()){
+                                Boost boost = new Boost(block.getX(), block.getY()-48, MapCreator.coin);
 
-                                boost.setType(mapCreator, n, (Mario)toCheck);
+                                boost.setType(n, (Mario) toCheck);
 
                                 map.addBoost(boost);
                                 if(boost.getType() == BoostType.COIN) {
                                 	boost.setVelY(7);
-                                	e.setCoins(e.getCoins()+1);
+                                	engine.setCoins(engine.getCoins()+1);
                                 }
 
                                 ((SurpriseBrick) map.getBricks().get(n)).setBoost(false);
-                                map.getBricks().get(n).setStyle(mapCreator.getEmptySurpriseBrick());
+                                map.getBricks().get(n).setStyle(MapCreator.emptySurpriseBrick);
                             }
                         }
                     }
@@ -212,7 +203,7 @@ public class MapManager {
                     mario.setY(mario.getY()+48);
                     mario.setInvincible(true);
                 }else if(mario.isFire()){
-                    mario.setMarioBig();
+                    mario.setMarioSuper();
                     mario.setInvincible(true);
                 }else {
                 	e.setGameStatus(GameStatus.GAME_OVER);
@@ -230,7 +221,7 @@ public class MapManager {
 
     /**
      * Updates all entity/tiles locations
-     * with {@link Map#updateLocations()}.
+     * with {@link Map#updateLocations}.
      */
     public void updateLocations() {
         if (map != null) map.updateLocations();
@@ -244,6 +235,10 @@ public class MapManager {
 
     public EndFlag getEndPoint() {
         return map.getEndPoint();
+    }
+
+    public Map getMap() {
+        return map;
     }
 
     public Mario getMario() {

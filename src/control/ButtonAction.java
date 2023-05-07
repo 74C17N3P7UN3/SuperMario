@@ -3,12 +3,12 @@ package control;
 /**
  * The states that can be inputted.
  *
- * @author TacitNeptune
  * @version 1.0.0
  */
 public enum ButtonAction {
     ACTION_COMPLETED,
     CHEAT,
+    CROUCH,
     ENTER,
     FIRE,
     JUMP,
@@ -16,5 +16,4 @@ public enum ButtonAction {
     M_RIGHT,
     NO_ACTION,
     RUN,
-    PIPE_ENTER,
 }

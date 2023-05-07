@@ -24,8 +24,7 @@ public abstract class GameObject {
         setLocation(x, y);
         setStyle(style);
 
-        if (style != null)
-            setDimension(style.getHeight(), style.getWidth());
+        if (style != null) setDimension(style.getHeight(), style.getWidth());
 
         setVelX(0);
         setVelY(0);
@@ -52,7 +51,7 @@ public abstract class GameObject {
      * the horizontal position regardless every game tick.
      */
     public void updateLocation() {
-        if(isFalling() || isJumping() && velY > -13)
+        if (isFalling() || isJumping() && velY > -13)
             velY -= gravityAcc;
         y -= velY;
 
@@ -117,10 +116,6 @@ public abstract class GameObject {
         this.velY = velY;
     }
 
-    public double getGravityAcc() {
-        return gravityAcc;
-    }
-
     public void setGravityAcc(double gravityAcc) {
         this.gravityAcc = gravityAcc;
     }
@@ -149,22 +144,22 @@ public abstract class GameObject {
         this.dimension = new Dimension(width, height);
     }
 
-    public Rectangle getVerticalBounds(){
+    public Rectangle getVerticalBounds() {
         double bx = x;
         double by = y - velY;
         double bw = dimension.width;
-        double bh = dimension.height+velY/3 + 2;
+        double bh = dimension.height + velY / 3 + 2;
 
-        return new Rectangle((int)bx,(int)by,(int)bw,(int)bh);
+        return new Rectangle((int) bx, (int) by, (int) bw, (int) bh);
     }
 
-    public Rectangle getHorizontalBounds(){
-        double bx = x+velX;
+    public Rectangle getHorizontalBounds() {
+        double bx = x + velX;
         double by = y - 4;
-        double bw = dimension.width+velX/2;
+        double bw = dimension.width + velX / 2;
         double bh = dimension.height;
 
-        return new Rectangle((int)bx,(int)by,(int)bw,(int)bh);
+        return new Rectangle((int) bx, (int) by, (int) bw, (int) bh);
     }
 
     public Rectangle getBounds() {

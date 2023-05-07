@@ -2,12 +2,10 @@ package control;
 
 import model.EndFlag;
 import model.Map;
-import model.brick.*;
-import model.enemy.Enemy;
-import model.enemy.Goomba;
-import model.enemy.Koopa;
-import model.hero.Mario;
 import model.boost.Boost;
+import model.brick.*;
+import model.enemy.Goomba;
+import model.hero.Mario;
 import utils.ImageImporter;
 import view.ImageLoader;
 
@@ -18,52 +16,43 @@ import java.util.ArrayList;
 /**
  * Creates the {@link Map} by its given name.
  *
- * @author Bartolomuwu
  * @version 0.1.0
  */
 public class MapCreator {
+    private final Camera camera;
+
     private Map createdMap;
     private BufferedImage mapImage;
-    private Camera camera;
 
-    private final BufferedImage end;
-    private final BufferedImage block, groundBrick, groundBrickBlue, ordinaryBrick, ordinaryBrickBlue, surpriseBrick, emptySurpriseBrick;
-    private final BufferedImage pipeBody, pipeHead;
-    private final BufferedImage goombaLeft, goombaRight, koopaLeft, koopaRight;
-    private final BufferedImage coin, coinBlue, fireFlower, heartMushroom, star, superMushroom;
-    private final BufferedImage voidBoost, fireball;
+    public final static BufferedImage sprite = ImageImporter.loadImage("sprite");
 
-    public MapCreator(ImageLoader imageLoader, Camera camera) {
-        BufferedImage sprite = ImageImporter.loadImage("sprite");
+    public final static BufferedImage end = ImageLoader.getImage(sprite, 2, 2, 48, 48);
+    public final static BufferedImage fireball = ImageLoader.getImage(sprite, 0, 4, 25, 22);
 
-        end = imageLoader.getImage(sprite, 4, 0, 48, 48);
+    public final static BufferedImage block = ImageLoader.getImage(sprite, 2, 3, 48, 48);
+    public final static BufferedImage groundBrick = ImageLoader.getImage(sprite, 0, 1, 48, 48);
+    public final static BufferedImage groundBrickBlue = ImageLoader.getImage(sprite, 1, 1, 48, 48);
+    public final static BufferedImage ordinaryBrick = ImageLoader.getImage(sprite, 0, 0, 48, 48);
+    public final static BufferedImage ordinaryBrickBlue = ImageLoader.getImage(sprite, 1, 0, 48, 48);
+    public final static BufferedImage surpriseBrick = ImageLoader.getImage(sprite, 2, 0, 48, 48);
+    public final static BufferedImage emptySurpriseBrick = ImageLoader.getImage(sprite, 2, 1, 48, 48);
 
-        block = imageLoader.getImage(sprite, 1, 1, 48, 48);
-        groundBrick = imageLoader.getImage(sprite, 4, 1, 48, 48);
-        groundBrickBlue = imageLoader.getImage(sprite, 2, 2, 48, 48);
-        ordinaryBrick = imageLoader.getImage(sprite, 0, 0, 48, 48);
-        ordinaryBrickBlue = imageLoader.getImage(sprite, 1, 2, 48, 48);
-        surpriseBrick = imageLoader.getImage(sprite, 1, 0, 48, 48);
-        emptySurpriseBrick = imageLoader.getImage(sprite, 0, 1, 48, 48);
+    public final static BufferedImage pipeBodyH = ImageLoader.getImage(sprite, 3, 1, 96, 48);
+    public final static BufferedImage pipeHeadH = ImageLoader.getImage(sprite, 3, 0, 96, 48);
+    public final static BufferedImage pipeBodyV = ImageLoader.getImage(sprite, 4, 2, 48, 96);
+    public final static BufferedImage pipeHeadV = ImageLoader.getImage(sprite, 3, 2, 48, 96);
 
-        pipeBody = imageLoader.getImage(sprite, 2, 1, 96, 48);
-        pipeHead = imageLoader.getImage(sprite, 2, 0, 96, 48);
+    public final static BufferedImage goombaLeft = ImageLoader.getImage(sprite, 0, 3, 48, 48);
+    public final static BufferedImage goombaRight = ImageLoader.getImage(sprite, 1, 3, 48, 48);
 
-        goombaLeft = imageLoader.getImage(sprite, 1, 3, 48, 48);
-        goombaRight = imageLoader.getImage(sprite, 4, 3, 48, 48);
-        koopaLeft = imageLoader.getImage(sprite, 0, 2, 48, 64);
-        koopaRight = imageLoader.getImage(sprite, 3, 2, 48, 64);
+    public final static BufferedImage coin = ImageLoader.getImage(sprite, 0, 2, 48, 48);
+    public final static BufferedImage coinBlue = ImageLoader.getImage(sprite, 1, 2, 48, 48);
+    public final static BufferedImage fireFlower = ImageLoader.getImage(sprite, 3, 4, 48, 48);
+    public final static BufferedImage heartMushroom = ImageLoader.getImage(sprite, 2, 4, 48, 48);
+    public final static BufferedImage star = ImageLoader.getImage(sprite, 4, 4, 48, 48);
+    public final static BufferedImage superMushroom = ImageLoader.getImage(sprite, 1, 4, 48, 48);
 
-        coin = imageLoader.getImage(sprite, 0, 4, 48, 48);
-        coinBlue = imageLoader.getImage(sprite, 4, 2, 48, 48);
-        fireFlower = imageLoader.getImage(sprite, 3, 4, 48, 48);
-        heartMushroom = imageLoader.getImage(sprite, 2, 4, 48, 48);
-        star = imageLoader.getImage(sprite, 4, 4, 48, 48);
-        superMushroom = imageLoader.getImage(sprite, 1, 4, 48, 48);
-
-        voidBoost = imageLoader.getImage(sprite,4,2,48,48);
-        fireball = imageLoader.getImage(sprite, 2, 3, 48, 48);
-
+    public MapCreator(Camera camera) {
         this.camera = camera;
     }
 
@@ -87,12 +76,13 @@ public class MapCreator {
         int ordinaryBrickBlueRGB = new Color(0, 162, 232).getRGB();
         int surpriseBrickRGB = new Color(163, 73, 164).getRGB();
 
-        int pipeBodyRGB = new Color(181, 230, 29).getRGB();
-        int pipeHeadRGB = new Color(34, 177, 76).getRGB();
+        int pipeBodyHRGB = new Color(181, 230, 29).getRGB();
+        int pipeHeadHRGB = new Color(34, 177, 76).getRGB();
+        int pipeBodyVRGB = new Color(0, 212, 145).getRGB();
+        int pipeHeadVRGB = new Color(0, 151, 104).getRGB();
 
         int goombaRGB = new Color(63, 72, 204).getRGB();
-        int koopaRGB = new Color(255, 174, 201).getRGB();
-        
+
         int coinBlueRGB = new Color(153, 217, 234).getRGB();
 
         for (int x = 0; x < mapImage.getWidth(); x++) {
@@ -111,31 +101,27 @@ public class MapCreator {
                 if (currentPixel == ordinaryBrickRGB) brick = new OrdinaryBrick(xLocation, yLocation, ordinaryBrick);
                 if (currentPixel == ordinaryBrickBlueRGB) brick = new OrdinaryBrickBlue(xLocation, yLocation, ordinaryBrickBlue);
                 if (currentPixel == surpriseBrickRGB) {
+                    // Disguised SurpriseBricks
                     if (yLocation == 432 && (xLocation == 4512 || xLocation == 4848))
                         brick = new SurpriseBrick(xLocation, yLocation, ordinaryBrick);
                     else brick = new SurpriseBrick(xLocation, yLocation, surpriseBrick);
                 }
+
+                if (currentPixel == pipeBodyHRGB) brick = new PipeBody(xLocation, yLocation, pipeBodyH);
+                if (currentPixel == pipeHeadHRGB) brick = new PipeHead(xLocation, yLocation, pipeHeadH);
+                if (currentPixel == pipeBodyVRGB) brick = new PipeBody(xLocation, yLocation, pipeBodyV);
+                if (currentPixel == pipeHeadVRGB) brick = new PipeHead(xLocation, yLocation, pipeHeadV);
+
                 if (currentPixel == coinBlueRGB) brick = new CoinBlue(xLocation, yLocation, coinBlue);
 
-                if (currentPixel == pipeBodyRGB) brick = new PipeBody(xLocation, yLocation, pipeBody);
-                if (currentPixel == pipeHeadRGB) brick = new PipeHead(xLocation, yLocation, pipeHead);
-
-                Enemy enemy = null;
+                Goomba goomba = null;
                 if (currentPixel == goombaRGB) {
-                    enemy = new Goomba(xLocation, yLocation, goombaLeft);
-                    ((Goomba) enemy).setRightImage(goombaRight);
-                    if(enemy.getX() > camera.getX() + GameEngine.WIDTH)
-                    	enemy.setVelX(0);
-                }
-                if (currentPixel == koopaRGB) {
-                    enemy = new Koopa(xLocation, yLocation, koopaLeft);
-                    ((Koopa) enemy).setRightImage(koopaRight);
-                    if(enemy.getX() > camera.getX() + GameEngine.WIDTH)
-                    	enemy.setVelX(0);
+                    goomba = new Goomba(xLocation, yLocation, goombaLeft);
+                    goomba.setRightImage(goombaRight);
                 }
 
                 if (brick != null) createdMap.addBrick(brick);
-                if (enemy != null) createdMap.addEnemy(enemy);
+                if (goomba != null) createdMap.addEnemy(goomba);
             }
         }
 
@@ -146,45 +132,5 @@ public class MapCreator {
 
     public ArrayList<Boost> getBoosts() {
         return createdMap.getBoosts();
-    }
-
-    public ArrayList<Enemy> getEnemies() {
-        return createdMap.getEnemies();
-    }
-
-    public BufferedImage getCoin() {
-        return coin;
-    }
-
-    public BufferedImage getEmptySurpriseBrick() {
-        return emptySurpriseBrick;
-    }
-
-    public BufferedImage getFireFlower() {
-    	return fireFlower;
-    }
-
-    public BufferedImage getHeartMushroom() {
-        return heartMushroom;
-    }
-
-    public BufferedImage getMapImage() {
-        return mapImage;
-    }
-
-    public BufferedImage getStar() {
-        return star;
-    }
-
-    public BufferedImage getSuperMushroom() {
-        return superMushroom;
-    }
-
-    public BufferedImage getVoidBoost(){
-        return voidBoost;
-    }
-
-    public BufferedImage getFireball() {
-    	return fireball;
     }
 }

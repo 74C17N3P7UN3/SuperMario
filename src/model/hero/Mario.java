@@ -2,7 +2,6 @@ package model.hero;
 
 import control.Camera;
 import control.GameEngine;
-import control.MapCreator;
 import control.MapManager;
 import model.GameObject;
 import view.Animation;
@@ -11,6 +10,7 @@ import view.ImageLoader;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+// FIXME: Calza Reminder
 /**
  * The main character of the game.
  *
@@ -94,7 +94,7 @@ public class Mario extends GameObject {
         setStyle(marioForm.getCurrentStyle(toRight, false, false));
     }
 
-    public void setMarioBig() {
+    public void setMarioSuper() {
         setDimension(96, 48);
 
         ImageLoader imageLoader = new ImageLoader();
@@ -116,7 +116,7 @@ public class Mario extends GameObject {
 
     public void setMarioFire() {
         ImageLoader imageLoader = new ImageLoader();
-        
+
         BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.FIRE);
         BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.FIRE);
 
@@ -124,7 +124,7 @@ public class Mario extends GameObject {
         marioForm = new MarioForm(animation, true, true, false, false);
         setStyle(marioForm.getCurrentStyle(toRight, false, false));
     }
-    
+
     public void setMarioStar() {
         ImageLoader imageLoader = new ImageLoader();
 
@@ -148,22 +148,20 @@ public class Mario extends GameObject {
 	public void fire(MapManager mapManager) {
 		mapManager.addFireball(marioForm.fire(toRight, getX(), getY()));
 	}
-	
-	public void tp(boolean up) {
-		if(up) {
-			setX(10848);
-			setY(0);
-		}
-	}
-	
+
+    public void pipeTeleport(int destinationX, int destinationY) {
+        setVelX(0);
+        setVelY(0);
+        setX(destinationX);
+        setY(destinationY);
+        setJumping(false);
+        setFalling(true);
+    }
+
     /* ---------- Getters / Setters ---------- */
 
     public MarioForm getMarioForm() {
         return marioForm;
-    }
-
-    public void setMarioForm(MarioForm marioForm) {
-        this.marioForm = marioForm;
     }
 
     public boolean isFire() {
@@ -172,10 +170,6 @@ public class Mario extends GameObject {
 
     public boolean isSuper() {
         return marioForm.isSuper();
-    }
-
-    public Animation getAnimation() {
-        return animation;
     }
 
     public boolean isInvincible() {
@@ -193,9 +187,8 @@ public class Mario extends GameObject {
     public boolean isBabyStar(){
     	return marioForm.isBabyStar();
     }
-    
+
     public void setIsFire(boolean isFire) {
     	marioForm.setIsFire(isFire);
     }
-
 }

@@ -1,12 +1,12 @@
 package model;
 
+import model.boost.Boost;
+import model.boost.BoostType;
 import model.brick.Brick;
 import model.brick.SurpriseBrick;
 import model.enemy.Enemy;
 import model.hero.Fireball;
 import model.hero.Mario;
-import model.boost.Boost;
-import model.boost.BoostType;
 import utils.ImageImporter;
 
 import java.awt.*;
@@ -20,12 +20,9 @@ public class Map {
     private Mario mario;
     private EndFlag endPoint;
 
-    private ArrayList<Brick> bricks = new ArrayList<>();
-
-    private ArrayList<Enemy> enemies = new ArrayList<>();
-
     private ArrayList<Boost> boosts = new ArrayList<>();
-
+    private ArrayList<Brick> bricks = new ArrayList<>();
+    private ArrayList<Enemy> enemies = new ArrayList<>();
     private ArrayList<Fireball> fireballs = new ArrayList<>();
 
     public Map(String mapName) {
@@ -33,20 +30,20 @@ public class Map {
         name = mapName;
     }
 
+    public void addBoost(Boost boost) {
+        boosts.add(boost);
+    }
+
     public void addBrick(Brick brick) {
-        this.bricks.add(brick);
+        bricks.add(brick);
     }
 
     public void addEnemy(Enemy enemy) {
-        this.enemies.add(enemy);
-    }
-
-    public void addBoost(Boost boost) {
-    	this.boosts.add(boost);
+        enemies.add(enemy);
     }
 
     public void addFireBall(Fireball fireball) {
-    	this.fireballs.add(fireball);
+        fireballs.add(fireball);
     }
 
     public void drawMap(Graphics2D g2D) {
@@ -55,9 +52,9 @@ public class Map {
         mario.drawObject(g2D);
         endPoint.drawObject(g2D);
 
+        drawBoosts(g2D);
         drawBricks(g2D);
         drawEnemies(g2D);
-        drawBoosts(g2D);
         drawFireballs(g2D);
     }
 
@@ -65,30 +62,25 @@ public class Map {
         g2D.drawImage(backgroundImage, 0, 0, null);
     }
 
+    private void drawBoosts(Graphics2D g2D) {
+        for (int i = boosts.size() - 1; i >= 0; i--) {
+            Boost boost = boosts.get(i);
+            if (boost.getType() == BoostType.COIN && boost.getVelY() == 0)
+                boosts.remove(boost);
+            else boost.drawObject(g2D);
+        }
+    }
+
     private void drawBricks(Graphics2D g2D) {
-        for (Brick brick : bricks)
-            g2D.drawImage(brick.getStyle(), (int) brick.getX(), (int) brick.getY(), null);
+        for (Brick brick : bricks) g2D.drawImage(brick.getStyle(), (int) brick.getX(), (int) brick.getY(), null);
     }
 
     private void drawEnemies(Graphics2D g2D) {
         for (Enemy enemy : enemies) enemy.drawObject(g2D);
     }
 
-    private void drawBoosts(Graphics2D g2D) {
-        for (int i = boosts.size() - 1; i >= 0; i--) {
-            Boost boost = boosts.get(i);
-            if (boost.getType() == BoostType.COIN && boost.getVelY() == 0) {
-                boosts.remove(boost);
-            } else {
-                boost.drawObject(g2D);
-            }
-        }
-    }
-
     private void drawFireballs(Graphics2D g2D) {
-    	for (Fireball fireball : fireballs) {
-    		fireball.drawObject(g2D);
-    	}
+        for (Fireball fireball : fireballs) fireball.drawObject(g2D);
     }
 
     public void updateLocations() {
@@ -97,26 +89,51 @@ public class Map {
 
         // Updates enemies' locations
         for (Enemy enemy : enemies) enemy.updateLocation();
-        for (Boost boost: boosts) boost.updateLocation();
+        for (Boost boost : boosts) boost.updateLocation();
         for (Fireball fireball : fireballs) fireball.updateLocation();
 
         // Updates flag's location
         endPoint.updateLocation();
     }
 
-    public int getPositionBlock(int x, int y) {
-    	int pos=0;
-    	for(Brick brick : bricks) {
-    		if(brick instanceof SurpriseBrick) {
-    			if(brick.getX() == x && brick.getY() == y)
-    				return pos;
-    		}
-    		pos++;
-    	}
-    	return -1;
+    public int getBlockPosition(int x, int y) {
+        int pos = 0;
+        for (Brick brick : bricks) {
+            if (brick instanceof SurpriseBrick)
+                if (brick.getX() == x && brick.getY() == y)
+                    return pos;
+
+            pos++;
+        }
+
+        return -1;
     }
 
     /* ---------- Getters / Setters ---------- */
+
+    public ArrayList<Boost> getBoosts() {
+        return boosts;
+    }
+
+    public ArrayList<Brick> getBricks() {
+        return bricks;
+    }
+
+    public EndFlag getEndPoint() {
+        return endPoint;
+    }
+
+    public void setEndPoint(EndFlag endPoint) {
+        this.endPoint = endPoint;
+    }
+
+    public ArrayList<Enemy> getEnemies() {
+        return enemies;
+    }
+
+    public ArrayList<Fireball> getFireballs() {
+        return fireballs;
+    }
 
     public Mario getMario() {
         return mario;
@@ -128,29 +145,5 @@ public class Map {
 
     public String getName() {
         return name;
-    }
-
-    public ArrayList<Enemy> getEnemies() {
-        return enemies;
-    }
-
-    public ArrayList<Boost> getBoosts(){
-    	return boosts;
-    }
-
-    public ArrayList<Brick> getBricks(){
-    	return bricks;
-    }
-
-    public ArrayList<Fireball> getFireballs(){
-    	return fireballs;
-    }
-
-    public EndFlag getEndPoint() {
-        return endPoint;
-    }
-
-    public void setEndPoint(EndFlag endPoint) {
-        this.endPoint = endPoint;
     }
 }

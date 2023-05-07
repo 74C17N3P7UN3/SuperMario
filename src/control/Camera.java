@@ -3,11 +3,10 @@ package control;
 /**
  * The camera that follows the player.
  *
- * @author TacitNeptune
- * @version 0.1.1
+ * @version 0.1.2
  */
 public class Camera {
-    private double x, y;
+    private int x, y;
 
     public Camera() {
         x = 0;
@@ -20,28 +19,22 @@ public class Camera {
      * @param xAmount The horizontal increment.
      * @param yAmount The vertical increment.
      */
-    public void moveCam(double xAmount, double yAmount) {
+    public void moveCam(int xAmount, int yAmount) {
         x += xAmount;
         y += yAmount;
     }
 
-	public void tp(boolean up) {
-		if(up)
-			setX(10752);
-	}
-	
     /* ---------- Getters / Setters ---------- */
 
-    public double getX() {
+    public int getX() {
         return x;
     }
 
-    public double getY() {
-        return y;
-    }
-    
-    public void setX(double x) {
-    	this.x = x;
+    public void setX(int x) {
+        this.x = x;
     }
 
+    public int getY() {
+        return y;
+    }
 }

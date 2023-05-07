@@ -1,7 +1,6 @@
 package utils;
 
 import javax.imageio.ImageIO;
-import javax.sound.sampled.Clip;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.Objects;
@@ -10,7 +9,6 @@ import java.util.Objects;
  * Util class responsible for importing images
  * from the media's package by their name.
  *
- * @author TacitNeptune
  * @version 1.0.0
  */
 public class ImageImporter {
@@ -56,9 +54,7 @@ public class ImageImporter {
         try {
             URL url = ImageImporter.class.getResource("/media/" + name + ".png");
             return ImageIO.read(Objects.requireNonNull(url));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception ignored) {}
 
         return null;
     }

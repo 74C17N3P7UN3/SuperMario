@@ -7,7 +7,6 @@ import java.awt.event.KeyListener;
  * Handles all the key presses that the player performs to
  * then notify the performed action to the {@link GameEngine}.
  *
- * @author TheInfernalNick
  * @version 0.1.0
  */
 public class InputManager implements KeyListener {
@@ -41,23 +40,23 @@ public class InputManager implements KeyListener {
 
         if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_SPACE)
             currentAction = ButtonAction.JUMP;
+        if (keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_S)
+            currentAction = ButtonAction.CROUCH;
         if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D)
             currentAction = ButtonAction.M_RIGHT;
         if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A)
             currentAction = ButtonAction.M_LEFT;
-        if (keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_S)
-        	currentAction = ButtonAction.PIPE_ENTER;
 
         if (keyCode == KeyEvent.VK_Z)
             currentAction = ButtonAction.FIRE;
         if (keyCode == KeyEvent.VK_X)
-        	currentAction = ButtonAction.RUN;
+            currentAction = ButtonAction.RUN;
         if (keyCode == KeyEvent.VK_C)
-        	currentAction = ButtonAction.CHEAT;
+            currentAction = ButtonAction.CHEAT;
 
         if (keyCode == KeyEvent.VK_ENTER)
-        	currentAction = ButtonAction.ENTER;
-        
+            currentAction = ButtonAction.ENTER;
+
         notifyInput(currentAction);
     }
 
@@ -77,5 +76,5 @@ public class InputManager implements KeyListener {
     /* ---------- Not needed implemented methods ---------- */
 
     @Override
-    public void keyTyped(KeyEvent e) { }
+    public void keyTyped(KeyEvent e) {}
 }

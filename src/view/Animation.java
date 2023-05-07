@@ -2,6 +2,7 @@ package view;
 
 import java.awt.image.BufferedImage;
 
+// FIXME: Calza Reminder
 /**
  * Defines the properties to animate a certain sprite.
  * The sprite is handled by the calling class, and this
@@ -56,8 +57,8 @@ public class Animation {
      * @param frames The frames of the animation sequence.
      */
     private void nextFrame(BufferedImage[] frames, int animationStar) {
-        if (index + 2 >= 5 || index + 7 >=10) index = 0;
-        
+        if (index + 2 >= 5 || index + 7 >= 10) index = 0;
+
         if(animationStar == 0)
         	currentFrame = frames[index + 2];
         if(animationStar == 1)

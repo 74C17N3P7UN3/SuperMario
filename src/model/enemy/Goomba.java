@@ -8,7 +8,7 @@ public class Goomba extends Enemy {
 
     public Goomba(double x, double y, BufferedImage style) {
         super(x, y, style);
-        setVelX(-3);
+        setVelX(0);
     }
 
     @Override

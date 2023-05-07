@@ -9,7 +9,6 @@ import javax.sound.sampled.FloatControl;
  * Responsible for retrieving and playing the
  * requested tracks from the media's package.
  *
- * @author TacitNeptune
  * @version 1.1.0
  */
 public class SoundManager {

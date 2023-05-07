@@ -3,18 +3,20 @@ package model.brick;
 import java.awt.image.BufferedImage;
 
 public class SurpriseBrick extends Brick {
-	
-	private boolean boost;
-	
+    private boolean boost;
+
     public SurpriseBrick(double x, double y, BufferedImage style) {
         super(x, y, style);
         setBoost(true);
     }
-    
-    public void setBoost(boolean boost) {
-    	this.boost=boost;
+
+    /* ---------- Getters / Setters ---------- */
+
+    public boolean isBoost() {
+        return boost;
     }
-    public boolean getBoost() {
-    	return this.boost;
+
+    public void setBoost(boolean boost) {
+        this.boost = boost;
     }
 }

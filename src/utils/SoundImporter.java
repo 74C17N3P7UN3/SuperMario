@@ -11,7 +11,6 @@ import java.util.Objects;
  * Util class responsible for importing audio tracks
  * from the media's package by their name.
  *
- * @author TacitNeptune
  * @version 1.0.0
  */
 public class SoundImporter {
@@ -40,9 +39,7 @@ public class SoundImporter {
             assert audioSrc != null; // Makes sure that the loaded stream is not null
             InputStream bufferedIn = new BufferedInputStream(audioSrc);
             return AudioSystem.getAudioInputStream(bufferedIn);
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
+        } catch (Exception ignored) {}
 
         return null;
     }
@@ -60,9 +57,7 @@ public class SoundImporter {
             Clip clip = AudioSystem.getClip();
             clip.open(stream);
             return clip;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception ignored) {}
 
         return null;
     }

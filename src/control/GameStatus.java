@@ -3,7 +3,6 @@ package control;
 /**
  * The possible view states.
  *
- * @author TacitNeptune
  * @version 1.0.0
  */
 public enum GameStatus {
