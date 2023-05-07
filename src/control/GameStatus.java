@@ -8,6 +8,7 @@ package control;
 public enum GameStatus {
     GAME_OVER,
     MISSION_PASSED,
+    OUT_OF_TIME,
     RUNNING,
     START_SCREEN,
 }

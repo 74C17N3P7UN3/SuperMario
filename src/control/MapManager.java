@@ -22,13 +22,10 @@ import java.util.ArrayList;
 public class MapManager {
     private Map map;
     private MapCreator mapCreator;
-    private Camera camera;
     private GameEngine engine;
     ArrayList<GameObject> disposal = new ArrayList<>();
 
-    public MapManager(Camera camera) {
-    	this.camera = camera;
-    }
+    public MapManager() {}
 
     /**
      * Creates the map using the {@link MapCreator}.
@@ -37,7 +34,7 @@ public class MapManager {
      * @return If the map was created successfully.
      */
     public boolean createMap(String mapName, GameEngine engine) {
-        mapCreator = new MapCreator(camera);
+        mapCreator = new MapCreator();
         map = mapCreator.createMap(mapName);
         this.engine = engine;
 
@@ -72,8 +69,10 @@ public class MapManager {
         checkBlockCollisions(mario);
         checkEnemyCollision(mario, gameEngine);
         if(mario.getX() >= ((48 * 198) - 20) && mario.getX() < 10992){
-            getEndPoint().setTouched(true);
-            mario.setVelX(5);
+            if (!getEndPoint().isTouched()) {
+                getEndPoint().setTouched(true);
+                GameEngine.playSound("flag");
+            }
         }
         if(mario.getY() >= (48 * 14)) {
         	gameEngine.setGameStatus(GameStatus.GAME_OVER);
@@ -94,6 +93,7 @@ public class MapManager {
                 if(boost.getType() == BoostType.SUPER_MUSHROOM){
                     mario.setY(mario.getY()-48);
                     mario.setMarioSuper();
+                    GameEngine.playSound("super-mario");
                 }
                 if(boost.getType() == BoostType.STAR){
                     mario.setMarioStar();
@@ -107,6 +107,7 @@ public class MapManager {
                 }
                 if(boost.getType() == BoostType.HEART_MUSHROOM) {
                 	// TODO
+                    GameEngine.playSound("one-up");
                 }
                 disposal.add(boost);
             }
@@ -191,7 +192,7 @@ public class MapManager {
 
     }
 
-    public void checkEnemyCollision(Mario mario,GameEngine e){
+    public void checkEnemyCollision(Mario mario, GameEngine engine){
         for(Enemy enemy : map.getEnemies()){
             if((mario.isStar() || mario.isBabyStar()) && mario.getBounds().intersects(enemy.getBounds())) disposal.add(enemy);
             else if(mario.getVerticalBounds().intersects(enemy.getVerticalBounds()) && mario.getVelY() < 0){
@@ -206,7 +207,7 @@ public class MapManager {
                     mario.setMarioSuper();
                     mario.setInvincible(true);
                 }else {
-                	e.setGameStatus(GameStatus.GAME_OVER);
+                	engine.setGameStatus(GameStatus.GAME_OVER);
                 }
             }
 

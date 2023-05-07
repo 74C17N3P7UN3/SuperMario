@@ -147,6 +147,7 @@ public class Mario extends GameObject {
 
 	public void fire(MapManager mapManager) {
 		mapManager.addFireball(marioForm.fire(toRight, getX(), getY()));
+        GameEngine.playSound("fireball");
 	}
 
     public void pipeTeleport(int destinationX, int destinationY) {
@@ -156,6 +157,8 @@ public class Mario extends GameObject {
         setY(destinationY);
         setJumping(false);
         setFalling(true);
+
+        GameEngine.playSound("pipe");
     }
 
     /* ---------- Getters / Setters ---------- */

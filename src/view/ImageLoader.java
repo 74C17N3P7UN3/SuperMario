@@ -15,11 +15,9 @@ import java.awt.image.BufferedImage;
  */
 public class ImageLoader {
     private BufferedImage marioForms;
-    private BufferedImage brickAnimation;
 
     public ImageLoader() {
         marioForms = ImageImporter.loadImage("mario-forms");
-        brickAnimation = ImageImporter.loadImage("brick-animation");
     }
 
     public static BufferedImage getImage(BufferedImage image, int x, int y, int w, int h) {
@@ -99,13 +97,5 @@ public class ImageLoader {
         	}
         }
         return rightFrames;
-    }
-
-    // FIXME: We need this?
-    public BufferedImage[] getBrickFrames() {
-        BufferedImage[] frames = new BufferedImage[4];
-        for (int i = 0; i < 4; i++)
-            frames[i] = brickAnimation.getSubimage(i * 105, 0, 105, 105);
-        return frames;
     }
 }

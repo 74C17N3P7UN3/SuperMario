@@ -4,7 +4,6 @@ import model.Map;
 import model.enemy.Enemy;
 import model.hero.Mario;
 import utils.ImageImporter;
-import view.ImageLoader;
 import view.UIManager;
 
 import javax.swing.*;
@@ -23,7 +22,6 @@ public class GameEngine implements Runnable {
     public final static int WIDTH = ((int) screenSize.getWidth()) - 80;
 
     private final Camera camera;
-    private final ImageLoader imageLoader;
     private final InputManager inputManager;
     private final MapManager mapManager;
     private final SoundManager soundManager;
@@ -36,9 +34,8 @@ public class GameEngine implements Runnable {
 
     public GameEngine() {
         camera = new Camera();
-        imageLoader = new ImageLoader();
         inputManager = new InputManager(this);
-        mapManager = new MapManager(camera);
+        mapManager = new MapManager();
         soundManager = new SoundManager();
         uiManager = new UIManager(this, HEIGHT, WIDTH);
 
@@ -130,7 +127,7 @@ public class GameEngine implements Runnable {
      */
     private void createMap(String mapName) {
         boolean loaded = mapManager.createMap(mapName, this);
-        time = 600;
+        time = 120;
         coins = 0;
 
         if (loaded) {
@@ -173,9 +170,7 @@ public class GameEngine implements Runnable {
             mario.jump();
         }
         if (mario.getX() == 9792 && !mario.isJumping() && !mario.isFalling()) gameStatus = GameStatus.MISSION_PASSED;
-        if (time == 0) gameStatus = GameStatus.GAME_OVER;
-
-        System.out.println("x: " + mario.getX() + ", y: " + mario.getY());
+        if (time == 0) gameStatus = GameStatus.OUT_OF_TIME;
     }
 
     /**

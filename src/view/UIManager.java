@@ -17,7 +17,9 @@ import java.awt.image.BufferedImage;
  * @version 0.1.1
  */
 public class UIManager extends JPanel {
-    GameEngine engine;
+    private final GameEngine engine;
+
+    private boolean alreadyPlayed = false;
 
     public UIManager(GameEngine engine, int height, int width) {
         this.engine = engine;
@@ -35,13 +37,10 @@ public class UIManager extends JPanel {
         g2D.setFont(FontImporter.loadFont(28));
         g2D.setColor(Color.WHITE);
 
-        if (engine.getGameStatus() == GameStatus.GAME_OVER) {
-            drawScreen(g2D, "game-over");
-            engine.getSoundManager().pauseTheme();
-        } else if (engine.getGameStatus() == GameStatus.MISSION_PASSED) {
-            drawScreen(g2D, "game-won");
-            engine.getSoundManager().pauseTheme();
-        } else {
+        if (engine.getGameStatus() == GameStatus.GAME_OVER) showEndingScreen(g2D, "game-over");
+        else if (engine.getGameStatus() == GameStatus.MISSION_PASSED) showEndingScreen(g2D, "game-won");
+        else if (engine.getGameStatus() == GameStatus.OUT_OF_TIME) showEndingScreen(g2D, "out-of-time");
+        else {
             Point camLocation = engine.getCameraPosition();
             g2D.translate(-camLocation.getX(), -camLocation.getY());
             engine.drawMap(g2D);
@@ -53,6 +52,9 @@ public class UIManager extends JPanel {
 
             // Render Time
             g2D.drawString(String.valueOf(engine.getTime()), GameEngine.WIDTH - 140, 55);
+
+            // To play the sound only once
+            alreadyPlayed = false;
         }
 
         g2D.dispose();
@@ -64,8 +66,14 @@ public class UIManager extends JPanel {
      * @param g2D The graphics engine.
      * @param screenName The name of the screen to be loaded.
      */
-    public void drawScreen(Graphics2D g2D, String screenName) {
+    public void showEndingScreen(Graphics2D g2D, String screenName) {
+        if (!alreadyPlayed) {
+            engine.getSoundManager().pauseTheme();
+            GameEngine.playSound(screenName);
+            alreadyPlayed = true;
+        }
+
         BufferedImage screen = ImageImporter.loadImage(screenName);
-        g2D.drawImage(screen, 0, 0, null);
+        g2D.drawImage(screen, (GameEngine.WIDTH - 1920) / 2, 0, null);
     }
 }

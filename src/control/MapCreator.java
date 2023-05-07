@@ -16,11 +16,9 @@ import java.util.ArrayList;
 /**
  * Creates the {@link Map} by its given name.
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 public class MapCreator {
-    private final Camera camera;
-
     private Map createdMap;
     private BufferedImage mapImage;
 
@@ -52,9 +50,7 @@ public class MapCreator {
     public final static BufferedImage star = ImageLoader.getImage(sprite, 4, 4, 48, 48);
     public final static BufferedImage superMushroom = ImageLoader.getImage(sprite, 1, 4, 48, 48);
 
-    public MapCreator(Camera camera) {
-        this.camera = camera;
-    }
+    public MapCreator() {}
 
     /**
      * Returns the generated map by its name.
