@@ -75,7 +75,11 @@ public class MapManager {
             }
         }
         if(mario.getY() >= (48 * 14)) {
-        	gameEngine.setGameStatus(GameStatus.GAME_OVER);
+        	if(gameEngine.getLifes() == 0)gameEngine.setGameStatus(GameStatus.GAME_OVER);
+        	else {
+        		gameEngine.setLifes((gameEngine.getLifes() - 1));
+        		gameEngine.reset();
+        	}
         }
 
         for(Enemy enemy : map.getEnemies()) {
@@ -99,14 +103,18 @@ public class MapManager {
                     mario.setMarioStar();
                 }
                 if(boost.getType() == BoostType.FIRE_FLOWER){
-                    if(mario.isStar()) mario.setIsFire(true);
+                    if(mario.isStar() || mario.isBabyStar()) mario.setIsFire(true);
                     else {
-                        mario.setMarioSuper();
+                        if(!mario.isSuper()) {
+                        	mario.setY(mario.getY()-48);
+                        }
+                    	mario.setMarioSuper();
                         mario.setMarioFire();
+                        
                     }
                 }
                 if(boost.getType() == BoostType.HEART_MUSHROOM) {
-                	// TODO
+                	gameEngine.setLifes((gameEngine.getLifes() + 1));
                     GameEngine.playSound("one-up");
                 }
                 disposal.add(boost);
@@ -120,6 +128,7 @@ public class MapManager {
             if (object instanceof Boost) map.getBoosts().remove((Boost) object);
             if (object instanceof Enemy) map.getEnemies().remove((Enemy) object);
             if (object instanceof Fireball) map.getFireballs().remove((Fireball) object);
+            if (object instanceof CoinBlue) map.getBricks().remove((CoinBlue)object);
         }
 
     }
@@ -129,7 +138,11 @@ public class MapManager {
         for(Brick block : map.getBricks()){
             //checks bottom and upper collision
             if(toCheck.getVerticalBounds().intersects(block.getBounds())){
-                if(toCheck.getVelY() < 0 && !(toCheck instanceof Fireball)){
+            	if(block instanceof CoinBlue && toCheck instanceof Mario) {
+            		disposal.add(block);
+            		engine.setCoins(engine.getCoins()+1);
+            	}
+            	else if(toCheck.getVelY() < 0 && !(toCheck instanceof Fireball)){
                     toCheck.setVelY(0);
                     toCheck.setFalling(false);
                 }else if(toCheck instanceof Fireball) {
@@ -167,15 +180,21 @@ public class MapManager {
             //checks right and left collision
             if(toCheck.getHorizontalBounds().intersects(block.getHorizontalBounds())){
                 if(toCheck.getVelX() > 0){
-
-                    if(toCheck instanceof Mario)
+                	if(block instanceof CoinBlue && toCheck instanceof Mario) {
+                		disposal.add(block);
+                		engine.setCoins(engine.getCoins()+1);
+                	}
+                	else if(toCheck instanceof Mario)
                         toCheck.setVelX(0);
                     else if(toCheck instanceof Enemy || toCheck instanceof Boost)
                         toCheck.setVelX(-toCheck.getVelX());
 
                 }else if(toCheck.getVelX() < 0){
-
-                    if(toCheck instanceof Mario)
+                	if(block instanceof CoinBlue && toCheck instanceof Mario) {
+                		disposal.add(block);
+                		engine.setCoins(engine.getCoins()+1);
+                	}
+                	else if(toCheck instanceof Mario)
                         toCheck.setVelX(0);
                     else if(toCheck instanceof Enemy || toCheck instanceof Boost)
                         toCheck.setVelX(-toCheck.getVelX());
@@ -207,7 +226,11 @@ public class MapManager {
                     mario.setMarioSuper();
                     mario.setInvincible(true);
                 }else {
-                	engine.setGameStatus(GameStatus.GAME_OVER);
+                	if(engine.getLifes() == 0)engine.setGameStatus(GameStatus.GAME_OVER);
+                	else {
+                		engine.setLifes((engine.getLifes() - 1));
+                		engine.reset();
+                	}
                 }
             }
 

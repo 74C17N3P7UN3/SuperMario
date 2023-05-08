@@ -30,7 +30,7 @@ public class GameEngine implements Runnable {
     private GameStatus gameStatus;
     private Thread thread;
     private boolean isRunning;
-    private int coins, time;
+    private int coins, time, lifes;
 
     public GameEngine() {
         camera = new Camera();
@@ -99,7 +99,7 @@ public class GameEngine implements Runnable {
                 if (now / 1000000000 - lastTimeStar >= 10) {
                     if (mapManager.getMario().isBabyStar()) mapManager.getMario().setMarioMini();
                     if (mapManager.getMario().isFire()) mapManager.getMario().setMarioFire();
-                    if (mapManager.getMario().isSuper()) mapManager.getMario().setMarioSuper();
+                    else if (mapManager.getMario().isSuper()) mapManager.getMario().setMarioSuper();
                     lastTimeStar = 0;
                 }
             }
@@ -129,7 +129,8 @@ public class GameEngine implements Runnable {
         boolean loaded = mapManager.createMap(mapName, this);
         time = 120;
         coins = 0;
-
+        if(gameStatus == GameStatus.START_SCREEN || gameStatus == GameStatus.GAME_OVER || gameStatus == GameStatus.MISSION_PASSED)lifes = 3;
+        
         if (loaded) {
             setGameStatus(GameStatus.RUNNING);
             soundManager.restartTheme();
@@ -235,7 +236,7 @@ public class GameEngine implements Runnable {
      * position, restarting the theme and sending the player
      * to the starting screen.
      */
-    private void reset() {
+    public void reset() {
         resetCamera();
         soundManager.restartTheme();
         mapManager.resetMap(this);
@@ -318,5 +319,13 @@ public class GameEngine implements Runnable {
 
     public int getTime() {
         return time;
+    }
+    
+    public int getLifes() {
+    	return lifes;
+    }
+    
+    public void setLifes(int lifes) {
+    	this.lifes = lifes;
     }
 }
