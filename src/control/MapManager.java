@@ -147,7 +147,7 @@ public class MapManager {
                     if(block instanceof SurpriseBrick){
                     	if(toCheck instanceof Mario) {
                     		int n = map.getBlockPosition((int)block.getX(),(int)block.getY());
-                            if(((SurpriseBrick) map.getBricks().get(n)).isBoost()){
+                            if(((SurpriseBrick) map.getBricks().get(n)).getBoost() > 0){
                                 Boost boost = new Boost(block.getX(), block.getY()-48, MapCreator.coin);
 
                                 boost.setType(n, (Mario) toCheck);
@@ -159,8 +159,9 @@ public class MapManager {
                                     GameEngine.playSound("coin");
                                 }
 
-                                ((SurpriseBrick) map.getBricks().get(n)).setBoost(false);
-                                map.getBricks().get(n).setStyle(MapCreator.emptySurpriseBrick);
+                                ((SurpriseBrick) map.getBricks().get(n)).reduce();
+                                if(((SurpriseBrick) map.getBricks().get(n)).getBoost() == 0)
+                                	map.getBricks().get(n).setStyle(MapCreator.emptySurpriseBrick);
                             }
                         }
                     }

@@ -49,6 +49,8 @@ public class MapCreator {
     public final static BufferedImage heartMushroom = ImageLoader.getImage(sprite, 2, 4, 48, 48);
     public final static BufferedImage star = ImageLoader.getImage(sprite, 4, 4, 48, 48);
     public final static BufferedImage superMushroom = ImageLoader.getImage(sprite, 1, 4, 48, 48);
+    
+    public final static BufferedImage voidImage = ImageLoader.getImage(sprite, 0, 2, 1, 1);
 
     public MapCreator() {}
 
@@ -98,9 +100,13 @@ public class MapCreator {
                 if (currentPixel == ordinaryBrickBlueRGB) brick = new OrdinaryBrickBlue(xLocation, yLocation, ordinaryBrickBlue);
                 if (currentPixel == surpriseBrickRGB) {
                     // Disguised SurpriseBricks
+                	brick = new SurpriseBrick(xLocation, yLocation, surpriseBrick);
                     if (yLocation == 432 && (xLocation == 4512 || xLocation == 4848))
-                        brick = new SurpriseBrick(xLocation, yLocation, ordinaryBrick);
-                    else brick = new SurpriseBrick(xLocation, yLocation, surpriseBrick);
+                    	brick.setStyle(ordinaryBrick);
+                    if (yLocation == 384 && xLocation == 3072)
+                    	brick.setStyle(voidImage);
+                    if (yLocation == 432 && xLocation == 4512)
+                    	((SurpriseBrick) brick).setBoost(5);
                 }
 
                 if (currentPixel == pipeBodyHRGB) brick = new PipeBody(xLocation, yLocation, pipeBodyH);
