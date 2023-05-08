@@ -3,6 +3,8 @@ package control;
 import model.*;
 import model.brick.*;
 import model.enemy.Enemy;
+import model.enemy.Goomba;
+import model.enemy.Koopa;
 import model.hero.Fireball;
 import model.hero.Mario;
 import model.boost.Boost;
@@ -98,6 +100,7 @@ public class MapManager {
                     mario.setMarioStar();
                 }
                 if(boost.getType() == BoostType.FIRE_FLOWER){
+                	if(mario.isFire()) engine.earnPoints(1000);
                     if(mario.isStar() || mario.isBabyStar()) mario.setIsFire(true);
                     else {
                         if(!mario.isSuper()) {
@@ -137,8 +140,7 @@ public class MapManager {
             		disposal.add(block);
             		engine.setCoins(engine.getCoins()+1);
                     GameEngine.playSound("coin");
-            	}
-            	else if(toCheck.getVelY() < 0 && !(toCheck instanceof Fireball)){
+            	}else if(toCheck.getVelY() < 0 && !(toCheck instanceof Fireball)){
                     toCheck.setVelY(0);
                     toCheck.setFalling(false);
                 }else if(toCheck instanceof Fireball) {
@@ -213,9 +215,18 @@ public class MapManager {
 
     public void checkEnemyCollision(Mario mario, GameEngine engine){
         for(Enemy enemy : map.getEnemies()){
-            if((mario.isStar() || mario.isBabyStar()) && mario.getBounds().intersects(enemy.getBounds())) disposal.add(enemy);
-            else if(mario.getVerticalBounds().intersects(enemy.getVerticalBounds()) && mario.getVelY() < 0){
+            if((mario.isStar() || mario.isBabyStar()) && mario.getBounds().intersects(enemy.getBounds())) {
+            	disposal.add(enemy);
+            	if(enemy instanceof Goomba)
+            		engine.earnPoints(100);
+            	if(enemy instanceof Koopa)
+            		engine.earnPoints(200);
+            }else if(mario.getVerticalBounds().intersects(enemy.getVerticalBounds()) && mario.getVelY() < 0){
                 disposal.add(enemy);
+                if(enemy instanceof Goomba)
+            		engine.earnPoints(100);
+            	if(enemy instanceof Koopa)
+            		engine.earnPoints(200);
                 mario.setVelY(4);
             }else if(mario.getVerticalBounds().intersects(enemy.getVerticalBounds()) && !mario.isInvincible()){
                 if(mario.isSuper()){
@@ -238,6 +249,10 @@ public class MapManager {
             for (Fireball fireball : map.getFireballs()) {
             	if(fireball.getHorizontalBounds().intersects(enemy.getHorizontalBounds())) {
             		disposal.add(enemy);
+            		if(enemy instanceof Goomba)
+                		engine.earnPoints(100);
+                	if(enemy instanceof Koopa)
+                		engine.earnPoints(200);
             		disposal.add(fireball);
             	}
             }

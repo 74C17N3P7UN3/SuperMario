@@ -2,6 +2,8 @@ package control;
 
 import model.Map;
 import model.enemy.Enemy;
+import model.enemy.Goomba;
+import model.enemy.Koopa;
 import model.hero.Mario;
 import utils.ImageImporter;
 import view.UIManager;
@@ -29,8 +31,8 @@ public class GameEngine implements Runnable {
 
     private GameStatus gameStatus;
     private Thread thread;
-    private boolean isRunning;
-    private int coins, time, lives;
+    private boolean isRunning, tuchFlag;
+    private int coins, time, lives, points;
 
     public GameEngine() {
         camera = new Camera();
@@ -38,7 +40,9 @@ public class GameEngine implements Runnable {
         mapManager = new MapManager();
         soundManager = new SoundManager();
         uiManager = new UIManager(this, HEIGHT, WIDTH);
-
+        
+        tuchFlag = false;
+        	
         gameStatus = GameStatus.START_SCREEN;
 
         // Prepare the frame
@@ -105,7 +109,7 @@ public class GameEngine implements Runnable {
             }
 
             if (lastTimeCheck == 0) lastTimeCheck = now / 1000000000;
-            if (now / 1000000000 - lastTimeCheck >= 1) {
+            if (now / 1000000000 - lastTimeCheck >= 1 && (mapManager.getMario().getX() < 9504 || mapManager.getMario().getX() > 10992)) {
                 time--;
                 lastTimeCheck = 0;
             }
@@ -128,7 +132,10 @@ public class GameEngine implements Runnable {
     private void createMap(String mapName) {
         boolean loaded = mapManager.createMap(mapName, this);
         coins = 0;
-        if (gameStatus != GameStatus.RUNNING) lives = 3;
+        if (gameStatus != GameStatus.RUNNING) {
+        	lives = 3;
+        	points = 0;
+        }
         time = 120;
 
         if (loaded) {
@@ -159,7 +166,12 @@ public class GameEngine implements Runnable {
         Mario mario = mapManager.getMario();
         for (Enemy enemy : mapManager.getMap().getEnemies())
             if (enemy.getX() < camera.getX() + GameEngine.WIDTH && mario.getX() < 10992)
-                if (enemy.getVelX() == 0) enemy.setVelX(-3);
+                if (enemy.getVelX() == 0) {
+                	if(enemy instanceof Goomba)
+                		enemy.setVelX(-3);
+                	if(enemy instanceof Koopa)
+                		enemy.setVelX(-4);       		
+                }
 
         // Mario's teleportation out of the secret room
         if (mario.getX() >= 12140) {
@@ -177,15 +189,29 @@ public class GameEngine implements Runnable {
             }
         }
 
+        if (mario.getX() > 9504 && mario.getX() < 10992 && !tuchFlag) {
+        	if(6837.5 - (mario.getY() * 612.5 / 48) > 5000) //points: 100 (x=528), 5000 (x=144)
+        		points += 5000;
+        	else	
+        		points += 6837.5 - (mario.getY() * 612.5 / 48);
+        	tuchFlag = true;
+        }
         if (mario.getX() > 9792 && mario.getX() < 10992) {
             mario.setVelX(0);
             mario.setX(9792);
             mario.jump();
         }
-        if (mario.getX() == 9792 && !mario.isJumping() && !mario.isFalling()) gameStatus = GameStatus.MISSION_PASSED;
+        if (mario.getX() == 9792 && !mario.isJumping() && !mario.isFalling()) {
+        	gameStatus = GameStatus.MISSION_PASSED;
+        	points += coins*100;
+        	if(time*50 < 10000)
+        		points += time*50;
+        	else
+        		points += 10000;
+        	System.out.println("points: "+points);
+        }
         if (time == 0) gameStatus = GameStatus.OUT_OF_TIME;
-
-        System.out.println(mario.getX());
+        
     }
 
     /**
@@ -251,6 +277,8 @@ public class GameEngine implements Runnable {
      * to the starting screen.
      */
     public void reset() {
+        this.tuchFlag = false;
+        
         resetCamera();
         soundManager.restartTheme();
         mapManager.resetMap(this);
@@ -341,5 +369,13 @@ public class GameEngine implements Runnable {
 
     public int getTime() {
         return time;
+    }
+    
+    public void earnPoints(int n) {
+    	this.points += n;
+    }
+    
+    public int getPoints() {
+    	return this.points;
     }
 }

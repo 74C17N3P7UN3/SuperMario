@@ -4,7 +4,9 @@ import model.EndFlag;
 import model.Map;
 import model.boost.Boost;
 import model.brick.*;
+import model.enemy.Enemy;
 import model.enemy.Goomba;
+import model.enemy.Koopa;
 import model.hero.Mario;
 import utils.ImageImporter;
 import view.ImageLoader;
@@ -42,6 +44,8 @@ public class MapCreator {
 
     public final static BufferedImage goombaLeft = ImageLoader.getImage(sprite, 0, 3, 48, 48);
     public final static BufferedImage goombaRight = ImageLoader.getImage(sprite, 1, 3, 48, 48);
+    public final static BufferedImage koopaLeft = ImageLoader.getImage(sprite, 5, 0, 48, 64);
+    public final static BufferedImage koopaRight = ImageLoader.getImage(sprite, 5, 2, 48, 64);
 
     public final static BufferedImage coin = ImageLoader.getImage(sprite, 0, 2, 48, 48);
     public final static BufferedImage coinBlue = ImageLoader.getImage(sprite, 1, 2, 48, 48);
@@ -80,6 +84,7 @@ public class MapCreator {
         int pipeHeadVRGB = new Color(0, 151, 104).getRGB();
 
         int goombaRGB = new Color(63, 72, 204).getRGB();
+        int koopaRGB = new Color(255, 174, 201).getRGB();
 
         int coinBlueRGB = new Color(153, 217, 234).getRGB();
 
@@ -116,14 +121,18 @@ public class MapCreator {
 
                 if (currentPixel == coinBlueRGB) brick = new CoinBlue(xLocation, yLocation, coinBlue);
 
-                Goomba goomba = null;
+                Enemy enemy = null;
                 if (currentPixel == goombaRGB) {
-                    goomba = new Goomba(xLocation, yLocation, goombaLeft);
-                    goomba.setRightImage(goombaRight);
+                    enemy = new Goomba(xLocation, yLocation, goombaLeft);
+                    ((Goomba) enemy).setRightImage(goombaRight);
+                }
+                if (currentPixel == koopaRGB) {
+                    enemy = new Koopa(xLocation, yLocation-16, koopaLeft);
+                    ((Koopa) enemy).setRightImage(koopaRight);
                 }
 
                 if (brick != null) createdMap.addBrick(brick);
-                if (goomba != null) createdMap.addEnemy(goomba);
+                if (enemy != null) createdMap.addEnemy(enemy);
             }
         }
 

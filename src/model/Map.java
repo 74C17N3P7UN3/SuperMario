@@ -5,6 +5,7 @@ import model.boost.BoostType;
 import model.brick.Brick;
 import model.brick.SurpriseBrick;
 import model.enemy.Enemy;
+import model.enemy.Koopa;
 import model.hero.Fireball;
 import model.hero.Mario;
 import utils.ImageImporter;
