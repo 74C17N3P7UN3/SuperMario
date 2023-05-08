@@ -68,16 +68,11 @@ public class MapManager {
 
         checkBlockCollisions(mario);
         checkEnemyCollision(mario, gameEngine);
-        if(mario.getX() >= ((48 * 198) - 20) && mario.getX() < 10992){
-            if (!getEndPoint().isTouched()) {
-                getEndPoint().setTouched(true);
-                GameEngine.playSound("flag");
-            }
-        }
         if(mario.getY() >= (48 * 14)) {
-        	if(gameEngine.getLifes() == 0)gameEngine.setGameStatus(GameStatus.GAME_OVER);
+        	if(gameEngine.getLives() == 0)gameEngine.setGameStatus(GameStatus.GAME_OVER);
         	else {
-        		gameEngine.setLifes((gameEngine.getLifes() - 1));
+        		gameEngine.setLives((gameEngine.getLives() - 1));
+                GameEngine.playSound("death");
         		gameEngine.reset();
         	}
         }
@@ -110,11 +105,11 @@ public class MapManager {
                         }
                     	mario.setMarioSuper();
                         mario.setMarioFire();
-                        
+
                     }
                 }
                 if(boost.getType() == BoostType.HEART_MUSHROOM) {
-                	gameEngine.setLifes((gameEngine.getLifes() + 1));
+                	gameEngine.setLives((gameEngine.getLives() + 1));
                     GameEngine.playSound("one-up");
                 }
                 disposal.add(boost);
@@ -141,6 +136,7 @@ public class MapManager {
             	if(block instanceof CoinBlue && toCheck instanceof Mario) {
             		disposal.add(block);
             		engine.setCoins(engine.getCoins()+1);
+                    GameEngine.playSound("coin");
             	}
             	else if(toCheck.getVelY() < 0 && !(toCheck instanceof Fireball)){
                     toCheck.setVelY(0);
@@ -160,6 +156,7 @@ public class MapManager {
                                 if(boost.getType() == BoostType.COIN) {
                                 	boost.setVelY(7);
                                 	engine.setCoins(engine.getCoins()+1);
+                                    GameEngine.playSound("coin");
                                 }
 
                                 ((SurpriseBrick) map.getBricks().get(n)).setBoost(false);
@@ -183,6 +180,7 @@ public class MapManager {
                 	if(block instanceof CoinBlue && toCheck instanceof Mario) {
                 		disposal.add(block);
                 		engine.setCoins(engine.getCoins()+1);
+                        GameEngine.playSound("coin");
                 	}
                 	else if(toCheck instanceof Mario)
                         toCheck.setVelX(0);
@@ -193,6 +191,7 @@ public class MapManager {
                 	if(block instanceof CoinBlue && toCheck instanceof Mario) {
                 		disposal.add(block);
                 		engine.setCoins(engine.getCoins()+1);
+                        GameEngine.playSound("coin");
                 	}
                 	else if(toCheck instanceof Mario)
                         toCheck.setVelX(0);
@@ -226,9 +225,10 @@ public class MapManager {
                     mario.setMarioSuper();
                     mario.setInvincible(true);
                 }else {
-                	if(engine.getLifes() == 0)engine.setGameStatus(GameStatus.GAME_OVER);
+                	if(engine.getLives() == 0)engine.setGameStatus(GameStatus.GAME_OVER);
                 	else {
-                		engine.setLifes((engine.getLifes() - 1));
+                		engine.setLives((engine.getLives() - 1));
+                        GameEngine.playSound("death");
                 		engine.reset();
                 	}
                 }

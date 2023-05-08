@@ -129,36 +129,4 @@ public class MapCreator {
     public ArrayList<Boost> getBoosts() {
         return createdMap.getBoosts();
     }
-
-    public BufferedImage getCoin() {
-        return coin;
-    }
-
-    public BufferedImage getEmptySurpriseBrick() {
-        return emptySurpriseBrick;
-    }
-
-    public BufferedImage getFireFlower() {
-    	return fireFlower;
-    }
-
-    public BufferedImage getHeartMushroom() {
-        return heartMushroom;
-    }
-
-    public BufferedImage getMapImage() {
-        return mapImage;
-    }
-
-    public BufferedImage getStar() {
-        return star;
-    }
-
-    public BufferedImage getSuperMushroom() {
-        return superMushroom;
-    }
-
-    public BufferedImage getFireball() {
-    	return fireball;
-    }
 }

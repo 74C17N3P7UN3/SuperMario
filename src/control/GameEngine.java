@@ -30,7 +30,7 @@ public class GameEngine implements Runnable {
     private GameStatus gameStatus;
     private Thread thread;
     private boolean isRunning;
-    private int coins, time, lifes;
+    private int coins, time, lives;
 
     public GameEngine() {
         camera = new Camera();
@@ -127,10 +127,10 @@ public class GameEngine implements Runnable {
      */
     private void createMap(String mapName) {
         boolean loaded = mapManager.createMap(mapName, this);
-        time = 120;
         coins = 0;
-        if(gameStatus == GameStatus.START_SCREEN || gameStatus == GameStatus.GAME_OVER || gameStatus == GameStatus.MISSION_PASSED)lifes = 3;
-        
+        if (gameStatus != GameStatus.RUNNING) lives = 3;
+        time = 120;
+
         if (loaded) {
             setGameStatus(GameStatus.RUNNING);
             soundManager.restartTheme();
@@ -155,14 +155,25 @@ public class GameEngine implements Runnable {
         updateCollisions(this);
         updateLocations();
 
+        // Let the enemies move when they enter the screen
         Mario mario = mapManager.getMario();
         for (Enemy enemy : mapManager.getMap().getEnemies())
             if (enemy.getX() < camera.getX() + GameEngine.WIDTH && mario.getX() < 10992)
                 if (enemy.getVelX() == 0) enemy.setVelX(-3);
 
+        // Mario's teleportation out of the secret room
         if (mario.getX() >= 12140) {
             camera.setX(7848 - 600);
             mario.pipeTeleport(7848, 384);
+        }
+
+        // Final flag and castle animation
+        if (mario.getX() >= ((48 * 198) - 20) && mario.getX() < 10992) {
+            if (!mapManager.getEndPoint().isTouched()) {
+                mapManager.getEndPoint().setTouched(true);
+                mario.setLocation((48 * 198) - 20, mario.getY() + 2);
+                GameEngine.playSound("flag");
+            }
         }
 
         if (mario.getX() > 9792 && mario.getX() < 10992) {
@@ -217,7 +228,7 @@ public class GameEngine implements Runnable {
         if (input == ButtonAction.CHEAT && mario.getVelX() >= 0)
             mario.setVelX(100);
 
-        if (input == ButtonAction.ENTER && (gameStatus == GameStatus.GAME_OVER || gameStatus == GameStatus.MISSION_PASSED))
+        if (input == ButtonAction.ENTER && (gameStatus != GameStatus.RUNNING && gameStatus != GameStatus.START_SCREEN))
             reset();
 
         if (input == ButtonAction.ACTION_COMPLETED)
@@ -305,6 +316,14 @@ public class GameEngine implements Runnable {
         this.coins = coins;
     }
 
+    public int getLives() {
+        return lives;
+    }
+
+    public void setLives(int lives) {
+        this.lives = lives;
+    }
+
     public GameStatus getGameStatus() {
         return gameStatus;
     }
@@ -319,13 +338,5 @@ public class GameEngine implements Runnable {
 
     public int getTime() {
         return time;
-    }
-    
-    public int getLifes() {
-    	return lifes;
-    }
-    
-    public void setLifes(int lifes) {
-    	this.lifes = lifes;
     }
 }

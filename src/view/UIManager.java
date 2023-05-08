@@ -50,11 +50,10 @@ public class UIManager extends JPanel {
             g2D.drawImage(MapCreator.coin, 50, 30, 28, 28, null);
             g2D.drawString(String.valueOf(engine.getCoins()), 90, 55);
 
-            // Render Lifes
-            g2D.drawImage(MapCreator.heartMushroom, 50, 60, 28, 28, null);
-            g2D.drawString(String.valueOf(engine.getLifes()), 90, 85);
+            // Render Lives
+            g2D.drawImage(MapCreator.heartMushroom, 50, 70, 28, 28, null);
+            g2D.drawString(String.valueOf(engine.getLives()), 90, 95);
 
-            
             // Render Time
             g2D.drawString(String.valueOf(engine.getTime()), GameEngine.WIDTH - 140, 55);
 
