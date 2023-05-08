@@ -30,7 +30,7 @@ public class MapManager {
     /**
      * Creates the map using the {@link MapCreator}.
      *
-     * @param mapName     The name of the map to be loaded.
+     * @param mapName The name of the map to be loaded.
      * @return If the map was created successfully.
      */
     public boolean createMap(String mapName, GameEngine engine) {
@@ -63,17 +63,17 @@ public class MapManager {
         createMap(map.getName(),engine);
     }
 
-    public void checkCollisions(GameEngine gameEngine) {
+    public void checkCollisions(GameEngine engine) {
         Mario mario = getMario();
 
         checkBlockCollisions(mario);
-        checkEnemyCollision(mario, gameEngine);
+        checkEnemyCollision(mario, engine);
         if(mario.getY() >= (48 * 14)) {
-        	if(gameEngine.getLives() == 0)gameEngine.setGameStatus(GameStatus.GAME_OVER);
+        	if(engine.getLives() == 0)engine.setGameStatus(GameStatus.GAME_OVER);
         	else {
-        		gameEngine.setLives((gameEngine.getLives() - 1));
+        		engine.setLives((engine.getLives() - 1));
                 GameEngine.playSound("death");
-        		gameEngine.reset();
+        		engine.reset();
         	}
         }
 
@@ -109,7 +109,7 @@ public class MapManager {
                     }
                 }
                 if(boost.getType() == BoostType.HEART_MUSHROOM) {
-                	gameEngine.setLives((gameEngine.getLives() + 1));
+                	engine.setLives((engine.getLives() + 1));
                     GameEngine.playSound("one-up");
                 }
                 disposal.add(boost);
@@ -159,7 +159,7 @@ public class MapManager {
                                     GameEngine.playSound("coin");
                                 }
 
-                                ((SurpriseBrick) map.getBricks().get(n)).reduce();
+                                ((SurpriseBrick) map.getBricks().get(n)).decrementBoosts();
                                 if(((SurpriseBrick) map.getBricks().get(n)).getBoost() == 0)
                                 	map.getBricks().get(n).setStyle(MapCreator.emptySurpriseBrick);
                             }

@@ -7,7 +7,7 @@ public class SurpriseBrick extends Brick {
 
     public SurpriseBrick(double x, double y, BufferedImage style) {
         super(x, y, style);
-        this.boost = 1;
+        boost = 1;
     }
 
     /* ---------- Getters / Setters ---------- */
@@ -19,8 +19,8 @@ public class SurpriseBrick extends Brick {
     public void setBoost(int boost) {
         this.boost = boost;
     }
-    
-    public void reduce() {
-    	this.boost --;
+
+    public void decrementBoosts() {
+    	boost--;
     }
 }

@@ -171,7 +171,8 @@ public class GameEngine implements Runnable {
         if (mario.getX() >= ((48 * 198) - 20) && mario.getX() < 10992) {
             if (!mapManager.getEndPoint().isTouched()) {
                 mapManager.getEndPoint().setTouched(true);
-                mario.setLocation((48 * 198) - 20, mario.getY() + 2);
+                mario.setX((48 * 198) - 20);
+                mario.setVelX(2.5);
                 GameEngine.playSound("flag");
             }
         }
@@ -183,6 +184,8 @@ public class GameEngine implements Runnable {
         }
         if (mario.getX() == 9792 && !mario.isJumping() && !mario.isFalling()) gameStatus = GameStatus.MISSION_PASSED;
         if (time == 0) gameStatus = GameStatus.OUT_OF_TIME;
+
+        System.out.println(mario.getX());
     }
 
     /**
