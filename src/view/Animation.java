@@ -26,12 +26,14 @@ public class Animation {
     /**
      * Returns the next frame of the animation sequence.
      *
-     * @param speed   The speed of the played animation.
-     *                The higher the speed, the lower
-     *                the playing time of the animation.
-     * @param toRight If the animation should be played
-     *                to the right (in sequence) or not
-     *                (in reverse).
+     * @param speed         The speed of the played animation.
+     *                      The higher the speed, the lower
+     *                      the playing time of the animation.
+     * @param toRight       If the animation should be played
+     *                      to the right (in sequence) or not
+     *                      (in reverse).
+     * @param animationStar The current state of Mario's star
+     *                      form animation.
      * @return The current frame that needs to be rendered
      * of the full animation.
      */
@@ -52,7 +54,9 @@ public class Animation {
      * playing sequence, keeping count of the number of
      * frames before restarting the animation.
      *
-     * @param frames The frames of the animation sequence.
+     * @param frames        The frames of the animation sequence.
+     * @param animationStar The current state of Mario's star
+     *                      form animation.
      */
     private void nextFrame(BufferedImage[] frames, int animationStar) {
         if (index + 2 >= 5) index = 0;
@@ -61,6 +65,7 @@ public class Animation {
         if (animationStar == 1) currentFrame = frames[index + 7];
         if (animationStar == 2) currentFrame = frames[index + 12];
         if (animationStar == 3) currentFrame = frames[index + 17];
+
         index++;
     }
 

@@ -61,8 +61,8 @@ public class SoundManager {
      * to the given gain percentage.
      *
      * @param clip The clip which the volume
-     *             needs to be adjusted
-     * @param gain The volume percentage
+     *             needs to be adjusted.
+     * @param gain The volume percentage.
      */
     private static void setClipVolume(Clip clip, double gain) {
         FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);

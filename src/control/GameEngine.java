@@ -193,7 +193,7 @@ public class GameEngine implements Runnable {
     /**
      * Draws the Map calling {@link Map#drawMap(Graphics2D)}.
      *
-     * @param g2D The Graphics engine drawing the map.
+     * @param g2D The graphics engine drawing the map.
      */
     public void drawMap(Graphics2D g2D) {
         mapManager.drawMap(g2D);
@@ -262,7 +262,7 @@ public class GameEngine implements Runnable {
     }
 
     /**
-     * Renders the current frame by repainting the JFrame.
+     * Renders the current frame by repainting the {@link JFrame}.
      */
     private void render() {
         uiManager.repaint();
@@ -270,8 +270,8 @@ public class GameEngine implements Runnable {
 
     /**
      * Resets the game completely by resetting the camera
-     * position, restarting the theme and sending the player
-     * back to the starting position also resetting the score.
+     * position, restarting the theme, sending the player
+     * back to the starting position and resetting the score.
      */
     public void reset() {
         createMap("map-01");

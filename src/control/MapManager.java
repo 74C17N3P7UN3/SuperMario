@@ -16,8 +16,6 @@ import model.hero.Mario;
 import java.awt.*;
 import java.util.ArrayList;
 
-// FIXME: Format Reminder
-
 /**
  * Creates and handles all the game-level collisions and
  * behaviours. It provides checks and low-level conditions
@@ -49,7 +47,7 @@ public class MapManager {
      * Draws the currently loaded map, calling
      * {@link Map#drawMap(Graphics2D)}.
      *
-     * @param g2D The Graphics engine to draw the map.
+     * @param g2D The graphics engine drawing the map.
      */
     public void drawMap(Graphics2D g2D) {
         if (map != null) map.drawMap(g2D);
@@ -60,7 +58,7 @@ public class MapManager {
      * to then call lower-level condition checkers for specific
      * collision contacts.
      *
-     * @param engine The {@link GameEngine} to set the {@link GameStatus}
+     * @param engine The {@link GameEngine} to set the {@link GameStatus}.
      * @see #checkBlockCollisions(GameObject)
      * @see #checkBoostCollision(Boost)
      * @see #checkEnemyCollision(GameEngine)
@@ -202,7 +200,7 @@ public class MapManager {
     /**
      * Lower-level collision checker for boost collisions.
      *
-     * @param toCheck The {@link GameObject} which
+     * @param toCheck The {@link Boost} which
      *                collisions need to be checked.
      * @see #checkCollisions(GameEngine)
      */
@@ -241,7 +239,7 @@ public class MapManager {
     /**
      * Lower-level collision checker for enemy collisions.
      *
-     * @param engine The {@link GameEngine} to set the {@link GameStatus}
+     * @param engine The {@link GameEngine} to set the {@link GameStatus}.
      * @see #checkCollisions(GameEngine)
      */
     private void checkEnemyCollision(GameEngine engine) {

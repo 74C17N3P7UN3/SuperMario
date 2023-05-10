@@ -32,8 +32,7 @@ public class Mario extends GameObject {
      * Draws the correct {@link MarioForm} depending
      * on its state and facing direction.
      *
-     * @param g2D The parent responsible for
-     *            drawing the child object.
+     * @param g2D The graphics engine.
      */
     @Override
     public void drawObject(Graphics2D g2D) {
