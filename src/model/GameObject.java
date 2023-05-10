@@ -4,21 +4,19 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
- * The primary abstract class used to define lower
- * level game objects, like enemies and such.
+ * The main abstract class used to define lower-level
+ * game objects, like bricks and entities.
  *
- * @author TacitNeptune
- * @version 0.1.0
+ * @version 1.0.0
  */
 public abstract class GameObject {
     private BufferedImage style;
+    private Dimension dimension;
 
     private double x, y;
     private double velX, velY;
-    private double gravityAcc;
+    private final double gravityAcc;
     private boolean falling, jumping;
-
-    private Dimension dimension;
 
     public GameObject(double x, double y, BufferedImage style) {
         setLocation(x, y);
@@ -28,21 +26,20 @@ public abstract class GameObject {
 
         setVelX(0);
         setVelY(0);
-        setGravityAcc(0.38);
+        gravityAcc = 0.38;
         setFalling(true);
         setJumping(false);
     }
 
     /**
      * Draws the {@link BufferedImage} stored in the class
-     * at the {@code (x, y)} coordinated with the given
+     * at the {@code (x, y)} coordinates with the given
      * {@link Graphics} parent drawer class.
      *
-     * @param graphics The parent responsible for drawing
-     *                 the child object.
+     * @param g2D The graphics engine.
      */
-    public void drawObject(Graphics graphics) {
-        graphics.drawImage(style, (int) x, (int) y, null);
+    public void drawObject(Graphics2D g2D) {
+        g2D.drawImage(style, (int) x, (int) y, null);
     }
 
     /**
@@ -51,8 +48,7 @@ public abstract class GameObject {
      * the horizontal position regardless every game tick.
      */
     public void updateLocation() {
-        if (isFalling() || isJumping() && velY > -13)
-            velY -= gravityAcc;
+        if ((isFalling() || isJumping()) && velY > -16) velY -= gravityAcc;
         y -= velY;
 
         if (velY < 0) {
@@ -70,6 +66,14 @@ public abstract class GameObject {
     }
 
     /* ---------- Getters / Setters ---------- */
+
+    public Dimension getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(int height, int width) {
+        this.dimension = new Dimension(width, height);
+    }
 
     public BufferedImage getStyle() {
         return style;
@@ -116,10 +120,6 @@ public abstract class GameObject {
         this.velY = velY;
     }
 
-    public void setGravityAcc(double gravityAcc) {
-        this.gravityAcc = gravityAcc;
-    }
-
     public boolean isFalling() {
         return falling;
     }
@@ -136,21 +136,8 @@ public abstract class GameObject {
         this.jumping = jumping;
     }
 
-    public Dimension getDimension() {
-        return dimension;
-    }
-
-    public void setDimension(int height, int width) {
-        this.dimension = new Dimension(width, height);
-    }
-
-    public Rectangle getVerticalBounds() {
-        double bx = x;
-        double by = y - velY;
-        double bw = dimension.width;
-        double bh = dimension.height + velY / 3 + 2;
-
-        return new Rectangle((int) bx, (int) by, (int) bw, (int) bh);
+    public Rectangle getBounds() {
+        return new Rectangle((int) x, (int) y, dimension.width, dimension.height);
     }
 
     public Rectangle getHorizontalBounds() {
@@ -162,7 +149,12 @@ public abstract class GameObject {
         return new Rectangle((int) bx, (int) by, (int) bw, (int) bh);
     }
 
-    public Rectangle getBounds() {
-        return new Rectangle((int) x, (int) y, dimension.width, dimension.height);
+    public Rectangle getVerticalBounds() {
+        double bx = x;
+        double by = y - velY;
+        double bw = dimension.width;
+        double bh = dimension.height + velY / 3 + 2;
+
+        return new Rectangle((int) bx, (int) by, (int) bw, (int) bh);
     }
 }

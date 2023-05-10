@@ -10,39 +10,38 @@ import view.ImageLoader;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-// FIXME: Calza Reminder
 /**
  * The main character of the game.
  *
- * @author TacitNeptune
- * @version 0.1.0
+ * @version 1.0.0
+ * @see GameObject
  */
 public class Mario extends GameObject {
-    private MarioForm marioForm;
     private Animation animation;
+    private MarioForm marioForm;
     private boolean invincible, toRight;
 
     public Mario(double x, double y) {
         super(x, y, null);
         invincible = false;
         toRight = true;
-        setMarioMini();
+        setMarioSmall();
     }
 
     /**
      * Draws the correct {@link MarioForm} depending
      * on its state and facing direction.
      *
-     * @param graphics The parent responsible for
-     *                 drawing the child object.
+     * @param g2D The parent responsible for
+     *            drawing the child object.
      */
     @Override
-    public void drawObject(Graphics graphics) {
+    public void drawObject(Graphics2D g2D) {
         boolean movingInX = getVelX() != 0;
         boolean movingInY = getVelY() != 0;
 
         setStyle(marioForm.getCurrentStyle(toRight, movingInX, movingInY));
-        super.drawObject(graphics);
+        super.drawObject(g2D);
     }
 
     /**
@@ -72,84 +71,80 @@ public class Mario extends GameObject {
     }
 
     /**
-     * Resets the position of Mario to the initial value.
+     * Sets Mario to his normal form.
      */
-    public void resetLocation() {
-        setVelX(0);
-        setVelY(0);
-        setX(50);
-        setFalling(true);
-        setJumping(false);
-    }
-
-    public void setMarioMini() {
+    public void setMarioSmall() {
         setDimension(48, 48);
 
         ImageLoader imageLoader = new ImageLoader();
         BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.SMALL);
         BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.SMALL);
 
-        this.animation = new Animation(leftFrames, rightFrames);
+        animation = new Animation(leftFrames, rightFrames);
         marioForm = new MarioForm(animation, false, false, false, false);
         setStyle(marioForm.getCurrentStyle(toRight, false, false));
     }
 
+    /**
+     * Sets Mario to his super form.
+     */
     public void setMarioSuper() {
         setDimension(96, 48);
 
         ImageLoader imageLoader = new ImageLoader();
+        BufferedImage[] leftFrames = imageLoader.getLeftFrames(isBabyStar() ? MarioForm.STAR : MarioForm.SUPER);
+        BufferedImage[] rightFrames = imageLoader.getRightFrames(isBabyStar() ? MarioForm.STAR : MarioForm.SUPER);
 
-        if(this.isBabyStar()) {
-            BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.STAR);
-            BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.STAR);
-            this.animation = new Animation(leftFrames, rightFrames);
-            marioForm = new MarioForm(animation, true, false, true, false);
-        }else {
-            BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.SUPER);
-            BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.SUPER);
-            this.animation = new Animation(leftFrames, rightFrames);
-            marioForm = new MarioForm(animation, true, false, false, false);
-        }
-
+        animation = new Animation(leftFrames, rightFrames);
+        marioForm = new MarioForm(animation, true, false, isBabyStar(), false);
         setStyle(marioForm.getCurrentStyle(toRight, false, false));
     }
 
+    /**
+     * Sets Mario to his fire form.
+     */
     public void setMarioFire() {
         ImageLoader imageLoader = new ImageLoader();
 
         BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.FIRE);
         BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.FIRE);
 
-        this.animation = new Animation(leftFrames, rightFrames);
+        animation = new Animation(leftFrames, rightFrames);
         marioForm = new MarioForm(animation, true, true, false, false);
         setStyle(marioForm.getCurrentStyle(toRight, false, false));
     }
 
+    /**
+     * Sets Mario to his baby or normal star form.
+     */
     public void setMarioStar() {
         ImageLoader imageLoader = new ImageLoader();
 
-        if(this.isSuper()) {
-            BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.STAR);
-            BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.STAR);
-            this.animation = new Animation(leftFrames, rightFrames);
-            if(isFire())
-            	marioForm = new MarioForm(animation, true, true, true, false);
-            else
-            	marioForm = new MarioForm(animation, true, false, true, false);
-        }else {
-            BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.star);
-            BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.star);
-            this.animation = new Animation(leftFrames, rightFrames);
-            marioForm = new MarioForm(animation, false, false, false,true);
-        }
+        BufferedImage[] leftFrames = imageLoader.getLeftFrames(isSuper() ? MarioForm.STAR : MarioForm.BABY_STAR);
+        BufferedImage[] rightFrames = imageLoader.getRightFrames(isSuper() ? MarioForm.STAR : MarioForm.BABY_STAR);
+
+        animation = new Animation(leftFrames, rightFrames);
+        marioForm = new MarioForm(animation, isSuper(), isFire(), isSuper(), !isSuper());
         setStyle(marioForm.getCurrentStyle(toRight, false, false));
     }
 
-	public void fire(MapManager mapManager) {
-		mapManager.addFireball(marioForm.fire(toRight, getX(), getY()));
+    /**
+     * Shoots a fireball depending on the direction.
+     *
+     * @param mapManager The {@link MapManager} needed to
+     *                   spawn the fireball in the map.
+     */
+    public void fire(MapManager mapManager) {
+        mapManager.getMap().getFireballs().add(marioForm.fire(toRight, getX(), getY()));
         GameEngine.playSound("fireball");
-	}
+    }
 
+    /**
+     * Teleports Mario when using a pipe to a target point.
+     *
+     * @param destinationX The destination x coordinate.
+     * @param destinationY The destination y coordinate.
+     */
     public void pipeTeleport(int destinationX, int destinationY) {
         setVelX(0);
         setVelY(0);
@@ -163,16 +158,24 @@ public class Mario extends GameObject {
 
     /* ---------- Getters / Setters ---------- */
 
-    public MarioForm getMarioForm() {
-        return marioForm;
+    public boolean isSuper() {
+        return marioForm.isSuper();
     }
 
     public boolean isFire() {
         return marioForm.isFire();
     }
 
-    public boolean isSuper() {
-        return marioForm.isSuper();
+    public void setFire(boolean fire) {
+        marioForm.setFire(fire);
+    }
+
+    public boolean isBabyStar() {
+        return marioForm.isBabyStar();
+    }
+
+    public boolean isStar() {
+        return marioForm.isStar();
     }
 
     public boolean isInvincible() {
@@ -181,17 +184,5 @@ public class Mario extends GameObject {
 
     public void setInvincible(boolean invincible) {
         this.invincible = invincible;
-    }
-
-    public boolean isStar(){
-    	return marioForm.isStar();
-    }
-
-    public boolean isBabyStar(){
-    	return marioForm.isBabyStar();
-    }
-
-    public void setIsFire(boolean isFire) {
-    	marioForm.setIsFire(isFire);
     }
 }

@@ -3,9 +3,7 @@ package model;
 import model.boost.Boost;
 import model.boost.BoostType;
 import model.brick.Brick;
-import model.brick.SurpriseBrick;
 import model.enemy.Enemy;
-import model.enemy.Koopa;
 import model.hero.Fireball;
 import model.hero.Mario;
 import utils.ImageImporter;
@@ -14,39 +12,39 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+/**
+ * The Map that gets rendered and contains all information
+ * about what objects are in it, the current player's progress.
+ *
+ * @version 1.0.0
+ */
 public class Map {
-    private BufferedImage backgroundImage;
-    private String name;
+    private final BufferedImage backgroundImage;
+
+    private int coins, lives, points, time;
 
     private Mario mario;
     private EndFlag endPoint;
 
-    private ArrayList<Boost> boosts = new ArrayList<>();
-    private ArrayList<Brick> bricks = new ArrayList<>();
-    private ArrayList<Enemy> enemies = new ArrayList<>();
-    private ArrayList<Fireball> fireballs = new ArrayList<>();
+    private final ArrayList<Boost> boosts = new ArrayList<>();
+    private final ArrayList<Brick> bricks = new ArrayList<>();
+    private final ArrayList<Enemy> enemies = new ArrayList<>();
+    private final ArrayList<Fireball> fireballs = new ArrayList<>();
 
-    public Map(String mapName) {
+    public Map() {
         backgroundImage = ImageImporter.loadImage("background");
-        name = mapName;
+
+        coins = 0;
+        lives = 3;
+        points = 0;
+        time = 120;
     }
 
-    public void addBoost(Boost boost) {
-        boosts.add(boost);
-    }
-
-    public void addBrick(Brick brick) {
-        bricks.add(brick);
-    }
-
-    public void addEnemy(Enemy enemy) {
-        enemies.add(enemy);
-    }
-
-    public void addFireBall(Fireball fireball) {
-        fireballs.add(fireball);
-    }
-
+    /**
+     * Draws all the map's components.
+     *
+     * @param g2D The graphics engine.
+     */
     public void drawMap(Graphics2D g2D) {
         drawBackground(g2D);
 
@@ -59,55 +57,85 @@ public class Map {
         drawFireballs(g2D);
     }
 
+    /**
+     * Draws the map's background.
+     *
+     * @param g2D The graphics engine.
+     * @see #drawMap(Graphics2D)
+     */
     public void drawBackground(Graphics2D g2D) {
         g2D.drawImage(backgroundImage, 0, 0, null);
     }
 
+    /**
+     * Draws the map's boosts.
+     *
+     * @param g2D The graphics engine.
+     * @see #drawMap(Graphics2D)
+     */
     private void drawBoosts(Graphics2D g2D) {
-        for (int i = boosts.size() - 1; i >= 0; i--) {
+        for (int i = 0; i < boosts.size(); i++) {
             Boost boost = boosts.get(i);
-            if (boost.getType() == BoostType.COIN && boost.getVelY() == 0)
-                boosts.remove(boost);
+            if (boost.getBoostType() == BoostType.COIN && boost.getVelY() == 0) boosts.remove(boost);
             else boost.drawObject(g2D);
         }
     }
 
+    /**
+     * Draws the map's bricks.
+     *
+     * @param g2D The graphics engine.
+     * @see #drawMap(Graphics2D)
+     */
     private void drawBricks(Graphics2D g2D) {
         for (Brick brick : bricks) g2D.drawImage(brick.getStyle(), (int) brick.getX(), (int) brick.getY(), null);
     }
 
+    /**
+     * Draws the map's enemies.
+     *
+     * @param g2D The graphics engine.
+     * @see #drawMap(Graphics2D)
+     */
     private void drawEnemies(Graphics2D g2D) {
         for (Enemy enemy : enemies) enemy.drawObject(g2D);
     }
 
+    /**
+     * Draws the map's fireballs.
+     *
+     * @param g2D The graphics engine.
+     * @see #drawMap(Graphics2D)
+     */
     private void drawFireballs(Graphics2D g2D) {
         for (Fireball fireball : fireballs) fireball.drawObject(g2D);
     }
 
-    public void updateLocations() {
-        // Updates Mario's location
-        mario.updateLocation();
-
-        // Updates enemies' locations
-        for (Enemy enemy : enemies) enemy.updateLocation();
-        for (Boost boost : boosts) boost.updateLocation();
-        for (Fireball fireball : fireballs) fireball.updateLocation();
-
-        // Updates flag's location
-        endPoint.updateLocation();
+    /**
+     * Returns the index in the brick's array of the given
+     * surprise brick at the {@code (x, y)} coordinates.
+     *
+     * @param x The x coordinate of the surprise brick.
+     * @param y The y coordinate of the surprise brick.
+     * @return The index pf the surprise brick in the array.
+     */
+    public int getBrickIndex(int x, int y) {
+        for (int i = 0; i < bricks.size(); i++)
+            if (bricks.get(i).getX() == x && bricks.get(i).getY() == y) return i;
+        return -1;
     }
 
-    public int getBlockPosition(int x, int y) {
-        int pos = 0;
-        for (Brick brick : bricks) {
-            if (brick instanceof SurpriseBrick)
-                if (brick.getX() == x && brick.getY() == y)
-                    return pos;
+    /**
+     * Updates all entities locations every game tick.
+     */
+    public void updateLocations() {
+        mario.updateLocation();
 
-            pos++;
-        }
+        for (Boost boost : boosts) boost.updateLocation();
+        for (Enemy enemy : enemies) enemy.updateLocation();
+        for (Fireball fireball : fireballs) fireball.updateLocation();
 
-        return -1;
+        endPoint.updateLocation();
     }
 
     /* ---------- Getters / Setters ---------- */
@@ -118,6 +146,14 @@ public class Map {
 
     public ArrayList<Brick> getBricks() {
         return bricks;
+    }
+
+    public int getCoins() {
+        return coins;
+    }
+
+    public void setCoins(int coins) {
+        this.coins = coins;
     }
 
     public EndFlag getEndPoint() {
@@ -136,15 +172,35 @@ public class Map {
         return fireballs;
     }
 
+    public int getLives() {
+        return lives;
+    }
+
+    public void setLives(int lives) {
+        this.lives = lives;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+    }
+
     public Mario getMario() {
         return mario;
     }
 
     public void setMario(Mario mario) {
         this.mario = mario;
-    }
-
-    public String getName() {
-        return name;
     }
 }

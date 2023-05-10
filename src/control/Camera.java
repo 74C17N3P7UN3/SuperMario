@@ -3,7 +3,7 @@ package control;
 /**
  * The camera that follows the player.
  *
- * @version 0.1.2
+ * @version 1.0.0
  */
 public class Camera {
     private int x, y;

@@ -9,7 +9,7 @@ import javax.sound.sampled.FloatControl;
  * Responsible for retrieving and playing the
  * requested tracks from the media's package.
  *
- * @version 1.1.0
+ * @version 1.1.1
  */
 public class SoundManager {
     private final Clip themeClip;
@@ -17,8 +17,8 @@ public class SoundManager {
 
     public SoundManager() {
         themeClip = SoundImporter.loadTrack("theme");
-        setClipVolume(themeClip, 0.6);
         themeClip.loop(Clip.LOOP_CONTINUOUSLY);
+        setClipVolume(themeClip, 0.6);
     }
 
     /**

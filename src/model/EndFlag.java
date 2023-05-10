@@ -2,6 +2,12 @@ package model;
 
 import java.awt.image.BufferedImage;
 
+/**
+ * The flag at the end of the level.
+ *
+ * @version 1.0.0
+ * @see GameObject
+ */
 public class EndFlag extends GameObject {
     private boolean touched;
 
@@ -10,6 +16,11 @@ public class EndFlag extends GameObject {
         touched = false;
     }
 
+    /**
+     * Updates the location of the sprite given its status.
+     * Provides checks for vertical conditions and updates
+     * the horizontal position regardless every game tick.
+     */
     @Override
     public void updateLocation() {
         if (touched) {
@@ -22,6 +33,8 @@ public class EndFlag extends GameObject {
             super.updateLocation();
         }
     }
+
+    /* ---------- Getters / Setters ---------- */
 
     public boolean isTouched() {
         return touched;

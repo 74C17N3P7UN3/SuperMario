@@ -1,30 +1,33 @@
 package control;
 
-import model.*;
-import model.brick.*;
+import model.GameObject;
+import model.Map;
+import model.boost.Boost;
+import model.boost.BoostType;
+import model.brick.Brick;
+import model.brick.CoinBlue;
+import model.brick.SurpriseBrick;
 import model.enemy.Enemy;
 import model.enemy.Goomba;
 import model.enemy.Koopa;
 import model.hero.Fireball;
 import model.hero.Mario;
-import model.boost.Boost;
-import model.boost.BoostType;
 
 import java.awt.*;
 import java.util.ArrayList;
 
-// FIXME: Calza Reminder
+// FIXME: Format Reminder
+
 /**
  * Creates and handles all the game-level collisions and
  * behaviours. It provides checks and low-level conditions
  * for working in sync with the {@link GameEngine}.
  *
- * @version 0.1.0
+ * @version 1.0.0
  */
 public class MapManager {
     private Map map;
-    private MapCreator mapCreator;
-    private GameEngine engine;
+
     ArrayList<GameObject> disposal = new ArrayList<>();
 
     public MapManager() {}
@@ -35,10 +38,9 @@ public class MapManager {
      * @param mapName The name of the map to be loaded.
      * @return If the map was created successfully.
      */
-    public boolean createMap(String mapName, GameEngine engine) {
-        mapCreator = new MapCreator();
+    public boolean createMap(String mapName) {
+        MapCreator mapCreator = new MapCreator();
         map = mapCreator.createMap(mapName);
-        this.engine = engine;
 
         return map != null;
     }
@@ -54,234 +56,253 @@ public class MapManager {
     }
 
     /**
-     * Resets the current map.
+     * The master checker. It provides high-level conditions
+     * to then call lower-level condition checkers for specific
+     * collision contacts.
      *
-     * @param engine The {@link GameEngine} object.
+     * @param engine The {@link GameEngine} to set the {@link GameStatus}
+     * @see #checkBlockCollisions(GameObject)
+     * @see #checkBoostCollision(Boost)
+     * @see #checkEnemyCollision(GameEngine)
      */
-    public void resetMap(GameEngine engine) {
-        getMario().resetLocation();
-        engine.resetCamera();
-
-        createMap(map.getName(),engine);
-    }
-
     public void checkCollisions(GameEngine engine) {
-        Mario mario = getMario();
+        Mario mario = map.getMario();
 
+        // Mario checks
         checkBlockCollisions(mario);
-        checkEnemyCollision(mario, engine);
-        if(mario.getY() >= (48 * 14)) {
-        	if(engine.getLives() == 0)engine.setGameStatus(GameStatus.GAME_OVER);
-        	else {
-        		engine.setLives((engine.getLives() - 1));
+        checkEnemyCollision(engine);
+
+        if (mario.getY() > (48 * 16)) {
+            if (map.getLives() == 0) engine.setGameStatus(GameStatus.GAME_OVER);
+            else {
+                int lives = map.getLives();
                 GameEngine.playSound("death");
-        		engine.reset();
-        	}
-        }
-
-        for(Enemy enemy : map.getEnemies()) {
-            checkBlockCollisions(enemy);
-        }
-
-        for(Fireball fireball : map.getFireballs()) {
-        	checkBlockCollisions(fireball);
-        }
-
-        //BOOSTS
-
-        for(Boost boost : mapCreator.getBoosts()){
-            if(boost.getBounds().intersects(mario.getBounds())) {
-                if(boost.getType() == BoostType.SUPER_MUSHROOM){
-                    mario.setY(mario.getY()-48);
-                    mario.setMarioSuper();
-                    GameEngine.playSound("super-mario");
-                }
-                if(boost.getType() == BoostType.STAR){
-                    mario.setMarioStar();
-                }
-                if(boost.getType() == BoostType.FIRE_FLOWER){
-                	if(mario.isFire()) engine.earnPoints(1000);
-                    if(mario.isStar() || mario.isBabyStar()) mario.setIsFire(true);
-                    else {
-                        if(!mario.isSuper()) {
-                        	mario.setY(mario.getY()-48);
-                        }
-                    	mario.setMarioSuper();
-                        mario.setMarioFire();
-
-                    }
-                }
-                if(boost.getType() == BoostType.HEART_MUSHROOM) {
-                	engine.setLives((engine.getLives() + 1));
-                    GameEngine.playSound("one-up");
-                }
-                disposal.add(boost);
+                engine.reset();
+                map.setLives(lives - 1);
             }
-
-            checkBlockCollisions(boost);
-
         }
 
-        for(GameObject object : disposal) {
+        // Boost checks
+        for (Boost boost : map.getBoosts()) checkBoostCollision(boost);
+        // Enemy checks
+        for (Enemy enemy : map.getEnemies()) checkBlockCollisions(enemy);
+        // Fireball checks
+        for (Fireball fireball : map.getFireballs()) checkBlockCollisions(fireball);
+
+        // Clear the items to remove
+        for (GameObject object : disposal) {
             if (object instanceof Boost) map.getBoosts().remove((Boost) object);
+            if (object instanceof CoinBlue) map.getBricks().remove((CoinBlue) object);
             if (object instanceof Enemy) map.getEnemies().remove((Enemy) object);
             if (object instanceof Fireball) map.getFireballs().remove((Fireball) object);
-            if (object instanceof CoinBlue) map.getBricks().remove((CoinBlue)object);
         }
-
     }
 
-    private void checkBlockCollisions(GameObject toCheck){
+    /**
+     * Lower-level collision checker for block collisions.
+     *
+     * @param toCheck The {@link GameObject} which
+     *                collisions need to be checked.
+     * @see #checkCollisions(GameEngine)
+     */
+    private void checkBlockCollisions(GameObject toCheck) {
         boolean air = true;
-        for(Brick block : map.getBricks()){
-            //checks bottom and upper collision
-            if(toCheck.getVerticalBounds().intersects(block.getBounds())){
-            	if(block instanceof CoinBlue && toCheck instanceof Mario) {
-            		disposal.add(block);
-            		engine.setCoins(engine.getCoins()+1);
+
+        for (Brick brick : map.getBricks()) {
+            // -------------------- Checks top and bottom collisions --------------------
+            if (toCheck.getVerticalBounds().intersects(brick.getBounds())) {
+                // If Mario intersects with a coin
+                if (brick instanceof CoinBlue && toCheck instanceof Mario) {
+                    disposal.add(brick);
+                    map.setCoins(map.getCoins() + 1);
                     GameEngine.playSound("coin");
-            	}else if(toCheck.getVelY() < 0 && !(toCheck instanceof Fireball)){
+                } // Stop the entity falling, if it's not a fireball
+                else if (toCheck.getVelY() < 0 && !(toCheck instanceof Fireball)) {
                     toCheck.setVelY(0);
                     toCheck.setFalling(false);
-                }else if(toCheck instanceof Fireball) {
-                	toCheck.setVelY(3);
-                }else if(toCheck.isJumping()){
-                    if(block instanceof SurpriseBrick){
-                    	if(toCheck instanceof Mario) {
-                    		int n = map.getBlockPosition((int)block.getX(),(int)block.getY());
-                            if(((SurpriseBrick) map.getBricks().get(n)).getBoost() > 0){
-                                Boost boost = new Boost(block.getX(), block.getY()-48, MapCreator.coin);
+                } // If it's a fireball, make it bounce off
+                else if (toCheck instanceof Fireball) {
+                    toCheck.setVelY(3);
+                } // If the entity is jumping
+                else if (toCheck.isJumping()) {
+                    // If the entity is Mario and intersects a surprise brick on top
+                    if (toCheck instanceof Mario && brick instanceof SurpriseBrick) {
+                        int surpriseBrickIndex = map.getBrickIndex((int) brick.getX(), (int) brick.getY());
+                        // If there are boosts left in the block, spawn them
+                        if (((SurpriseBrick) map.getBricks().get(surpriseBrickIndex)).getBoostsAmount() > 0) {
+                            Boost boost = new Boost(brick.getX(), brick.getY() - 48, MapCreator.coin);
+                            boost.setType(surpriseBrickIndex, (Mario) toCheck);
+                            map.getBoosts().add(boost);
 
-                                boost.setType(n, (Mario) toCheck);
-
-                                map.addBoost(boost);
-                                if(boost.getType() == BoostType.COIN) {
-                                	boost.setVelY(7);
-                                	engine.setCoins(engine.getCoins()+1);
-                                    GameEngine.playSound("coin");
-                                }
-
-                                ((SurpriseBrick) map.getBricks().get(n)).decrementBoosts();
-                                if(((SurpriseBrick) map.getBricks().get(n)).getBoost() == 0)
-                                	map.getBricks().get(n).setStyle(MapCreator.emptySurpriseBrick);
+                            if (boost.getBoostType() == BoostType.COIN) {
+                                boost.setVelY(7);
+                                map.setCoins(map.getCoins() + 1);
+                                GameEngine.playSound("coin");
                             }
+
+                            ((SurpriseBrick) map.getBricks().get(surpriseBrickIndex)).decrementBoosts();
+                            if (((SurpriseBrick) map.getBricks().get(surpriseBrickIndex)).getBoostsAmount() == 0)
+                                map.getBricks().get(surpriseBrickIndex).setStyle(MapCreator.surpriseBrickEmpty);
                         }
                     }
+
+                    // And intersects a block on top, make it fall
                     toCheck.setVelY(0);
                     toCheck.setFalling(true);
                 }
 
-                if(toCheck.getY()+48 > block.getY() && !toCheck.isJumping()){
-                    toCheck.setY(block.getY()-48);
-                }
+                // Unstuck the entity from the intersecting block
+                if (toCheck.getY() + 48 > brick.getY() && !toCheck.isJumping()) toCheck.setY(brick.getY() - 48);
                 air = false;
             }
 
-            //checks right and left collision
-            if(toCheck.getHorizontalBounds().intersects(block.getHorizontalBounds())){
-                if(toCheck.getVelX() > 0){
-                	if(block instanceof CoinBlue && toCheck instanceof Mario) {
-                		disposal.add(block);
-                		engine.setCoins(engine.getCoins()+1);
+            // -------------------- Checks right and left collisions --------------------
+            if (toCheck.getHorizontalBounds().intersects(brick.getHorizontalBounds())) {
+                // Check right collisions
+                if (toCheck.getVelX() > 0) {
+                    // If Mario intersects with a coin
+                    if (brick instanceof CoinBlue && toCheck instanceof Mario) {
+                        disposal.add(brick);
+                        map.setCoins(map.getCoins() + 1);
                         GameEngine.playSound("coin");
-                	}
-                	else if(toCheck instanceof Mario)
+                    }
+                    // If Mario intersects a brick
+                    else if (toCheck instanceof Mario) {
                         toCheck.setVelX(0);
-                    else if(toCheck instanceof Enemy || toCheck instanceof Boost)
-                        toCheck.setVelX(-toCheck.getVelX());
-
-                }else if(toCheck.getVelX() < 0){
-                	if(block instanceof CoinBlue && toCheck instanceof Mario) {
-                		disposal.add(block);
-                		engine.setCoins(engine.getCoins()+1);
-                        GameEngine.playSound("coin");
-                	}
-                	else if(toCheck instanceof Mario)
-                        toCheck.setVelX(0);
-                    else if(toCheck instanceof Enemy || toCheck instanceof Boost)
-                        toCheck.setVelX(-toCheck.getVelX());
+                    } // If an enemy or a boost intersects with a block, make it bounce off
+                    else if (toCheck instanceof Enemy || toCheck instanceof Boost) toCheck.setVelX(-toCheck.getVelX());
                 }
-                if(toCheck instanceof Fireball)  disposal.add(toCheck);
+                // Check left collisions
+                else if (toCheck.getVelX() < 0) {
+                    // If Mario intersects with a coin
+                    if (brick instanceof CoinBlue && toCheck instanceof Mario) {
+                        disposal.add(brick);
+                        map.setCoins(map.getCoins() + 1);
+                        GameEngine.playSound("coin");
+                    }
+                    // If Mario intersects a brick
+                    else if (toCheck instanceof Mario) {
+                        toCheck.setVelX(0);
+                    } // If an enemy or a boost intersects with a block, make it bounce off
+                    else if (toCheck instanceof Enemy || toCheck instanceof Boost) toCheck.setVelX(-toCheck.getVelX());
+                }
+
+                // If a fireball intersect a brick horizontally, simply remove it
+                if (toCheck instanceof Fireball) disposal.add(toCheck);
             }
 
-            if(toCheck instanceof Fireball && toCheck.getY() >= 48*14) disposal.add(toCheck);
-
-        }
-        if(air){
-            toCheck.setFalling(true);
+            // -------------------- Checks out of the map collisions --------------------
+            if (!(toCheck instanceof Mario) && toCheck.getY() > (48 * 16)) disposal.add(toCheck);
         }
 
+        // If an entity has air underneath, make it fall
+        if (air) toCheck.setFalling(true);
     }
 
-    public void checkEnemyCollision(Mario mario, GameEngine engine){
-        for(Enemy enemy : map.getEnemies()){
-            if((mario.isStar() || mario.isBabyStar()) && mario.getBounds().intersects(enemy.getBounds())) {
-            	disposal.add(enemy);
-            	if(enemy instanceof Goomba)
-            		engine.earnPoints(100);
-            	if(enemy instanceof Koopa)
-            		engine.earnPoints(200);
-            }else if(mario.getVerticalBounds().intersects(enemy.getVerticalBounds()) && mario.getVelY() < 0){
+    /**
+     * Lower-level collision checker for boost collisions.
+     *
+     * @param toCheck The {@link GameObject} which
+     *                collisions need to be checked.
+     * @see #checkCollisions(GameEngine)
+     */
+    private void checkBoostCollision(Boost toCheck) {
+        Mario mario = map.getMario();
+
+        // If Mario intersects a boost
+        if (toCheck.getBounds().intersects(mario.getBounds())) {
+            if (toCheck.getBoostType() == BoostType.FIRE_FLOWER) {
+                if (mario.isFire()) map.setPoints(map.getPoints() + 1000);
+                else if (mario.isBabyStar() || mario.isStar()) mario.setFire(true);
+                else {
+                    if (!mario.isSuper()) mario.setY(mario.getY() - 48);
+                    mario.setMarioSuper();
+                    mario.setMarioFire();
+                }
+            }
+            if (toCheck.getBoostType() == BoostType.HEART_MUSHROOM) {
+                map.setLives((map.getLives() + 1));
+                GameEngine.playSound("one-up");
+            }
+            if (toCheck.getBoostType() == BoostType.STAR) mario.setMarioStar();
+            if (toCheck.getBoostType() == BoostType.SUPER_MUSHROOM) {
+                mario.setY(mario.getY() - 48);
+                mario.setMarioSuper();
+                GameEngine.playSound("mushroom");
+            }
+
+            disposal.add(toCheck);
+        }
+
+        // Also check for normal collisions
+        checkBlockCollisions(toCheck);
+    }
+
+    /**
+     * Lower-level collision checker for enemy collisions.
+     *
+     * @param engine The {@link GameEngine} to set the {@link GameStatus}
+     * @see #checkCollisions(GameEngine)
+     */
+    private void checkEnemyCollision(GameEngine engine) {
+        Mario mario = map.getMario();
+
+        for (Enemy enemy : map.getEnemies()) {
+            // If Mario is star and intersects an enemy, remove the enemy
+            if ((mario.isBabyStar() || mario.isStar()) && mario.getBounds().intersects(enemy.getBounds())) {
                 disposal.add(enemy);
-                if(enemy instanceof Goomba)
-            		engine.earnPoints(100);
-            	if(enemy instanceof Koopa)
-            		engine.earnPoints(200);
-                mario.setVelY(4);
-            }else if(mario.getVerticalBounds().intersects(enemy.getVerticalBounds()) && !mario.isInvincible()){
-                if(mario.isSuper()){
-                	mario.setMarioMini();
-                    mario.setY(mario.getY()+48);
+                if (enemy instanceof Goomba) map.setPoints(map.getPoints() + 100);
+                if (enemy instanceof Koopa) map.setPoints(map.getPoints() + 200);
+            }
+            // If Mario falls on an enemy, remove the enemy
+            else if (mario.getVerticalBounds().intersects(enemy.getVerticalBounds()) && mario.getVelY() < 0) {
+                disposal.add(enemy);
+                if (enemy instanceof Goomba) map.setPoints(map.getPoints() + 100);
+                if (enemy instanceof Koopa) map.setPoints(map.getPoints() + 200);
+                mario.setVelY(4); // And make mario bounce
+            }
+            // In every other case, Mario dies or gets downgraded. Unless he's invincible
+            else if (mario.getVerticalBounds().intersects(enemy.getVerticalBounds()) && !mario.isInvincible()) {
+                if (mario.isSuper()) {
+                    mario.setMarioSmall();
+                    mario.setY(mario.getY() + 48);
                     mario.setInvincible(true);
-                }else if(mario.isFire()){
+                } else if (mario.isFire()) {
                     mario.setMarioSuper();
                     mario.setInvincible(true);
-                }else {
-                	if(engine.getLives() == 0)engine.setGameStatus(GameStatus.GAME_OVER);
-                	else {
-                		engine.setLives((engine.getLives() - 1));
+                } else {
+                    if (map.getLives() == 0) engine.setGameStatus(GameStatus.GAME_OVER);
+                    else {
+                        int lives = map.getLives();
                         GameEngine.playSound("death");
-                		engine.reset();
-                	}
+                        engine.reset();
+                        map.setLives(lives - 1);
+                    }
                 }
             }
 
             for (Fireball fireball : map.getFireballs()) {
-            	if(fireball.getHorizontalBounds().intersects(enemy.getHorizontalBounds())) {
-            		disposal.add(enemy);
-            		if(enemy instanceof Goomba)
-                		engine.earnPoints(100);
-                	if(enemy instanceof Koopa)
-                		engine.earnPoints(200);
-            		disposal.add(fireball);
-            	}
+                if (fireball.getHorizontalBounds().intersects(enemy.getHorizontalBounds())) {
+                    disposal.add(enemy);
+                    if (enemy instanceof Goomba) map.setPoints(map.getPoints() + 100);
+                    if (enemy instanceof Koopa) map.setPoints(map.getPoints() + 200);
+                    disposal.add(fireball);
+                }
             }
         }
     }
 
     /**
      * Updates all entity/tiles locations
-     * with {@link Map#updateLocations}.
+     * with {@link Map#updateLocations()}.
      */
     public void updateLocations() {
         if (map != null) map.updateLocations();
     }
 
-    public void addFireball(Fireball fireball) {
-    	map.addFireBall(fireball);
-    }
-
     /* ---------- Getters / Setters ---------- */
-
-    public EndFlag getEndPoint() {
-        return map.getEndPoint();
-    }
 
     public Map getMap() {
         return map;
-    }
-
-    public Mario getMario() {
-        return map.getMario();
     }
 }

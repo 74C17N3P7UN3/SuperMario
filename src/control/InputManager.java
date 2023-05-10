@@ -7,12 +7,12 @@ import java.awt.event.KeyListener;
  * Handles all the key presses that the player performs to
  * then notify the performed action to the {@link GameEngine}.
  *
- * @version 0.1.0
+ * @version 1.0.0
  */
 public class InputManager implements KeyListener {
     private final GameEngine engine;
 
-    InputManager(GameEngine engine) {
+    public InputManager(GameEngine engine) {
         this.engine = engine;
     }
 
@@ -20,12 +20,11 @@ public class InputManager implements KeyListener {
      * Signals the {@link GameEngine} with the
      * currently pressed {@link ButtonAction}.
      *
-     * @param input The action performed to be handled by
-     *              the {@link GameEngine#receiveInput}.
+     * @param input The action performed to be handled
+     *              by the {@link GameEngine}.
      */
     private void notifyInput(ButtonAction input) {
-        if (input != ButtonAction.NO_ACTION)
-            engine.receiveInput(input);
+        if (input != ButtonAction.NO_ACTION) engine.receiveInput(input);
     }
 
     /**
@@ -35,27 +34,19 @@ public class InputManager implements KeyListener {
      */
     @Override
     public void keyPressed(KeyEvent e) {
-        int keyCode = e.getKeyCode();
+        int code = e.getKeyCode();
         ButtonAction currentAction = ButtonAction.NO_ACTION;
 
-        if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_SPACE)
-            currentAction = ButtonAction.JUMP;
-        if (keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_S)
-            currentAction = ButtonAction.CROUCH;
-        if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D)
-            currentAction = ButtonAction.M_RIGHT;
-        if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A)
-            currentAction = ButtonAction.M_LEFT;
+        if (code == KeyEvent.VK_UP || code == KeyEvent.VK_W || code == KeyEvent.VK_SPACE) currentAction = ButtonAction.JUMP;
+        if (code == KeyEvent.VK_DOWN || code == KeyEvent.VK_S) currentAction = ButtonAction.CROUCH;
+        if (code == KeyEvent.VK_RIGHT || code == KeyEvent.VK_D) currentAction = ButtonAction.M_RIGHT;
+        if (code == KeyEvent.VK_LEFT || code == KeyEvent.VK_A) currentAction = ButtonAction.M_LEFT;
 
-        if (keyCode == KeyEvent.VK_Z)
-            currentAction = ButtonAction.FIRE;
-        if (keyCode == KeyEvent.VK_X)
-            currentAction = ButtonAction.RUN;
-        if (keyCode == KeyEvent.VK_C)
-            currentAction = ButtonAction.CHEAT;
+        if (code == KeyEvent.VK_Z) currentAction = ButtonAction.FIRE;
+        if (code == KeyEvent.VK_X) currentAction = ButtonAction.RUN;
+        if (code == KeyEvent.VK_C) currentAction = ButtonAction.CHEAT;
 
-        if (keyCode == KeyEvent.VK_ENTER)
-            currentAction = ButtonAction.ENTER;
+        if (code == KeyEvent.VK_ENTER) currentAction = ButtonAction.ENTER;
 
         notifyInput(currentAction);
     }
@@ -67,9 +58,9 @@ public class InputManager implements KeyListener {
      */
     @Override
     public void keyReleased(KeyEvent e) {
-        int keyCode = e.getKeyCode();
+        int code = e.getKeyCode();
 
-        if (keyCode == KeyEvent.VK_C || keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_LEFT)
+        if (code == KeyEvent.VK_C || code == KeyEvent.VK_RIGHT || code == KeyEvent.VK_LEFT)
             notifyInput(ButtonAction.ACTION_COMPLETED);
     }
 

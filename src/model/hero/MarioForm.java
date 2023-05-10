@@ -2,26 +2,26 @@ package model.hero;
 
 import control.MapCreator;
 import view.Animation;
+
 import java.awt.image.BufferedImage;
 
-// FIXME: Calza Reminder
 /**
  * Defines the possible states in which Mario could be found. Those
- * states are Normal, Super and Fire, each with its animated sprite.
+ * states are Small, Super, Fire and Star each with its animated sprite.
  *
- * @author TacitNeptune
- * @version 0.1.0
+ * @version 1.0.0
  */
 public class MarioForm {
-    public static final int SMALL = 0, SUPER = 1, FIRE = 2, star = 3, STAR = 4;
+    public static final int SMALL = 0, SUPER = 1, FIRE = 2, BABY_STAR = 3, STAR = 4;
 
-    private Animation animation;
-
-    private boolean isSuper, isFire, isStar, isBabyStar;
+    private final Animation animation;
     private int starAnimation;
 
-    public MarioForm(Animation animation, boolean isSuper, boolean isFire,boolean isStar, boolean isBabyStar) {
-    	this.animation = animation;
+    private boolean isSuper, isFire;
+    private final boolean isBabyStar, isStar;
+
+    public MarioForm(Animation animation, boolean isSuper, boolean isFire, boolean isStar, boolean isBabyStar) {
+        this.animation = animation;
         this.isSuper = isSuper;
         this.isFire = isFire;
         this.isStar = isStar;
@@ -40,41 +40,33 @@ public class MarioForm {
      * @return The frame of the style to be rendered.
      */
     public BufferedImage getCurrentStyle(boolean toRight, boolean movingInX, boolean movingInY) {
+        BufferedImage style = null;
 
-    	BufferedImage style = null;
+        if (isBabyStar || isStar) {
+            if (starAnimation < 20) starAnimation++;
+            else if (starAnimation == 20) starAnimation = 0;
+        }
 
-        //TODO: ottimizzare sta roba (no, è giusto)
-    	if(isBabyStar || isStar) {
-    		if(starAnimation < 20)
-    			starAnimation++;
-    		else if(starAnimation == 20)
-    			starAnimation=0;
-    	}
-
-        if(starAnimation < 5) {
-        	if (movingInX) style = animation.animate(5, toRight, 0);
+        if (starAnimation < 5) {
+            if (movingInX) style = animation.animate(5, toRight, 0);
             if (movingInY) style = animation.getLeftFrames()[0];
             if (movingInY && toRight) style = animation.getRightFrames()[0];
-            if (!movingInX && !movingInY)
-                style = toRight ? animation.getRightFrames()[1] : animation.getLeftFrames()[1];
-        }else if(starAnimation < 10){
+            if (!movingInX && !movingInY) style = toRight ? animation.getRightFrames()[1] : animation.getLeftFrames()[1];
+        } else if (starAnimation < 10) {
             if (movingInX) style = animation.animate(5, toRight, 1);
             if (movingInY) style = animation.getLeftFrames()[5];
             if (movingInY && toRight) style = animation.getRightFrames()[5];
-            if (!movingInX && !movingInY)
-                style = toRight ? animation.getRightFrames()[6] : animation.getLeftFrames()[6];
-        }else if(starAnimation < 15) {
-        	if (movingInX) style = animation.animate(5, toRight, 2);
+            if (!movingInX && !movingInY) style = toRight ? animation.getRightFrames()[6] : animation.getLeftFrames()[6];
+        } else if (starAnimation < 15) {
+            if (movingInX) style = animation.animate(5, toRight, 2);
             if (movingInY) style = animation.getLeftFrames()[10];
             if (movingInY && toRight) style = animation.getRightFrames()[10];
-            if (!movingInX && !movingInY)
-                style = toRight ? animation.getRightFrames()[11] : animation.getLeftFrames()[11];
-        }else {
-        	if (movingInX) style = animation.animate(5, toRight, 3);
+            if (!movingInX && !movingInY) style = toRight ? animation.getRightFrames()[11] : animation.getLeftFrames()[11];
+        } else {
+            if (movingInX) style = animation.animate(5, toRight, 3);
             if (movingInY) style = animation.getLeftFrames()[15];
             if (movingInY && toRight) style = animation.getRightFrames()[15];
-            if (!movingInX && !movingInY)
-                style = toRight ? animation.getRightFrames()[16] : animation.getLeftFrames()[16];
+            if (!movingInX && !movingInY) style = toRight ? animation.getRightFrames()[16] : animation.getLeftFrames()[16];
         }
 
         return style;
@@ -110,23 +102,11 @@ public class MarioForm {
         this.isFire = isFire;
     }
 
-    public boolean isStar() {
-        return isStar;
-    }
-
-    public void setStar(boolean isStar) {
-        this.isStar = isStar;
-    }
-
     public boolean isBabyStar() {
         return isBabyStar;
     }
 
-    public void setBabyStar(boolean isBabyStar) {
-        this.isBabyStar = isBabyStar;
-    }
-
-    public void setIsFire(boolean isFire) {
-    	this.isFire = isFire;
+    public boolean isStar() {
+        return isStar;
     }
 }

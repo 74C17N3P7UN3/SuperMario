@@ -2,18 +2,16 @@ package view;
 
 import java.awt.image.BufferedImage;
 
-// FIXME: Calza Reminder
 /**
  * Defines the properties to animate a certain sprite.
  * The sprite is handled by the calling class, and this
  * only calculates the right or left frames, depending
  * on the passed direction, at a given speed.
  *
- * @author TacitNeptune
- * @version 0.1.0
+ * @version 1.0.0
  */
 public class Animation {
-    private int index = 0, count = 0;
+    private int count = 0, index = 0;
     private final BufferedImage[] leftFrames;
     private final BufferedImage[] rightFrames;
     private BufferedImage currentFrame;
@@ -57,16 +55,12 @@ public class Animation {
      * @param frames The frames of the animation sequence.
      */
     private void nextFrame(BufferedImage[] frames, int animationStar) {
-        if (index + 2 >= 5 || index + 7 >= 10) index = 0;
+        if (index + 2 >= 5) index = 0;
 
-        if(animationStar == 0)
-        	currentFrame = frames[index + 2];
-        if(animationStar == 1)
-        	currentFrame = frames[index + 7];
-        if(animationStar == 2)
-        	currentFrame = frames[index + 12];
-        if(animationStar == 3)
-        	currentFrame = frames[index + 17];
+        if (animationStar == 0) currentFrame = frames[index + 2];
+        if (animationStar == 1) currentFrame = frames[index + 7];
+        if (animationStar == 2) currentFrame = frames[index + 12];
+        if (animationStar == 3) currentFrame = frames[index + 17];
         index++;
     }
 

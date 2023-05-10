@@ -2,48 +2,64 @@ package model.boost;
 
 import control.MapCreator;
 import model.GameObject;
+import model.brick.SurpriseBrick;
 import model.hero.Mario;
 
 import java.awt.image.BufferedImage;
 
-// FIXME: Calza Reminder
+/**
+ * A boost that spawn off a {@link SurpriseBrick}
+ *
+ * @version 1.0.0
+ */
 public class Boost extends GameObject {
-
-    private BoostType type;
+    private BoostType boostType;
 
     public Boost(double x, double y, BufferedImage style) {
         super(x, y, style);
     }
 
-    public void setType(int n, Mario mario) {
-        if (n == 32 || n == 47 || n == 51 || n == 213 || n == 214 || n == 241 || n == 249 || n == 256 || n == 296 || n == 300 || n == 427) {
-            type = BoostType.COIN;
-            setStyle(MapCreator.coin);
-        }
-        if (n == 44 || n == 174 || n == 248) {
-            if (mario.getMarioForm().isSuper() || mario.getMarioForm().isFire()) {
-                type = BoostType.FIRE_FLOWER;
+    /**
+     * Sets the type of the boost based on the index of
+     * the surprise brick in the map and Mario's state.
+     *
+     * @param position The {@link SurpriseBrick}'s index in the map.
+     * @param mario    The {@link Mario} object to check its state.
+     */
+    public void setType(int position, Mario mario) {
+        // By default, it's a coin
+        boostType = BoostType.COIN;
+        setStyle(MapCreator.coin);
+
+        // In these positions it's either a mushroom or a flower depending on Mario's state
+        if (position == 44 || position == 174 || position == 248) {
+            if (mario.isSuper() || mario.isFire()) {
+                boostType = BoostType.FIRE_FLOWER;
                 setStyle(MapCreator.fireFlower);
                 setVelX(0);
             } else {
-                type = BoostType.SUPER_MUSHROOM;
+                boostType = BoostType.SUPER_MUSHROOM;
                 setStyle(MapCreator.superMushroom);
                 setVelX(3);
             }
         }
-        if (n == 230) {
-            type = BoostType.STAR;
+        // There is only a star
+        if (position == 230) {
+            boostType = BoostType.STAR;
             setStyle(MapCreator.star);
             setVelX(3);
         }
-        if (n == 148) {
-            type = BoostType.HEART_MUSHROOM;
+        // And only one heart mushroom
+        if (position == 148) {
+            boostType = BoostType.HEART_MUSHROOM;
             setStyle(MapCreator.heartMushroom);
             setVelX(3);
         }
     }
 
-    public BoostType getType() {
-        return type;
+    /* ---------- Getters / Setters ---------- */
+
+    public BoostType getBoostType() {
+        return boostType;
     }
 }

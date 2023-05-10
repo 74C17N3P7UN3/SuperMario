@@ -16,7 +16,7 @@ import java.awt.*;
  * initialization and synchronization of the other threads. It also
  * provides some runtime checks that make up the whole game's brain.
  *
- * @version 0.2.1
+ * @version 1.0.0
  */
 public class GameEngine implements Runnable {
     private final static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -31,8 +31,7 @@ public class GameEngine implements Runnable {
 
     private GameStatus gameStatus;
     private Thread thread;
-    private boolean isRunning, tuchFlag;
-    private int coins, time, lives, points;
+    private boolean isRunning;
 
     public GameEngine() {
         camera = new Camera();
@@ -40,9 +39,7 @@ public class GameEngine implements Runnable {
         mapManager = new MapManager();
         soundManager = new SoundManager();
         uiManager = new UIManager(this, HEIGHT, WIDTH);
-        
-        tuchFlag = false;
-        	
+
         gameStatus = GameStatus.START_SCREEN;
 
         // Prepare the frame
@@ -69,7 +66,6 @@ public class GameEngine implements Runnable {
     private synchronized void start() {
         if (isRunning) return;
 
-        // FIXME: Temporary until we add the map selector
         createMap("map-01");
 
         isRunning = true;
@@ -77,12 +73,16 @@ public class GameEngine implements Runnable {
         thread.start();
     }
 
+    /**
+     * The implementation of the {@link Runnable} interface.
+     */
     @Override
     public void run() {
         long lastTime = System.nanoTime();
+        double delta = 0;
+
         double amountOfTicks = 60.0;
         double ns = 1000000000 / amountOfTicks;
-        double delta = 0;
 
         long lastTimeCheck = 0, lastTimeInvincible = 0, lastTimeStar = 0;
 
@@ -91,28 +91,36 @@ public class GameEngine implements Runnable {
             delta += (now - lastTime) / ns;
             lastTime = now;
 
-            if (mapManager.getMario().isInvincible()) {
+            Mario mario = mapManager.getMap().getMario();
+
+            // Checks for Mario's invincibility
+            if (mario.isInvincible()) {
                 if (lastTimeInvincible == 0) lastTimeInvincible = now / 1000000000;
                 if (now / 1000000000 - lastTimeInvincible >= 2) {
-                    mapManager.getMario().setInvincible(false);
+                    mario.setInvincible(false);
                     lastTimeInvincible = 0;
                 }
             }
-            if (mapManager.getMario().isBabyStar() || mapManager.getMario().isStar()) {
+
+            // Check for Mario's previous state after the star state ends
+            if (mario.isBabyStar() || mario.isStar()) {
                 if (lastTimeStar == 0) lastTimeStar = now / 1000000000;
                 if (now / 1000000000 - lastTimeStar >= 10) {
-                    if (mapManager.getMario().isBabyStar()) mapManager.getMario().setMarioMini();
-                    if (mapManager.getMario().isFire()) mapManager.getMario().setMarioFire();
-                    else if (mapManager.getMario().isSuper()) mapManager.getMario().setMarioSuper();
+                    if (mario.isBabyStar()) mario.setMarioSmall();
+                    else if (mario.isFire()) mario.setMarioFire();
+                    else if (mario.isSuper()) mario.setMarioSuper();
                     lastTimeStar = 0;
                 }
             }
 
+            // Decreases the time remaining every second
+            int time = mapManager.getMap().getTime();
             if (lastTimeCheck == 0) lastTimeCheck = now / 1000000000;
-            if (now / 1000000000 - lastTimeCheck >= 1 && (mapManager.getMario().getX() < 9504 || mapManager.getMario().getX() > 10992)) {
-                time--;
+            if (now / 1000000000 - lastTimeCheck >= 1) {
+                if (!mapManager.getMap().getEndPoint().isTouched()) mapManager.getMap().setTime(time - 1);
                 lastTimeCheck = 0;
             }
+            if (time == 0) gameStatus = GameStatus.OUT_OF_TIME;
 
             while (delta > 0) {
                 if (gameStatus == GameStatus.RUNNING) gameLoop();
@@ -124,21 +132,59 @@ public class GameEngine implements Runnable {
     }
 
     /**
+     * Calculates the points rewarded for hitting the final
+     * flag based on the height. The higher, the better.
+     * It also sums the points for the coins and the time.
+     *
+     * @param mario Mario object used to get the height.
+     */
+    private void calculateEndPoints(Mario mario) {
+        Map map = mapManager.getMap();
+        int points = map.getPoints();
+
+        int heightPoints = (int) (6837.5 - (mario.getY() * 612.5 / 48));
+        points += Math.min(heightPoints, 5000);
+
+        points += map.getCoins() * 100;
+        points += Math.max(map.getTime() * 50, 1000);
+
+        map.setPoints(points);
+    }
+
+    /**
+     * Checks if mario has passed the finish flag and
+     * plays the winning animation, as well as calculating
+     * the total points collected at the end of the run.
+     */
+    private void checkEndContact() {
+        Mario mario = mapManager.getMap().getMario();
+        if (mario.getX() >= ((48 * 198) - 20) && mario.getX() < 10992) {
+            if (!mapManager.getMap().getEndPoint().isTouched()) {
+                mapManager.getMap().getEndPoint().setTouched(true);
+                mario.setX((48 * 198) - 20);
+                mario.setVelX(2.5);
+                control.GameEngine.playSound("flag");
+
+                calculateEndPoints(mario);
+            }
+        }
+
+        if (mario.getX() > 9792 && mario.getX() < 10992) {
+            mario.setVelX(0);
+            mario.setX(9792);
+            mario.jump();
+        }
+        if (mario.getX() == 9792 && !mario.isJumping() && !mario.isFalling()) gameStatus = GameStatus.MISSION_PASSED;
+    }
+
+    /**
      * Creates the selected map and sets the
      * {@link GameStatus} to {@code running}.
      *
      * @param mapName The name of the map to be loaded.
      */
     private void createMap(String mapName) {
-        boolean loaded = mapManager.createMap(mapName, this);
-        coins = 0;
-        if (gameStatus != GameStatus.RUNNING) {
-        	lives = 3;
-        	points = 0;
-        }
-        time = 120;
-
-        if (loaded) {
+        if (mapManager.createMap(mapName)) {
             setGameStatus(GameStatus.RUNNING);
             soundManager.restartTheme();
         } else setGameStatus(GameStatus.START_SCREEN);
@@ -159,59 +205,17 @@ public class GameEngine implements Runnable {
      */
     private void gameLoop() {
         updateCamera();
-        updateCollisions(this);
+        updateCollisions();
         updateLocations();
 
-        // Let the enemies move when they enter the screen
-        Mario mario = mapManager.getMario();
-        for (Enemy enemy : mapManager.getMap().getEnemies())
-            if (enemy.getX() < camera.getX() + GameEngine.WIDTH && mario.getX() < 10992)
-                if (enemy.getVelX() == 0) {
-                	if(enemy instanceof Goomba)
-                		enemy.setVelX(-3);
-                	if(enemy instanceof Koopa)
-                		enemy.setVelX(-4);       		
-                }
+        checkEndContact();
+    }
 
-        // Mario's teleportation out of the secret room
-        if (mario.getX() >= 12140) {
-            camera.setX(7848 - 600);
-            mario.pipeTeleport(7848, 384);
-        }
-
-        // Final flag and castle animation
-        if (mario.getX() >= ((48 * 198) - 20) && mario.getX() < 10992) {
-            if (!mapManager.getEndPoint().isTouched()) {
-                mapManager.getEndPoint().setTouched(true);
-                mario.setX((48 * 198) - 20);
-                mario.setVelX(2.5);
-                GameEngine.playSound("flag");
-            }
-        }
-
-        if (mario.getX() > 9504 && mario.getX() < 10992 && !tuchFlag) {
-        	if(6837.5 - (mario.getY() * 612.5 / 48) > 5000) //points: 100 (x=528), 5000 (x=144)
-        		points += 5000;
-        	else	
-        		points += 6837.5 - (mario.getY() * 612.5 / 48);
-        	tuchFlag = true;
-        }
-        if (mario.getX() > 9792 && mario.getX() < 10992) {
-            mario.setVelX(0);
-            mario.setX(9792);
-            mario.jump();
-        }
-        if (mario.getX() == 9792 && !mario.isJumping() && !mario.isFalling()) {
-        	gameStatus = GameStatus.MISSION_PASSED;
-        	points += coins*100;
-        	if(time*50 < 10000)
-        		points += time*50;
-        	else
-        		points += 10000;
-        	System.out.println("points: "+points);
-        }
-        if (time == 0) gameStatus = GameStatus.OUT_OF_TIME;
-        
+    /**
+     * Pauses the theme song by calling {@link SoundManager#pauseTheme()}.
+     */
+    public void pauseTheme() {
+        soundManager.pauseTheme();
     }
 
     /**
@@ -231,37 +235,30 @@ public class GameEngine implements Runnable {
      * @param input The inputted key-press.
      */
     public void receiveInput(ButtonAction input) {
-        if (mapManager.getEndPoint().isTouched() && input != ButtonAction.ENTER) return;
+        if (mapManager.getMap().getEndPoint().isTouched() && input != ButtonAction.ENTER) return;
 
-        Mario mario = mapManager.getMario();
+        Mario mario = mapManager.getMap().getMario();
 
-        if (input == ButtonAction.JUMP)
-            mario.jump();
+        if (input == ButtonAction.JUMP) mario.jump();
         if (input == ButtonAction.CROUCH) {
-            if (mario.getX() >= 2736 && mario.getX() <= 2784) {
+            if (mario.getX() >= 2736 && mario.getX() <= 2784 && !mario.isFalling() && !mario.isJumping()) {
                 camera.setX(10992 + ((1920 - WIDTH) / 2));
                 mario.pipeTeleport(11616, 96);
             }
         }
-        if (input == ButtonAction.M_RIGHT)
-            mario.move(true, camera);
-        if (input == ButtonAction.M_LEFT)
-            mario.move(false, camera);
+        if (input == ButtonAction.M_RIGHT) mario.move(true, camera);
+        if (input == ButtonAction.M_LEFT) mario.move(false, camera);
 
-        if (input == ButtonAction.FIRE && mario.isFire())
-            mario.fire(mapManager);
+        if (input == ButtonAction.FIRE && mario.isFire()) mario.fire(mapManager);
         if (input == ButtonAction.RUN) {
             if (mario.getVelX() > 0) mario.setVelX(7.5);
             if (mario.getVelX() < 0) mario.setVelX(-7.5);
         }
-        if (input == ButtonAction.CHEAT && mario.getVelX() >= 0)
-            mario.setVelX(100);
+        if (input == ButtonAction.CHEAT && mario.getVelX() >= 0) mario.setVelX(100);
 
-        if (input == ButtonAction.ENTER && (gameStatus != GameStatus.RUNNING && gameStatus != GameStatus.START_SCREEN))
-            reset();
+        if (input == ButtonAction.ENTER && (gameStatus != GameStatus.RUNNING && gameStatus != GameStatus.START_SCREEN)) reset();
 
-        if (input == ButtonAction.ACTION_COMPLETED)
-            mario.setVelX(0);
+        if (input == ButtonAction.ACTION_COMPLETED) mario.setVelX(0);
     }
 
     /**
@@ -274,23 +271,17 @@ public class GameEngine implements Runnable {
     /**
      * Resets the game completely by resetting the camera
      * position, restarting the theme and sending the player
-     * to the starting screen.
+     * back to the starting position also resetting the score.
      */
     public void reset() {
-        this.tuchFlag = false;
-        
-        resetCamera();
-        soundManager.restartTheme();
-        mapManager.resetMap(this);
         createMap("map-01");
-
-        setGameStatus(GameStatus.RUNNING);
+        resetCamera();
     }
 
     /**
      * Resets the camera's position.
      */
-    public void resetCamera() {
+    private void resetCamera() {
         camera.moveCam(-camera.getX(), -camera.getY());
     }
 
@@ -299,14 +290,13 @@ public class GameEngine implements Runnable {
      * It also prevents the player from going back past the camera view.
      */
     private void updateCamera() {
-        if (mapManager.getMario().getX() >= ((48 * 198) - 20)) return;
+        if (mapManager.getMap().getMario().getX() >= ((48 * 198) - 20)) return;
 
-        Mario mario = mapManager.getMario();
+        Mario mario = mapManager.getMap().getMario();
         int marioVelX = (int) mario.getVelX();
 
         int shiftAmount = 0;
-        if (marioVelX > 0 && mario.getX() - 600 > camera.getX())
-            shiftAmount = marioVelX;
+        if (marioVelX > 0 && mario.getX() - 600 > camera.getX()) shiftAmount = marioVelX;
 
         camera.moveCam(shiftAmount, 0);
 
@@ -318,41 +308,42 @@ public class GameEngine implements Runnable {
     }
 
     /**
+     * Check for all entity collisions with other entities or
+     * blocks with {@link MapManager#checkCollisions(GameEngine)}.
+     */
+    private void updateCollisions() {
+        mapManager.checkCollisions(this);
+    }
+
+    /**
      * Updates all entity/tiles locations
      * with {@link Map#updateLocations()}.
      */
     private void updateLocations() {
-        mapManager.updateLocations();
-    }
+        Mario mario = mapManager.getMap().getMario();
 
-    /**
-     * Check for all entity collisions with other entities
-     * or blocks with {@link MapManager#checkCollisions}.
-     */
-    private void updateCollisions(GameEngine e) {
-        mapManager.checkCollisions(e);
+        // Let the enemies move when they enter the screen
+        for (Enemy enemy : mapManager.getMap().getEnemies()) {
+            boolean enemyInView = enemy.getX() < camera.getX() + control.GameEngine.WIDTH;
+            if (enemyInView && mario.getX() < 10992 && enemy.getVelX() == 0) {
+                if (enemy instanceof Goomba) enemy.setVelX(-3);
+                if (enemy instanceof Koopa) enemy.setVelX(-4);
+            }
+        }
+
+        // Mario's teleportation out of the secret room
+        if (mario.getX() >= 12140 && mario.getY() >= 528) {
+            camera.setX(7848 - 600);
+            mario.pipeTeleport(7848, 384);
+        }
+
+        mapManager.updateLocations();
     }
 
     /* ---------- Getters / Setters ---------- */
 
     public Point getCameraPosition() {
         return new Point(camera.getX(), camera.getY());
-    }
-
-    public int getCoins() {
-        return coins;
-    }
-
-    public void setCoins(int coins) {
-        this.coins = coins;
-    }
-
-    public int getLives() {
-        return lives;
-    }
-
-    public void setLives(int lives) {
-        this.lives = lives;
     }
 
     public GameStatus getGameStatus() {
@@ -363,19 +354,11 @@ public class GameEngine implements Runnable {
         this.gameStatus = gameStatus;
     }
 
-    public SoundManager getSoundManager() {
-        return soundManager;
+    public MapManager getMapManager() {
+        return mapManager;
     }
 
-    public int getTime() {
-        return time;
-    }
-    
-    public void earnPoints(int n) {
-    	this.points += n;
-    }
-    
-    public int getPoints() {
-    	return this.points;
+    public boolean isRunning() {
+        return isRunning;
     }
 }

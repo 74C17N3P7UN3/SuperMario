@@ -2,7 +2,6 @@ package control;
 
 import model.EndFlag;
 import model.Map;
-import model.boost.Boost;
 import model.brick.*;
 import model.enemy.Enemy;
 import model.enemy.Goomba;
@@ -13,21 +12,17 @@ import view.ImageLoader;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 /**
  * Creates the {@link Map} by its given name.
  *
- * @version 0.2.0
+ * @version 1.0.0
  */
 public class MapCreator {
-    private Map createdMap;
-    private BufferedImage mapImage;
-
     public final static BufferedImage sprite = ImageImporter.loadImage("sprite");
 
     public final static BufferedImage end = ImageLoader.getImage(sprite, 2, 2, 48, 48);
-    public final static BufferedImage fireball = ImageLoader.getImage(sprite, 0, 4, 25, 22);
+    public final static BufferedImage fireball = ImageLoader.getImage(sprite, 0, 4, 22, 25);
 
     public final static BufferedImage block = ImageLoader.getImage(sprite, 2, 3, 48, 48);
     public final static BufferedImage groundBrick = ImageLoader.getImage(sprite, 0, 1, 48, 48);
@@ -35,17 +30,17 @@ public class MapCreator {
     public final static BufferedImage ordinaryBrick = ImageLoader.getImage(sprite, 0, 0, 48, 48);
     public final static BufferedImage ordinaryBrickBlue = ImageLoader.getImage(sprite, 1, 0, 48, 48);
     public final static BufferedImage surpriseBrick = ImageLoader.getImage(sprite, 2, 0, 48, 48);
-    public final static BufferedImage emptySurpriseBrick = ImageLoader.getImage(sprite, 2, 1, 48, 48);
+    public final static BufferedImage surpriseBrickEmpty = ImageLoader.getImage(sprite, 2, 1, 48, 48);
 
-    public final static BufferedImage pipeBodyH = ImageLoader.getImage(sprite, 3, 1, 96, 48);
-    public final static BufferedImage pipeHeadH = ImageLoader.getImage(sprite, 3, 0, 96, 48);
-    public final static BufferedImage pipeBodyV = ImageLoader.getImage(sprite, 4, 2, 48, 96);
-    public final static BufferedImage pipeHeadV = ImageLoader.getImage(sprite, 3, 2, 48, 96);
+    public final static BufferedImage pipeBodyH = ImageLoader.getImage(sprite, 3, 1, 48, 96);
+    public final static BufferedImage pipeHeadH = ImageLoader.getImage(sprite, 3, 0, 48, 96);
+    public final static BufferedImage pipeBodyV = ImageLoader.getImage(sprite, 4, 2, 96, 48);
+    public final static BufferedImage pipeHeadV = ImageLoader.getImage(sprite, 3, 2, 96, 48);
 
     public final static BufferedImage goombaLeft = ImageLoader.getImage(sprite, 0, 3, 48, 48);
     public final static BufferedImage goombaRight = ImageLoader.getImage(sprite, 1, 3, 48, 48);
-    public final static BufferedImage koopaLeft = ImageLoader.getImage(sprite, 5, 0, 48, 64);
-    public final static BufferedImage koopaRight = ImageLoader.getImage(sprite, 5, 2, 48, 64);
+    public final static BufferedImage koopaLeft = ImageLoader.getImage(sprite, 5, 0, 64, 48);
+    public final static BufferedImage koopaRight = ImageLoader.getImage(sprite, 5, 2, 64, 48);
 
     public final static BufferedImage coin = ImageLoader.getImage(sprite, 0, 2, 48, 48);
     public final static BufferedImage coinBlue = ImageLoader.getImage(sprite, 1, 2, 48, 48);
@@ -53,8 +48,8 @@ public class MapCreator {
     public final static BufferedImage heartMushroom = ImageLoader.getImage(sprite, 2, 4, 48, 48);
     public final static BufferedImage star = ImageLoader.getImage(sprite, 4, 4, 48, 48);
     public final static BufferedImage superMushroom = ImageLoader.getImage(sprite, 1, 4, 48, 48);
-    
-    public final static BufferedImage voidImage = ImageLoader.getImage(sprite, 0, 2, 1, 1);
+
+    public final static BufferedImage voidImage = ImageLoader.getImage(sprite, 5, 4, 48, 48);
 
     public MapCreator() {}
 
@@ -65,8 +60,8 @@ public class MapCreator {
      * @return The generated {@link Map} object.
      */
     public Map createMap(String mapName) {
-        createdMap = new Map(mapName);
-        mapImage = ImageImporter.loadMap(mapName);
+        Map createdMap = new Map();
+        BufferedImage mapImage = ImageImporter.loadMap(mapName);
 
         int endRGB = new Color(195, 195, 195).getRGB();
         int marioRGB = new Color(255, 127, 39).getRGB();
@@ -105,13 +100,10 @@ public class MapCreator {
                 if (currentPixel == ordinaryBrickBlueRGB) brick = new OrdinaryBrickBlue(xLocation, yLocation, ordinaryBrickBlue);
                 if (currentPixel == surpriseBrickRGB) {
                     // Disguised SurpriseBricks
-                	brick = new SurpriseBrick(xLocation, yLocation, surpriseBrick);
-                    if (yLocation == 432 && (xLocation == 4512 || xLocation == 4848))
-                    	brick.setStyle(ordinaryBrick);
-                    if (yLocation == 384 && xLocation == 3072)
-                    	brick.setStyle(voidImage);
-                    if (yLocation == 432 && xLocation == 4512)
-                    	((SurpriseBrick) brick).setBoost(5);
+                    brick = new SurpriseBrick(xLocation, yLocation, surpriseBrick);
+                    if (yLocation == 384 && xLocation == 3072) brick.setStyle(voidImage);
+                    if (yLocation == 432 && (xLocation == 4512 || xLocation == 4848)) brick.setStyle(ordinaryBrick);
+                    if (yLocation == 432 && xLocation == 4512) ((SurpriseBrick) brick).setBoostsAmount(5);
                 }
 
                 if (currentPixel == pipeBodyHRGB) brick = new PipeBody(xLocation, yLocation, pipeBodyH);
@@ -127,21 +119,15 @@ public class MapCreator {
                     ((Goomba) enemy).setRightImage(goombaRight);
                 }
                 if (currentPixel == koopaRGB) {
-                    enemy = new Koopa(xLocation, yLocation-16, koopaLeft);
+                    enemy = new Koopa(xLocation, yLocation - 16, koopaLeft);
                     ((Koopa) enemy).setRightImage(koopaRight);
                 }
 
-                if (brick != null) createdMap.addBrick(brick);
-                if (enemy != null) createdMap.addEnemy(enemy);
+                if (brick != null) createdMap.getBricks().add(brick);
+                if (enemy != null) createdMap.getEnemies().add(enemy);
             }
         }
 
         return createdMap;
-    }
-
-    /* ---------- Getters / Setters ---------- */
-
-    public ArrayList<Boost> getBoosts() {
-        return createdMap.getBoosts();
     }
 }
