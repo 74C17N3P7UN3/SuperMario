@@ -16,7 +16,7 @@ import java.awt.*;
  * initialization and synchronization of the other threads. It also
  * provides some runtime checks that make up the whole game's brain.
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
 public class GameEngine implements Runnable {
     private final static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -332,7 +332,7 @@ public class GameEngine implements Runnable {
         }
 
         // Mario's teleportation out of the secret room
-        if (mario.getX() >= 12140 && mario.getY() >= 528) {
+        if (mario.getX() >= 12140 && mario.getY() >= (528 - 24)) {
             camera.setX(7848 - 600);
             mario.pipeTeleport(7848, 384);
         }
