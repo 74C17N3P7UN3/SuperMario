@@ -78,34 +78,50 @@ public class GameEngine implements Runnable {
      */
     @Override
     public void run() {
+        double amountOfTicks = 60.0;
+
+        // Initialize time-counter variables
         long lastTime = System.nanoTime();
         double delta = 0;
 
-        double amountOfTicks = 60.0;
-        double ns = 1000000000 / amountOfTicks;
-
-        long lastTimeCheck = 0, lastTimeInvincible = 0, lastTimeStar = 0;
+        long lastTimeCheck = 0, lastTimeFireball = 0, lastTimeInvincible = 0, lastTimeStar = 0;
 
         while (isRunning && !thread.isInterrupted()) {
+            // Calculate the ticks since the last repaint
             long now = System.nanoTime();
-            delta += (now - lastTime) / ns;
+            delta += (now - lastTime) / (1000000000 / amountOfTicks);
             lastTime = now;
+
+            // Convert the time into milliseconds and seconds
+            // for easy-use in the time-checker functions.
+            long currentMillis = now / 100000000;
+            long currentSeconds = now / 1000000000;
 
             Mario mario = mapManager.getMap().getMario();
 
             // Checks for Mario's invincibility
             if (mario.isInvincible()) {
-                if (lastTimeInvincible == 0) lastTimeInvincible = now / 1000000000;
-                if (now / 1000000000 - lastTimeInvincible >= 2) {
+                if (lastTimeInvincible == 0) lastTimeInvincible = currentSeconds;
+                if (currentSeconds - lastTimeInvincible >= 2) {
                     mario.setInvincible(false);
                     lastTimeInvincible = 0;
                 }
             }
 
-            // Check for Mario's previous state after the star state ends
+            // Prevents the spamming of fireballs
+            if (mario.isFiring()) {
+                if (lastTimeFireball == 0) lastTimeFireball = currentMillis;
+                if (currentMillis - lastTimeFireball >= 2) {
+                    mario.fire(mapManager);
+                    mario.setFiring(false);
+                    lastTimeFireball = 0;
+                }
+            }
+
+            // Checks for Mario's previous state after the star state ends
             if (mario.isBabyStar() || mario.isStar()) {
-                if (lastTimeStar == 0) lastTimeStar = now / 1000000000;
-                if (now / 1000000000 - lastTimeStar >= 10) {
+                if (lastTimeStar == 0) lastTimeStar = currentSeconds;
+                if (currentSeconds - lastTimeStar >= 10) {
                     if (mario.isBabyStar()) mario.setMarioSmall();
                     else if (mario.isFire()) mario.setMarioFire();
                     else if (mario.isSuper()) mario.setMarioSuper();
@@ -115,13 +131,14 @@ public class GameEngine implements Runnable {
 
             // Decreases the time remaining every second
             int time = mapManager.getMap().getTime();
-            if (lastTimeCheck == 0) lastTimeCheck = now / 1000000000;
-            if (now / 1000000000 - lastTimeCheck >= 1) {
+            if (lastTimeCheck == 0) lastTimeCheck = currentSeconds;
+            if (currentSeconds - lastTimeCheck >= 1) {
                 if (!mapManager.getMap().getEndPoint().isTouched()) mapManager.getMap().setTime(time - 1);
                 lastTimeCheck = 0;
             }
             if (time == 0) gameStatus = GameStatus.OUT_OF_TIME;
 
+            // Repaint based on the ticks passed since the last iteration
             while (delta > 0) {
                 if (gameStatus == GameStatus.RUNNING) gameLoop();
 
@@ -249,7 +266,7 @@ public class GameEngine implements Runnable {
         if (input == ButtonAction.M_RIGHT) mario.move(true, camera);
         if (input == ButtonAction.M_LEFT) mario.move(false, camera);
 
-        if (input == ButtonAction.FIRE && mario.isFire()) mario.fire(mapManager);
+        if (input == ButtonAction.FIRE && mario.isFire()) mario.setFiring(true);
         if (input == ButtonAction.RUN) {
             if (mario.getVelX() > 0) mario.setVelX(7.5);
             if (mario.getVelX() < 0) mario.setVelX(-7.5);

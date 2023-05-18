@@ -19,7 +19,7 @@ import java.awt.image.BufferedImage;
 public class Mario extends GameObject {
     private Animation animation;
     private MarioForm marioForm;
-    private boolean invincible, toRight;
+    private boolean firing, invincible, toRight;
 
     public Mario(double x, double y) {
         super(x, y, null);
@@ -167,6 +167,14 @@ public class Mario extends GameObject {
 
     public void setFire(boolean fire) {
         marioForm.setFire(fire);
+    }
+
+    public boolean isFiring() {
+        return firing;
+    }
+
+    public void setFiring(boolean firing) {
+        this.firing = firing;
     }
 
     public boolean isBabyStar() {
