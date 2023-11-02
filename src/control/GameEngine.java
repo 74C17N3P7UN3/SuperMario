@@ -66,8 +66,6 @@ public class GameEngine implements Runnable {
     private synchronized void start() {
         if (isRunning) return;
 
-        createMap("map-01");
-
         isRunning = true;
         thread = new Thread(this);
         thread.start();
@@ -252,30 +250,41 @@ public class GameEngine implements Runnable {
      * @param input The inputted key-press.
      */
     public void receiveInput(ButtonAction input) {
-        if (mapManager.getMap().getEndPoint().isTouched() && input != ButtonAction.ENTER) return;
+        if (gameStatus == GameStatus.START_SCREEN) {
+//            if (input == ButtonAction.SELECTION_DOWN || input == ButtonAction.SELECTION_UP) uiManager.changeSelectedAction(input);
+//            if (input == ButtonAction.ENTER) uiManager.confirmSelectedAction();
+            if (input == ButtonAction.ESCAPE) System.exit(0);
+        } else if (gameStatus == GameStatus.MULTIPLAYER_LOBBY) {
+            //
+        } else if (gameStatus == GameStatus.CREDITS_SCREEN) {
+            if (input == ButtonAction.ENTER || input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
+        } else if (gameStatus == GameStatus.RUNNING) {
+            if (mapManager.getMap().getEndPoint().isTouched() && input != ButtonAction.ENTER) return;
 
-        Mario mario = mapManager.getMap().getMario();
+            Mario mario = mapManager.getMap().getMario();
 
-        if (input == ButtonAction.JUMP) mario.jump();
-        if (input == ButtonAction.CROUCH) {
-            if (mario.getX() >= 2736 && mario.getX() <= 2784 && !mario.isFalling() && !mario.isJumping()) {
-                camera.setX(10992 + ((1920 - WIDTH) / 2));
-                mario.pipeTeleport(11616, 96);
+            if (input == ButtonAction.JUMP) mario.jump();
+            if (input == ButtonAction.CROUCH) {
+                if (mario.getX() >= 2736 && mario.getX() <= 2784 && !mario.isFalling() && !mario.isJumping()) {
+                    camera.setX(10992 + ((1920 - WIDTH) / 2));
+                    mario.pipeTeleport(11616, 96);
+                }
             }
+            if (input == ButtonAction.M_RIGHT) mario.move(true, camera);
+            if (input == ButtonAction.M_LEFT) mario.move(false, camera);
+
+            if (input == ButtonAction.FIRE && mario.isFire()) mario.setFiring(true);
+            if (input == ButtonAction.RUN) {
+                if (mario.getVelX() > 0) mario.setVelX(7.5);
+                if (mario.getVelX() < 0) mario.setVelX(-7.5);
+            }
+            if (input == ButtonAction.CHEAT && mario.getVelX() >= 0) mario.setVelX(100);
+
+            if (input == ButtonAction.ACTION_COMPLETED) mario.setVelX(0);
+        } else if (gameStatus == GameStatus.GAME_OVER || gameStatus == GameStatus.MISSION_PASSED || gameStatus == GameStatus.OUT_OF_TIME) {
+            if (input == ButtonAction.ENTER) reset();
+            if (input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
         }
-        if (input == ButtonAction.M_RIGHT) mario.move(true, camera);
-        if (input == ButtonAction.M_LEFT) mario.move(false, camera);
-
-        if (input == ButtonAction.FIRE && mario.isFire()) mario.setFiring(true);
-        if (input == ButtonAction.RUN) {
-            if (mario.getVelX() > 0) mario.setVelX(7.5);
-            if (mario.getVelX() < 0) mario.setVelX(-7.5);
-        }
-        if (input == ButtonAction.CHEAT && mario.getVelX() >= 0) mario.setVelX(100);
-
-        if (input == ButtonAction.ENTER && (gameStatus != GameStatus.RUNNING && gameStatus != GameStatus.START_SCREEN)) reset();
-
-        if (input == ButtonAction.ACTION_COMPLETED) mario.setVelX(0);
     }
 
     /**

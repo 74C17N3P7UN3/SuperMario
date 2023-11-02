@@ -12,8 +12,10 @@ public enum ButtonAction {
     CHEAT,
     /** Crouch in the pipe to enter it. */
     CROUCH,
-    /** Enter key is used to reset the game when it ends. */
+    /** Enter key is used to confirm an action or restart the game. */
     ENTER,
+    /** Escape key is used to exit or go back to the menu. */
+    ESCAPE,
     /** Lets Mario spawn a fireball in the facing direction. */
     FIRE,
     /** A standard jump performed by Mario. */
@@ -26,4 +28,8 @@ public enum ButtonAction {
     NO_ACTION,
     /** Lets mario run a little bit faster. */
     RUN,
+    /** Moves the graphic selection down. */
+    SELECTION_DOWN,
+    /** Moves the graphic selection up. */
+    SELECTION_UP,
 }

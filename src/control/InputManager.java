@@ -37,16 +37,22 @@ public class InputManager implements KeyListener {
         int code = e.getKeyCode();
         ButtonAction currentAction = ButtonAction.NO_ACTION;
 
-        if (code == KeyEvent.VK_UP || code == KeyEvent.VK_W || code == KeyEvent.VK_SPACE) currentAction = ButtonAction.JUMP;
-        if (code == KeyEvent.VK_DOWN || code == KeyEvent.VK_S) currentAction = ButtonAction.CROUCH;
-        if (code == KeyEvent.VK_RIGHT || code == KeyEvent.VK_D) currentAction = ButtonAction.M_RIGHT;
-        if (code == KeyEvent.VK_LEFT || code == KeyEvent.VK_A) currentAction = ButtonAction.M_LEFT;
+        if (engine.getGameStatus() == GameStatus.START_SCREEN) {
+            if (code == KeyEvent.VK_UP || code == KeyEvent.VK_W) currentAction = ButtonAction.SELECTION_UP;
+            if (code == KeyEvent.VK_DOWN || code == KeyEvent.VK_S) currentAction = ButtonAction.SELECTION_DOWN;
+        } else {
+            if (code == KeyEvent.VK_UP || code == KeyEvent.VK_W || code == KeyEvent.VK_SPACE) currentAction = ButtonAction.JUMP;
+            if (code == KeyEvent.VK_DOWN || code == KeyEvent.VK_S) currentAction = ButtonAction.CROUCH;
+            if (code == KeyEvent.VK_RIGHT || code == KeyEvent.VK_D) currentAction = ButtonAction.M_RIGHT;
+            if (code == KeyEvent.VK_LEFT || code == KeyEvent.VK_A) currentAction = ButtonAction.M_LEFT;
 
-        if (code == KeyEvent.VK_Z) currentAction = ButtonAction.FIRE;
-        if (code == KeyEvent.VK_X) currentAction = ButtonAction.RUN;
-        if (code == KeyEvent.VK_C) currentAction = ButtonAction.CHEAT;
+            if (code == KeyEvent.VK_Z) currentAction = ButtonAction.FIRE;
+            if (code == KeyEvent.VK_X) currentAction = ButtonAction.RUN;
+            if (code == KeyEvent.VK_C) currentAction = ButtonAction.CHEAT;
+        }
 
         if (code == KeyEvent.VK_ENTER) currentAction = ButtonAction.ENTER;
+        if (code == KeyEvent.VK_ESCAPE) currentAction = ButtonAction.ESCAPE;
 
         notifyInput(currentAction);
     }
@@ -60,7 +66,7 @@ public class InputManager implements KeyListener {
     public void keyReleased(KeyEvent e) {
         int code = e.getKeyCode();
 
-        if (code == KeyEvent.VK_C || code == KeyEvent.VK_RIGHT || code == KeyEvent.VK_LEFT)
+        if (code == KeyEvent.VK_C || code == KeyEvent.VK_RIGHT || code == KeyEvent.VK_D || code == KeyEvent.VK_LEFT || code == KeyEvent.VK_S)
             notifyInput(ButtonAction.ACTION_COMPLETED);
     }
 

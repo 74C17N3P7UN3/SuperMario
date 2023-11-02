@@ -37,7 +37,10 @@ public class UIManager extends JPanel {
         g2D.setFont(FontImporter.loadFont(28));
         g2D.setColor(Color.WHITE);
 
-        if (engine.getGameStatus() == GameStatus.GAME_OVER) showEndingScreen(g2D, "game-over");
+        if (engine.getGameStatus() == GameStatus.START_SCREEN) showStartScreen(g2D);
+        else if (engine.getGameStatus() == GameStatus.CREDITS_SCREEN) showCreditsScreen(g2D);
+        else if (engine.getGameStatus() == GameStatus.MULTIPLAYER_LOBBY) showMultiplayerScreen(g2D);
+        else if (engine.getGameStatus() == GameStatus.GAME_OVER) showEndingScreen(g2D, "game-over");
         else if (engine.getGameStatus() == GameStatus.MISSION_PASSED) showEndingScreen(g2D, "game-won");
         else if (engine.getGameStatus() == GameStatus.OUT_OF_TIME) showEndingScreen(g2D, "out-of-time");
         else {
@@ -67,7 +70,14 @@ public class UIManager extends JPanel {
     }
 
     /**
-     * Draws a full-screen image instead of the map.
+     * Draws a full-screen credits page.
+     *
+     * @param g2D The graphics engine.
+     */
+    private void showCreditsScreen(Graphics2D g2D) {}
+
+    /**
+     * Draws a full-screen ending page with the results of the run.
      *
      * @param g2D        The graphics engine.
      * @param screenName The name of the screen to be loaded.
@@ -87,5 +97,22 @@ public class UIManager extends JPanel {
             String points = "You scored: " + engine.getMapManager().getMap().getPoints() + " points!";
             g2D.drawString(points, (GameEngine.WIDTH - g2D.getFontMetrics().stringWidth(points)) / 2, 150);
         }
+    }
+
+    /**
+     * Draws a full-screen multiplayer waiting lobby page.
+     *
+     * @param g2D The graphics engine.
+     */
+    private void showMultiplayerScreen(Graphics2D g2D) {}
+
+    /**
+     * Draws the full-screen selection main menu.
+     *
+     * @param g2D The graphics engine.
+     */
+    private void showStartScreen(Graphics2D g2D) {
+        BufferedImage screen = ImageImporter.loadImage("start-screen");
+        g2D.drawImage(screen, (GameEngine.WIDTH - 1920) / 2, 0, null);
     }
 }
