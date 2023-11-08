@@ -95,46 +95,48 @@ public class GameEngine implements Runnable {
             long currentMillis = now / 100000000;
             long currentSeconds = now / 1000000000;
 
-            Mario mario = mapManager.getMap().getMario();
+            if (gameStatus == GameStatus.RUNNING) {
+                Mario mario = mapManager.getMap().getMario();
 
-            // Checks for Mario's invincibility
-            if (mario.isInvincible()) {
-                if (lastTimeInvincible == 0) lastTimeInvincible = currentSeconds;
-                if (currentSeconds - lastTimeInvincible >= 2) {
-                    mario.setInvincible(false);
-                    lastTimeInvincible = 0;
+                // Checks for Mario's invincibility
+                if (mario.isInvincible()) {
+                    if (lastTimeInvincible == 0) lastTimeInvincible = currentSeconds;
+                    if (currentSeconds - lastTimeInvincible >= 2) {
+                        mario.setInvincible(false);
+                        lastTimeInvincible = 0;
+                    }
                 }
-            }
 
-            // Prevents the spamming of fireballs
-            if (mario.isFiring()) {
-                if (lastTimeFireball == 0) lastTimeFireball = currentMillis;
-                if (currentMillis - lastTimeFireball >= 2) {
-                    mario.fire(mapManager);
-                    mario.setFiring(false);
-                    lastTimeFireball = 0;
+                // Prevents the spamming of fireballs
+                if (mario.isFiring()) {
+                    if (lastTimeFireball == 0) lastTimeFireball = currentMillis;
+                    if (currentMillis - lastTimeFireball >= 2) {
+                        mario.fire(mapManager);
+                        mario.setFiring(false);
+                        lastTimeFireball = 0;
+                    }
                 }
-            }
 
-            // Checks for Mario's previous state after the star state ends
-            if (mario.isBabyStar() || mario.isStar()) {
-                if (lastTimeStar == 0) lastTimeStar = currentSeconds;
-                if (currentSeconds - lastTimeStar >= 10) {
-                    if (mario.isBabyStar()) mario.setMarioSmall();
-                    else if (mario.isFire()) mario.setMarioFire();
-                    else if (mario.isSuper()) mario.setMarioSuper();
-                    lastTimeStar = 0;
+                // Checks for Mario's previous state after the star state ends
+                if (mario.isBabyStar() || mario.isStar()) {
+                    if (lastTimeStar == 0) lastTimeStar = currentSeconds;
+                    if (currentSeconds - lastTimeStar >= 10) {
+                        if (mario.isBabyStar()) mario.setMarioSmall();
+                        else if (mario.isFire()) mario.setMarioFire();
+                        else if (mario.isSuper()) mario.setMarioSuper();
+                        lastTimeStar = 0;
+                    }
                 }
-            }
 
-            // Decreases the time remaining every second
-            int time = mapManager.getMap().getTime();
-            if (lastTimeCheck == 0) lastTimeCheck = currentSeconds;
-            if (currentSeconds - lastTimeCheck >= 1) {
-                if (!mapManager.getMap().getEndPoint().isTouched()) mapManager.getMap().setTime(time - 1);
-                lastTimeCheck = 0;
+                // Decreases the time remaining every second
+                int time = mapManager.getMap().getTime();
+                if (lastTimeCheck == 0) lastTimeCheck = currentSeconds;
+                if (currentSeconds - lastTimeCheck >= 1) {
+                    if (!mapManager.getMap().getEndPoint().isTouched()) mapManager.getMap().setTime(time - 1);
+                    lastTimeCheck = 0;
+                }
+                if (time == 0) gameStatus = GameStatus.OUT_OF_TIME;
             }
-            if (time == 0) gameStatus = GameStatus.OUT_OF_TIME;
 
             // Repaint based on the ticks passed since the last iteration
             while (delta > 0) {
@@ -198,7 +200,7 @@ public class GameEngine implements Runnable {
      *
      * @param mapName The name of the map to be loaded.
      */
-    private void createMap(String mapName) {
+    public void createMap(String mapName) {
         if (mapManager.createMap(mapName)) {
             setGameStatus(GameStatus.RUNNING);
             soundManager.restartTheme();
@@ -251,11 +253,11 @@ public class GameEngine implements Runnable {
      */
     public void receiveInput(ButtonAction input) {
         if (gameStatus == GameStatus.START_SCREEN) {
-//            if (input == ButtonAction.SELECTION_DOWN || input == ButtonAction.SELECTION_UP) uiManager.changeSelectedAction(input);
-//            if (input == ButtonAction.ENTER) uiManager.confirmSelectedAction();
+            if (input == ButtonAction.SELECTION_DOWN || input == ButtonAction.SELECTION_UP) uiManager.changeSelectedAction(input);
+            if (input == ButtonAction.ENTER) uiManager.confirmSelectedAction();
             if (input == ButtonAction.ESCAPE) System.exit(0);
         } else if (gameStatus == GameStatus.MULTIPLAYER_LOBBY) {
-            //
+            if (input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
         } else if (gameStatus == GameStatus.CREDITS_SCREEN) {
             if (input == ButtonAction.ENTER || input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
         } else if (gameStatus == GameStatus.RUNNING) {

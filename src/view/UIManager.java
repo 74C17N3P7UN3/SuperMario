@@ -1,10 +1,12 @@
 package view;
 
+import control.ButtonAction;
 import control.GameEngine;
 import control.GameStatus;
 import control.MapCreator;
 import utils.FontImporter;
 import utils.ImageImporter;
+import view.screens.MainMenu;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,10 +21,16 @@ import java.awt.image.BufferedImage;
 public class UIManager extends JPanel {
     private final GameEngine engine;
 
+    private final MarioCursor marioCursor;
+    private final MainMenu mainMenu;
+
     private boolean alreadyPlayed = false;
 
     public UIManager(GameEngine engine, int height, int width) {
         this.engine = engine;
+
+        this.marioCursor = new MarioCursor();
+        this.mainMenu = new MainMenu();
 
         setMaximumSize(new Dimension(width, height));
         setMinimumSize(new Dimension(width, height));
@@ -70,6 +78,35 @@ public class UIManager extends JPanel {
     }
 
     /**
+     * Changes the currently selected action on the corresponding screen.
+     *
+     * @param input Whether the selection is up or down.
+     */
+    public void changeSelectedAction(ButtonAction input) {
+        if (engine.getGameStatus() == GameStatus.START_SCREEN) {
+            mainMenu.changeSelection(input);
+        }
+    }
+
+    /**
+     * Confirms the currently selected action on the screen.
+     */
+    public void confirmSelectedAction() {
+        if (engine.getGameStatus() == GameStatus.START_SCREEN) {
+            int selection = mainMenu.getLineNumber();
+
+            switch (selection) {
+                case 0 -> engine.createMap("map-01");
+                case 1 -> engine.setGameStatus(GameStatus.MULTIPLAYER_LOBBY);
+                case 2 -> engine.setGameStatus(GameStatus.CREDITS_SCREEN);
+                case 3 -> System.exit(0);
+            }
+
+            mainMenu.setLineNumber(0);
+        }
+    }
+
+    /**
      * Draws a full-screen credits page.
      *
      * @param g2D The graphics engine.
@@ -104,15 +141,25 @@ public class UIManager extends JPanel {
      *
      * @param g2D The graphics engine.
      */
-    private void showMultiplayerScreen(Graphics2D g2D) {}
+    private void showMultiplayerScreen(Graphics2D g2D) {
+        BufferedImage screen = ImageImporter.loadImage("blank-screen");
+        g2D.drawImage(screen, (GameEngine.WIDTH - 1920) / 2, 0, null);
+    }
 
     /**
-     * Draws the full-screen selection main menu.
+     * Draws the full-screen main menu page
+     * and the mario-shaped selection cursor.
      *
      * @param g2D The graphics engine.
      */
     private void showStartScreen(Graphics2D g2D) {
         BufferedImage screen = ImageImporter.loadImage("start-screen");
         g2D.drawImage(screen, (GameEngine.WIDTH - 1920) / 2, 0, null);
+
+        // Draw the Mario cursor
+        BufferedImage mario = marioCursor.getCurrentStyle();
+
+        int marioY = mainMenu.getLineNumber() < 3 ? 320 + 72 * mainMenu.getLineNumber() : 608;
+        g2D.drawImage(mario, 710 + ((GameEngine.WIDTH - 1920) / 2), marioY, null);
     }
 }
