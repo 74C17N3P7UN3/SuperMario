@@ -257,6 +257,8 @@ public class GameEngine implements Runnable {
             if (input == ButtonAction.ENTER) uiManager.confirmSelectedAction();
             if (input == ButtonAction.ESCAPE) System.exit(0);
         } else if (gameStatus == GameStatus.MULTIPLAYER_LOBBY) {
+            if (input == ButtonAction.SELECTION_DOWN) gameStatus = GameStatus.MULTIPLAYER_JOIN;
+            if (input == ButtonAction.SELECTION_UP) gameStatus = GameStatus.MULTIPLAYER_HOST;
             if (input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
         } else if (gameStatus == GameStatus.CREDITS_SCREEN) {
             if (input == ButtonAction.ENTER || input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
@@ -287,6 +289,28 @@ public class GameEngine implements Runnable {
             if (input == ButtonAction.ENTER) reset();
             if (input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
         }
+    }
+
+    /**
+     * Handles the input on the multiplayer screen, only
+     * relative to setting the server ip. The other inputs
+     * are processed by {@link GameEngine#receiveInput}.
+     *
+     * @param character The character that has been pressed.
+     */
+    public void receiveIpInput(String character) {
+        String serverIp = uiManager.getMultiplayerMenu().getServerIp();
+
+        if (character.equals("\b")) {
+            if (!serverIp.isEmpty() && !serverIp.equals("Start typing.")) {
+                serverIp = serverIp.substring(0, serverIp.length() - 1);
+                if (serverIp.isEmpty()) serverIp = "Start typing.";
+            }
+        }
+        else if (serverIp.equals("Start typing.")) serverIp = character;
+        else serverIp += character;
+
+        if (serverIp.length() <= 15) uiManager.getMultiplayerMenu().setServerIp(serverIp);
     }
 
     /**

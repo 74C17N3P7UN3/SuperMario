@@ -7,6 +7,7 @@ import control.MapCreator;
 import utils.FontImporter;
 import utils.ImageImporter;
 import view.screens.MainMenu;
+import view.screens.MultiplayerMenu;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,6 +24,7 @@ public class UIManager extends JPanel {
 
     private final MarioCursor marioCursor;
     private final MainMenu mainMenu;
+    private final MultiplayerMenu multiplayerMenu;
 
     private boolean alreadyPlayed = false;
 
@@ -31,6 +33,7 @@ public class UIManager extends JPanel {
 
         this.marioCursor = new MarioCursor();
         this.mainMenu = new MainMenu();
+        this.multiplayerMenu = new MultiplayerMenu();
 
         setMaximumSize(new Dimension(width, height));
         setMinimumSize(new Dimension(width, height));
@@ -47,7 +50,11 @@ public class UIManager extends JPanel {
 
         if (engine.getGameStatus() == GameStatus.START_SCREEN) showStartScreen(g2D);
         else if (engine.getGameStatus() == GameStatus.CREDITS_SCREEN) showCreditsScreen(g2D);
-        else if (engine.getGameStatus() == GameStatus.MULTIPLAYER_LOBBY) showMultiplayerScreen(g2D);
+        else if (
+            engine.getGameStatus() == GameStatus.MULTIPLAYER_LOBBY ||
+            engine.getGameStatus() == GameStatus.MULTIPLAYER_HOST ||
+            engine.getGameStatus() == GameStatus.MULTIPLAYER_JOIN
+        ) showMultiplayerScreen(g2D);
         else if (engine.getGameStatus() == GameStatus.GAME_OVER) showEndingScreen(g2D, "game-over");
         else if (engine.getGameStatus() == GameStatus.MISSION_PASSED) showEndingScreen(g2D, "game-won");
         else if (engine.getGameStatus() == GameStatus.OUT_OF_TIME) showEndingScreen(g2D, "out-of-time");
@@ -83,9 +90,7 @@ public class UIManager extends JPanel {
      * @param input Whether the selection is up or down.
      */
     public void changeSelectedAction(ButtonAction input) {
-        if (engine.getGameStatus() == GameStatus.START_SCREEN) {
-            mainMenu.changeSelection(input);
-        }
+        if (engine.getGameStatus() == GameStatus.START_SCREEN) mainMenu.changeSelection(input);
     }
 
     /**
@@ -111,7 +116,10 @@ public class UIManager extends JPanel {
      *
      * @param g2D The graphics engine.
      */
-    private void showCreditsScreen(Graphics2D g2D) {}
+    private void showCreditsScreen(Graphics2D g2D) {
+        BufferedImage screen = ImageImporter.loadImage("credits-screen");
+        g2D.drawImage(screen, (GameEngine.WIDTH - 1920) / 2, 0, null);
+    }
 
     /**
      * Draws a full-screen ending page with the results of the run.
@@ -142,8 +150,15 @@ public class UIManager extends JPanel {
      * @param g2D The graphics engine.
      */
     private void showMultiplayerScreen(Graphics2D g2D) {
-        BufferedImage screen = ImageImporter.loadImage("blank-screen");
+        BufferedImage screen = ImageImporter.loadImage("multiplayer-screen");
         g2D.drawImage(screen, (GameEngine.WIDTH - 1920) / 2, 0, null);
+
+        g2D.setFont(FontImporter.loadFont(32));
+
+        g2D.drawString(multiplayerMenu.getLocalHostIp(), 1056 + ((GameEngine.WIDTH - 1920) / 2), 358);
+        if (engine.getGameStatus() == GameStatus.MULTIPLAYER_HOST)
+            g2D.drawString(multiplayerMenu.getWaitingText(), 609 + ((GameEngine.WIDTH - 1920) / 2), 431);
+        g2D.drawString(multiplayerMenu.getServerIp(), 1088 + ((GameEngine.WIDTH - 1920) / 2), 592);
     }
 
     /**
@@ -161,5 +176,9 @@ public class UIManager extends JPanel {
 
         int marioY = mainMenu.getLineNumber() < 3 ? 320 + 72 * mainMenu.getLineNumber() : 608;
         g2D.drawImage(mario, 710 + ((GameEngine.WIDTH - 1920) / 2), marioY, null);
+    }
+
+    public MultiplayerMenu getMultiplayerMenu() {
+        return multiplayerMenu;
     }
 }
