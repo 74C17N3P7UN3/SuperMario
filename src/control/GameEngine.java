@@ -200,8 +200,8 @@ public class GameEngine implements Runnable {
      *
      * @param mapName The name of the map to be loaded.
      */
-    public void createMap(String mapName) {
-        if (mapManager.createMap(mapName)) {
+    public void createMap(String mapName, boolean isMultiplayer) {
+        if (mapManager.createMap(mapName, isMultiplayer)) {
             setGameStatus(GameStatus.RUNNING);
             soundManager.restartTheme();
         } else setGameStatus(GameStatus.START_SCREEN);
@@ -286,7 +286,7 @@ public class GameEngine implements Runnable {
 
             if (input == ButtonAction.ACTION_COMPLETED) mario.setVelX(0);
         } else if (gameStatus == GameStatus.GAME_OVER || gameStatus == GameStatus.MISSION_PASSED || gameStatus == GameStatus.OUT_OF_TIME) {
-            if (input == ButtonAction.ENTER) reset();
+            if (input == ButtonAction.ENTER) reset(false);
             if (input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
         }
     }
@@ -325,8 +325,8 @@ public class GameEngine implements Runnable {
      * position, restarting the theme, sending the player
      * back to the starting position and resetting the score.
      */
-    public void reset() {
-        createMap("map-01");
+    public void reset(boolean isMultiplayer) {
+        createMap("map-01", isMultiplayer);
         resetCamera();
     }
 

@@ -25,6 +25,7 @@ import java.util.ArrayList;
  */
 public class MapManager {
     private Map map;
+    private boolean isMultiplayer;
 
     ArrayList<GameObject> disposal = new ArrayList<>();
 
@@ -36,9 +37,11 @@ public class MapManager {
      * @param mapName The name of the map to be loaded.
      * @return If the map was created successfully.
      */
-    public boolean createMap(String mapName) {
+    public boolean createMap(String mapName, boolean isMultiplayer) {
+        this.isMultiplayer = isMultiplayer;
+
         MapCreator mapCreator = new MapCreator();
-        map = mapCreator.createMap(mapName);
+        map = mapCreator.createMap(mapName, isMultiplayer);
 
         return map != null;
     }
@@ -75,7 +78,7 @@ public class MapManager {
             else {
                 int lives = map.getLives();
                 GameEngine.playSound("death");
-                engine.reset();
+                engine.reset(isMultiplayer);
                 map.setLives(lives - 1);
             }
         }
@@ -273,7 +276,7 @@ public class MapManager {
                     else {
                         int lives = map.getLives();
                         GameEngine.playSound("death");
-                        engine.reset();
+                        engine.reset(isMultiplayer);
                         map.setLives(lives - 1);
                     }
                 }
@@ -302,5 +305,9 @@ public class MapManager {
 
     public Map getMap() {
         return map;
+    }
+
+    public boolean isMultiplayer() {
+        return isMultiplayer;
     }
 }

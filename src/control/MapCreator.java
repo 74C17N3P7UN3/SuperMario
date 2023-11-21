@@ -59,7 +59,7 @@ public class MapCreator {
      * @param mapName The name of the map to be generated.
      * @return The generated {@link Map} object.
      */
-    public Map createMap(String mapName) {
+    public Map createMap(String mapName, boolean isMultiplayer) {
         Map createdMap = new Map();
         BufferedImage mapImage = ImageImporter.loadMap(mapName);
 
@@ -90,7 +90,10 @@ public class MapCreator {
                 int yLocation = y * 48;
 
                 if (currentPixel == endRGB) createdMap.setEndPoint(new EndFlag(xLocation - 24, yLocation, end));
-                if (currentPixel == marioRGB) createdMap.setMario(new Mario(xLocation, yLocation));
+                if (currentPixel == marioRGB) {
+                    createdMap.setMario(new Mario(xLocation, yLocation, "Player1"));
+                    if (isMultiplayer) createdMap.setNetMario(new Mario(xLocation, yLocation, "Player2"));
+                }
 
                 Brick brick = null;
                 if (currentPixel == blockRGB) brick = new Block(xLocation, yLocation, block);

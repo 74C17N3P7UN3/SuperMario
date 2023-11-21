@@ -4,6 +4,7 @@ import control.ButtonAction;
 import control.GameEngine;
 import control.GameStatus;
 import control.MapCreator;
+import model.hero.Mario;
 import utils.FontImporter;
 import utils.ImageImporter;
 import view.screens.MainMenu;
@@ -75,6 +76,19 @@ public class UIManager extends JPanel {
 
                 // Render Time
                 g2D.drawString(String.valueOf(engine.getMapManager().getMap().getTime()), GameEngine.WIDTH - 140, 55);
+
+                // Render Names
+                g2D.setFont(FontImporter.loadFont(12));
+
+                Mario mario = engine.getMapManager().getMap().getMario();
+                float usernameX = (float) (mario.getX() - (g2D.getFontMetrics().stringWidth(mario.getUsername()) / 2) - camLocation.getX() + 24);
+                g2D.drawString(mario.getUsername(), usernameX, (float) mario.getY() - 12);
+
+                if (engine.getMapManager().isMultiplayer()) {
+                    mario = engine.getMapManager().getMap().getNetMario();
+                    usernameX = (float) (mario.getX() - (g2D.getFontMetrics().stringWidth(mario.getUsername()) / 2) - camLocation.getX() + 24);
+                    g2D.drawString(mario.getUsername(), usernameX, (float) mario.getY() - 12);
+                }
             }
 
             // To play the sound only once
@@ -101,7 +115,7 @@ public class UIManager extends JPanel {
             int selection = mainMenu.getLineNumber();
 
             switch (selection) {
-                case 0 -> engine.createMap("map-01");
+                case 0 -> engine.createMap("map-01", false);
                 case 1 -> engine.setGameStatus(GameStatus.MULTIPLAYER_LOBBY);
                 case 2 -> engine.setGameStatus(GameStatus.CREDITS_SCREEN);
                 case 3 -> System.exit(0);

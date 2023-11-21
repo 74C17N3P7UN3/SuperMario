@@ -20,9 +20,12 @@ public class Mario extends GameObject {
     private Animation animation;
     private MarioForm marioForm;
     private boolean firing, invincible, toRight;
+    private String username;
 
-    public Mario(double x, double y) {
+    public Mario(double x, double y, String username) {
         super(x, y, null);
+        this.username = username;
+
         invincible = false;
         toRight = true;
         setMarioSmall();
@@ -191,5 +194,9 @@ public class Mario extends GameObject {
 
     public void setInvincible(boolean invincible) {
         this.invincible = invincible;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }
