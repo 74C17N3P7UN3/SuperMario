@@ -20,7 +20,7 @@ public class Mario extends GameObject {
     private Animation animation;
     private MarioForm marioForm;
     private boolean firing, invincible, toRight;
-    private String username;
+    private final String username;
 
     public Mario(double x, double y, String username) {
         super(x, y, null);

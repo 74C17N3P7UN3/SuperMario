@@ -5,6 +5,8 @@ import model.enemy.Enemy;
 import model.enemy.Goomba;
 import model.enemy.Koopa;
 import model.hero.Mario;
+import net.Client;
+import net.Server;
 import utils.ImageImporter;
 import view.UIManager;
 
@@ -28,6 +30,11 @@ public class GameEngine implements Runnable {
     private final MapManager mapManager;
     private final SoundManager soundManager;
     private final UIManager uiManager;
+
+    private Client client;
+    private Thread clientThread;
+    private Server server;
+    private Thread serverThread;
 
     private GameStatus gameStatus;
     private Thread thread;
@@ -136,6 +143,24 @@ public class GameEngine implements Runnable {
                     lastTimeCheck = 0;
                 }
                 if (time == 0) gameStatus = GameStatus.OUT_OF_TIME;
+            }
+
+            // Multiplayer threads logic
+            if (gameStatus == GameStatus.MULTIPLAYER_HOST) {
+                if (serverThread == null || serverThread.isInterrupted()) {
+                    server = new Server(this);
+                    serverThread = new Thread(server);
+                    serverThread.start();
+                }
+            }
+            if (gameStatus == GameStatus.MULTIPLAYER_JOIN) {
+                if (clientThread == null || clientThread.isInterrupted()) {
+                    String serverIp = uiManager.getMultiplayerMenu().getServerIp();
+
+                    client = new Client(this, serverIp);
+                    clientThread = new Thread(client);
+                    clientThread.start();
+                }
             }
 
             // Repaint based on the ticks passed since the last iteration
@@ -285,9 +310,15 @@ public class GameEngine implements Runnable {
             if (input == ButtonAction.CHEAT && mario.getVelX() >= 0) mario.setVelX(100);
 
             if (input == ButtonAction.ACTION_COMPLETED) mario.setVelX(0);
+
+            if (clientThread != null && !clientThread.isInterrupted()) client.sendUpdate(mario);
+            if (serverThread != null && !serverThread.isInterrupted()) server.sendUpdate(mario);
         } else if (gameStatus == GameStatus.GAME_OVER || gameStatus == GameStatus.MISSION_PASSED || gameStatus == GameStatus.OUT_OF_TIME) {
             if (input == ButtonAction.ENTER) reset(false);
             if (input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
+
+            if (clientThread != null && !clientThread.isInterrupted()) client.interrupt();
+            if (serverThread != null && !serverThread.isInterrupted()) server.interrupt();
         }
     }
 
