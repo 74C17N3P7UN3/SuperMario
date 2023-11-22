@@ -2,6 +2,7 @@ package model;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
 /**
  * The main abstract class used to define lower-level
@@ -9,7 +10,7 @@ import java.awt.image.BufferedImage;
  *
  * @version 1.0.0
  */
-public abstract class GameObject {
+public abstract class GameObject implements Serializable {
     private BufferedImage style;
     private Dimension dimension;
 

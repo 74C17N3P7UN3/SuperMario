@@ -324,6 +324,8 @@ public class GameEngine implements Runnable {
      * Resets the game completely by resetting the camera
      * position, restarting the theme, sending the player
      * back to the starting position and resetting the score.
+     *
+     * @param isMultiplayer Whether the map needs two marios.
      */
     public void reset(boolean isMultiplayer) {
         createMap("map-01", isMultiplayer);

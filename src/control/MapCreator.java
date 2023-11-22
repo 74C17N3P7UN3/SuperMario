@@ -56,7 +56,8 @@ public class MapCreator {
     /**
      * Returns the generated map by its name.
      *
-     * @param mapName The name of the map to be generated.
+     * @param mapName       The name of the map to be loaded.
+     * @param isMultiplayer Whether the map needs two marios.
      * @return The generated {@link Map} object.
      */
     public Map createMap(String mapName, boolean isMultiplayer) {

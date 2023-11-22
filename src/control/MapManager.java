@@ -34,7 +34,8 @@ public class MapManager {
     /**
      * Creates the map using the {@link MapCreator}.
      *
-     * @param mapName The name of the map to be loaded.
+     * @param mapName       The name of the map to be loaded.
+     * @param isMultiplayer Whether the map needs two marios.
      * @return If the map was created successfully.
      */
     public boolean createMap(String mapName, boolean isMultiplayer) {
