@@ -5,6 +5,8 @@ import model.enemy.Enemy;
 import model.enemy.Goomba;
 import model.enemy.Koopa;
 import model.hero.Mario;
+import net.Client;
+import net.Server;
 import utils.ImageImporter;
 import view.UIManager;
 
@@ -16,7 +18,7 @@ import java.awt.*;
  * initialization and synchronization of the other threads. It also
  * provides some runtime checks that make up the whole game's brain.
  *
- * @version 1.0.1
+ * @version 1.1.0
  */
 public class GameEngine implements Runnable {
     private final static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -28,6 +30,11 @@ public class GameEngine implements Runnable {
     private final MapManager mapManager;
     private final SoundManager soundManager;
     private final UIManager uiManager;
+
+    private Client client;
+    private Thread clientThread;
+    private Server server;
+    private Thread serverThread;
 
     private GameStatus gameStatus;
     private Thread thread;
@@ -138,6 +145,24 @@ public class GameEngine implements Runnable {
                 if (time == 0) gameStatus = GameStatus.OUT_OF_TIME;
             }
 
+            // Multiplayer threads logic
+            if (gameStatus == GameStatus.MULTIPLAYER_HOST) {
+                if (serverThread == null || serverThread.isInterrupted()) {
+                    server = new Server(this);
+                    serverThread = new Thread(server);
+                    serverThread.start();
+                }
+            }
+            if (gameStatus == GameStatus.MULTIPLAYER_JOIN) {
+                if (clientThread == null || clientThread.isInterrupted()) {
+                    String serverIp = uiManager.getMultiplayerMenu().getServerIp();
+
+                    client = new Client(this, serverIp);
+                    clientThread = new Thread(client);
+                    clientThread.start();
+                }
+            }
+
             // Repaint based on the ticks passed since the last iteration
             while (delta > 0) {
                 if (gameStatus == GameStatus.RUNNING) gameLoop();
@@ -200,8 +225,8 @@ public class GameEngine implements Runnable {
      *
      * @param mapName The name of the map to be loaded.
      */
-    public void createMap(String mapName) {
-        if (mapManager.createMap(mapName)) {
+    public void createMap(String mapName, boolean isMultiplayer) {
+        if (mapManager.createMap(mapName, isMultiplayer)) {
             setGameStatus(GameStatus.RUNNING);
             soundManager.restartTheme();
         } else setGameStatus(GameStatus.START_SCREEN);
@@ -226,6 +251,10 @@ public class GameEngine implements Runnable {
         updateLocations();
 
         checkEndContact();
+
+        Mario mario = mapManager.getMap().getMario();
+        if (clientThread != null && !clientThread.isInterrupted()) client.sendUpdate(mario);
+        if (serverThread != null && !serverThread.isInterrupted()) server.sendUpdate(mario);
     }
 
     /**
@@ -257,6 +286,9 @@ public class GameEngine implements Runnable {
             if (input == ButtonAction.ENTER) uiManager.confirmSelectedAction();
             if (input == ButtonAction.ESCAPE) System.exit(0);
         } else if (gameStatus == GameStatus.MULTIPLAYER_LOBBY) {
+            if (input == ButtonAction.SELECTION_DOWN)
+                if (uiManager.getMultiplayerMenu().validateServerIp()) gameStatus = GameStatus.MULTIPLAYER_JOIN;
+            if (input == ButtonAction.SELECTION_UP) gameStatus = GameStatus.MULTIPLAYER_HOST;
             if (input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
         } else if (gameStatus == GameStatus.CREDITS_SCREEN) {
             if (input == ButtonAction.ENTER || input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
@@ -284,9 +316,34 @@ public class GameEngine implements Runnable {
 
             if (input == ButtonAction.ACTION_COMPLETED) mario.setVelX(0);
         } else if (gameStatus == GameStatus.GAME_OVER || gameStatus == GameStatus.MISSION_PASSED || gameStatus == GameStatus.OUT_OF_TIME) {
-            if (input == ButtonAction.ENTER) reset();
+            if (input == ButtonAction.ENTER) reset(false);
             if (input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
+
+            if (clientThread != null && !clientThread.isInterrupted()) client.interrupt();
+            if (serverThread != null && !serverThread.isInterrupted()) server.interrupt();
         }
+    }
+
+    /**
+     * Handles the input on the multiplayer screen, only
+     * relative to setting the server ip. The other inputs
+     * are processed by {@link GameEngine#receiveInput}.
+     *
+     * @param character The character that has been pressed.
+     */
+    public void receiveIpInput(String character) {
+        String serverIp = uiManager.getMultiplayerMenu().getServerIp();
+
+        if (character.equals("\b")) {
+            if (!serverIp.isEmpty() && !serverIp.equals("Start typing.")) {
+                serverIp = serverIp.substring(0, serverIp.length() - 1);
+                if (serverIp.isEmpty()) serverIp = "Start typing.";
+            }
+        }
+        else if (serverIp.equals("Start typing.") || serverIp.equals("Invalid ip.")) serverIp = character;
+        else serverIp += character;
+
+        if (serverIp.length() <= 15) uiManager.getMultiplayerMenu().setServerIp(serverIp);
     }
 
     /**
@@ -300,9 +357,11 @@ public class GameEngine implements Runnable {
      * Resets the game completely by resetting the camera
      * position, restarting the theme, sending the player
      * back to the starting position and resetting the score.
+     *
+     * @param isMultiplayer Whether the map needs two marios.
      */
-    public void reset() {
-        createMap("map-01");
+    public void reset(boolean isMultiplayer) {
+        createMap("map-01", isMultiplayer);
         resetCamera();
     }
 

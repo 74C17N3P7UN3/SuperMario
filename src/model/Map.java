@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * The Map that gets rendered and contains all information
  * about what objects are in it, the current player's progress.
  *
- * @version 1.0.0
+ * @version 1.1.0
  */
 public class Map {
     private final BufferedImage backgroundImage;
@@ -24,6 +24,7 @@ public class Map {
     private int coins, lives, points, time;
 
     private Mario mario;
+    private Mario netMario;
     private EndFlag endPoint;
 
     private final ArrayList<Boost> boosts = new ArrayList<>();
@@ -49,6 +50,7 @@ public class Map {
         drawBackground(g2D);
 
         mario.drawObject(g2D);
+        if (netMario != null) netMario.drawObject(g2D);
         endPoint.drawObject(g2D);
 
         drawBoosts(g2D);
@@ -130,6 +132,7 @@ public class Map {
      */
     public void updateLocations() {
         mario.updateLocation();
+        if (netMario != null) netMario.updateLocation();
 
         for (Boost boost : boosts) boost.updateLocation();
         for (Enemy enemy : enemies) enemy.updateLocation();
@@ -180,6 +183,22 @@ public class Map {
         this.lives = lives;
     }
 
+    public Mario getMario() {
+        return mario;
+    }
+
+    public void setMario(Mario mario) {
+        this.mario = mario;
+    }
+
+    public Mario getNetMario() {
+        return netMario;
+    }
+
+    public void setNetMario(Mario netMario) {
+        this.netMario = netMario;
+    }
+
     public int getPoints() {
         return points;
     }
@@ -194,13 +213,5 @@ public class Map {
 
     public void setTime(int time) {
         this.time = time;
-    }
-
-    public Mario getMario() {
-        return mario;
-    }
-
-    public void setMario(Mario mario) {
-        this.mario = mario;
     }
 }

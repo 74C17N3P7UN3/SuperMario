@@ -30,6 +30,8 @@ public class MainMenu {
         }
     }
 
+    /* ---------- Getters / Setters ---------- */
+
     public int getLineNumber() {
         return lineNumber;
     }

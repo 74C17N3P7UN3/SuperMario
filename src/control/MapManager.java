@@ -21,10 +21,11 @@ import java.util.ArrayList;
  * behaviours. It provides checks and low-level conditions
  * for working in sync with the {@link GameEngine}.
  *
- * @version 1.0.0
+ * @version 1.1.0
  */
 public class MapManager {
     private Map map;
+    private boolean isMultiplayer;
 
     ArrayList<GameObject> disposal = new ArrayList<>();
 
@@ -33,12 +34,15 @@ public class MapManager {
     /**
      * Creates the map using the {@link MapCreator}.
      *
-     * @param mapName The name of the map to be loaded.
+     * @param mapName       The name of the map to be loaded.
+     * @param isMultiplayer Whether the map needs two marios.
      * @return If the map was created successfully.
      */
-    public boolean createMap(String mapName) {
+    public boolean createMap(String mapName, boolean isMultiplayer) {
+        this.isMultiplayer = isMultiplayer;
+
         MapCreator mapCreator = new MapCreator();
-        map = mapCreator.createMap(mapName);
+        map = mapCreator.createMap(mapName, isMultiplayer);
 
         return map != null;
     }
@@ -75,7 +79,7 @@ public class MapManager {
             else {
                 int lives = map.getLives();
                 GameEngine.playSound("death");
-                engine.reset();
+                engine.reset(isMultiplayer);
                 map.setLives(lives - 1);
             }
         }
@@ -273,7 +277,7 @@ public class MapManager {
                     else {
                         int lives = map.getLives();
                         GameEngine.playSound("death");
-                        engine.reset();
+                        engine.reset(isMultiplayer);
                         map.setLives(lives - 1);
                     }
                 }
@@ -302,5 +306,9 @@ public class MapManager {
 
     public Map getMap() {
         return map;
+    }
+
+    public boolean isMultiplayer() {
+        return isMultiplayer;
     }
 }

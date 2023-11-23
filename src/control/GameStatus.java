@@ -3,7 +3,7 @@ package control;
 /**
  * The possible view states.
  *
- * @version 1.0.0
+ * @version 1.1.0
  */
 public enum GameStatus {
     /** The credits screen. */
@@ -12,6 +12,10 @@ public enum GameStatus {
     GAME_OVER,
     /** The player passed the level. */
     MISSION_PASSED,
+    /** The player hosts the server and waits for connections. */
+    MULTIPLAYER_HOST,
+    /** The player tries to connect to a local server. */
+    MULTIPLAYER_JOIN,
     /** The lobby where you wait for your teammate. */
     MULTIPLAYER_LOBBY,
     /** The player ran out of time. */
