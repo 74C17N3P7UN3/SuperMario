@@ -3,7 +3,7 @@ package control;
 /**
  * The possible view states.
  *
- * @version 1.0.0
+ * @version 1.1.0
  */
 public enum GameStatus {
     /** The credits screen. */

@@ -7,7 +7,7 @@ import java.awt.event.KeyListener;
  * Handles all the key presses that the player performs to
  * then notify the performed action to the {@link GameEngine}.
  *
- * @version 1.0.0
+ * @version 1.1.0
  */
 public class InputManager implements KeyListener {
     private final GameEngine engine;

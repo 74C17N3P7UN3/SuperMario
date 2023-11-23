@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * behaviours. It provides checks and low-level conditions
  * for working in sync with the {@link GameEngine}.
  *
- * @version 1.0.0
+ * @version 1.1.0
  */
 public class MapManager {
     private Map map;

@@ -16,7 +16,7 @@ import java.awt.image.BufferedImage;
 /**
  * Creates the {@link Map} by its given name.
  *
- * @version 1.0.0
+ * @version 1.1.0
  */
 public class MapCreator {
     public final static BufferedImage sprite = ImageImporter.loadImage("sprite");

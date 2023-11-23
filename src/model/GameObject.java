@@ -2,7 +2,6 @@ package model;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.Serializable;
 
 /**
  * The main abstract class used to define lower-level

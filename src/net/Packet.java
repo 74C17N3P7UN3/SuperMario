@@ -35,20 +35,4 @@ public class Packet implements Serializable {
 
         currentForm = new PacketForm(mario.isSuper(), mario.isFire(), mario.isBabyStar(), mario.isStar());
     }
-
-    @Override
-    public String toString() {
-        return "Packet{" +
-                "x=" + x +
-                ", y=" + y +
-                ", velX=" + velX +
-                ", velY=" + velY +
-                ", falling=" + falling +
-                ", jumping=" + jumping +
-                ", currentForm=" + currentForm +
-                ", firing=" + firing +
-                ", invincible=" + invincible +
-                ", toRight=" + toRight +
-                '}';
-    }
 }

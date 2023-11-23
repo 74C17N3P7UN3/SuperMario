@@ -18,7 +18,7 @@ import java.awt.image.BufferedImage;
  * This manager is responsible for rendering all the
  * components, such as the map and the GUI on the screen.
  *
- * @version 1.0.0
+ * @version 1.1.0
  */
 public class UIManager extends JPanel {
     private final GameEngine engine;
@@ -191,6 +191,8 @@ public class UIManager extends JPanel {
         int marioY = mainMenu.getLineNumber() < 3 ? 320 + 72 * mainMenu.getLineNumber() : 608;
         g2D.drawImage(mario, 710 + ((GameEngine.WIDTH - 1920) / 2), marioY, null);
     }
+
+    /* ---------- Getters / Setters ---------- */
 
     public MultiplayerMenu getMultiplayerMenu() {
         return multiplayerMenu;
