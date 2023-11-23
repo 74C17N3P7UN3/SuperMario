@@ -286,7 +286,8 @@ public class GameEngine implements Runnable {
             if (input == ButtonAction.ENTER) uiManager.confirmSelectedAction();
             if (input == ButtonAction.ESCAPE) System.exit(0);
         } else if (gameStatus == GameStatus.MULTIPLAYER_LOBBY) {
-            if (input == ButtonAction.SELECTION_DOWN) gameStatus = GameStatus.MULTIPLAYER_JOIN;
+            if (input == ButtonAction.SELECTION_DOWN)
+                if (uiManager.getMultiplayerMenu().validateServerIp()) gameStatus = GameStatus.MULTIPLAYER_JOIN;
             if (input == ButtonAction.SELECTION_UP) gameStatus = GameStatus.MULTIPLAYER_HOST;
             if (input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
         } else if (gameStatus == GameStatus.CREDITS_SCREEN) {
@@ -339,7 +340,7 @@ public class GameEngine implements Runnable {
                 if (serverIp.isEmpty()) serverIp = "Start typing.";
             }
         }
-        else if (serverIp.equals("Start typing.")) serverIp = character;
+        else if (serverIp.equals("Start typing.") || serverIp.equals("Invalid ip.")) serverIp = character;
         else serverIp += character;
 
         if (serverIp.length() <= 15) uiManager.getMultiplayerMenu().setServerIp(serverIp);
