@@ -4,6 +4,7 @@ import control.Camera;
 import control.GameEngine;
 import control.MapManager;
 import model.GameObject;
+import net.Packet;
 import view.Animation;
 import view.ImageLoader;
 
@@ -158,6 +159,35 @@ public class Mario extends GameObject {
         GameEngine.playSound("pipe");
     }
 
+    /**
+     * Updates Mario based on the given
+     * packet, received from the other player.
+     *
+     * @param packet The packet containing the
+     *               new information about Mario.
+     */
+    public void updateFromPacket(Packet packet) {
+        setX(packet.x);
+        setY(packet.y);
+        setVelX(packet.velX);
+        setVelY(packet.velY);
+        setFalling(packet.falling);
+        setJumping(packet.jumping);
+
+        setFiring(packet.firing);
+        setInvincible(packet.invincible);
+        setToRight(packet.toRight);
+
+        Packet.PacketForm packetForm = packet.currentForm;
+        if (!packetForm.isSuper() && !packetForm.isFire() && !packetForm.isStar() && !packetForm.isBabyStar()) {
+            if (isSuper() || isFire() || isStar() || isBabyStar()) setMarioSmall();
+        } else if (packetForm.isSuper() && !packetForm.isFire() && !packetForm.isBabyStar()) {
+            if (!isSuper() || isFire() || isBabyStar()) setMarioSuper();
+        } else if (packetForm.isSuper() && packetForm.isFire() && !packetForm.isStar() && !packetForm.isBabyStar()) {
+            if (!isSuper() || !isFire() || isStar() || isBabyStar()) setMarioFire();
+        } else setMarioStar();
+    }
+
     /* ---------- Getters / Setters ---------- */
 
     public boolean isSuper() {
@@ -186,6 +216,14 @@ public class Mario extends GameObject {
 
     public boolean isStar() {
         return marioForm.isStar();
+    }
+
+    public boolean isToRight() {
+        return toRight;
+    }
+
+    public void setToRight(boolean toRight) {
+        this.toRight = toRight;
     }
 
     public boolean isInvincible() {

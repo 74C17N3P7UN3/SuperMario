@@ -27,15 +27,25 @@ public class Client implements Runnable {
             this.engine = engine;
             interrupt = false;
 
-            System.out.println("Client connecting to server...");
             connection = new Socket(serverIp, 6996);
-            System.out.println("Client connected to server!");
 
             input = new ObjectInputStream(connection.getInputStream());
             output = new ObjectOutputStream(connection.getOutputStream());
 
             engine.createMap("map-01", true);
         } catch (Exception ignored) {}
+    }
+
+    @Override
+    public void run() {
+        while (!interrupt) {
+            try {
+                Packet packet = (Packet) input.readObject();
+                if (packet.x >= ((48 * 198) - 20) && packet.x < 10992) break;
+
+                engine.getMapManager().getMap().getNetMario().updateFromPacket(packet);
+            } catch (Exception ignored) {}
+        }
     }
 
     /**
@@ -45,32 +55,17 @@ public class Client implements Runnable {
         interrupt = true;
     }
 
-    @Override
-    public void run() {
-        while (!interrupt) {
-            try {
-                System.out.println("Client waiting for object from server...");
-                Mario netMario = (Mario) input.readObject();
-                System.out.println("Client received object from server!");
-                if (netMario.getX() >= ((48 * 198) - 20) && netMario.getX() < 10992) break;
-
-                engine.getMapManager().getMap().setNetMario(netMario);
-            } catch (Exception ignored) {}
-        }
-    }
-
     /**
      * Sends an update to the host server
-     * with the current Mario coordinates.
+     * with the current Mario object wrapped
+     * in a special serializable packet.
      *
      * @param mario The Mario object.
      */
     public void sendUpdate(Mario mario) {
         try {
-            System.out.println("Client sending update to server...");
-            output.writeObject(mario);
+            output.writeObject(new Packet(mario));
             output.flush();
-            System.out.println("Client sent update to server!");
         } catch (Exception ignored) {}
     }
 }

@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  * @version 1.0.0
  */
-public abstract class GameObject implements Serializable {
+public abstract class GameObject {
     private BufferedImage style;
     private Dimension dimension;
 

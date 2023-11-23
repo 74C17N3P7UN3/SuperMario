@@ -251,6 +251,10 @@ public class GameEngine implements Runnable {
         updateLocations();
 
         checkEndContact();
+
+        Mario mario = mapManager.getMap().getMario();
+        if (clientThread != null && !clientThread.isInterrupted()) client.sendUpdate(mario);
+        if (serverThread != null && !serverThread.isInterrupted()) server.sendUpdate(mario);
     }
 
     /**
@@ -310,9 +314,6 @@ public class GameEngine implements Runnable {
             if (input == ButtonAction.CHEAT && mario.getVelX() >= 0) mario.setVelX(100);
 
             if (input == ButtonAction.ACTION_COMPLETED) mario.setVelX(0);
-
-            if (clientThread != null && !clientThread.isInterrupted()) client.sendUpdate(mario);
-            if (serverThread != null && !serverThread.isInterrupted()) server.sendUpdate(mario);
         } else if (gameStatus == GameStatus.GAME_OVER || gameStatus == GameStatus.MISSION_PASSED || gameStatus == GameStatus.OUT_OF_TIME) {
             if (input == ButtonAction.ENTER) reset(false);
             if (input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;

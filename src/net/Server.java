@@ -31,10 +31,8 @@ public class Server implements Runnable {
             this.engine = engine;
             interrupt = false;
 
-            System.out.println("Server waiting for client...");
             server = new ServerSocket(6996);
             connection = server.accept();
-            System.out.println("Server accepted connection from client!");
 
             output = new ObjectOutputStream(connection.getOutputStream());
             input = new ObjectInputStream(connection.getInputStream());
@@ -47,12 +45,10 @@ public class Server implements Runnable {
     public void run() {
         while (!interrupt) {
             try {
-                System.out.println("Server waiting for object from client...");
-                Mario netMario = (Mario) input.readObject();
-                System.out.println("Server received object from client!");
-                if (netMario.getX() >= ((48 * 198) - 20) && netMario.getX() < 10992) break;
+                Packet packet = (Packet) input.readObject();
+                if (packet.x >= ((48 * 198) - 20) && packet.x < 10992) break;
 
-                engine.getMapManager().getMap().setNetMario(netMario);
+                engine.getMapManager().getMap().getNetMario().updateFromPacket(packet);
             } catch (Exception ignored) {}
         }
     }
@@ -66,16 +62,15 @@ public class Server implements Runnable {
 
     /**
      * Sends an update to the connected client
-     * with the current Mario coordinates.
+     * with the current Mario object wrapped
+     * in a special serializable packet.
      *
      * @param mario The Mario object.
      */
     public void sendUpdate(Mario mario) {
         try {
-            System.out.println("Server sending update to client...");
-            output.writeObject(mario);
+            output.writeObject(new Packet(mario));
             output.flush();
-            System.out.println("Server sent update to client!");
         } catch (Exception ignored) {}
     }
 }
