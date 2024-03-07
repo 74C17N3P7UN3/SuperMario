@@ -7,7 +7,7 @@ import java.awt.event.KeyListener;
  * Handles all the key presses that the player performs to
  * then notify the performed action to the {@link GameEngine}.
  *
- * @version 1.1.0
+ * @version 1.2.0
  */
 public class InputManager implements KeyListener {
     private final GameEngine engine;
@@ -48,6 +48,9 @@ public class InputManager implements KeyListener {
             if (code >= KeyEvent.VK_NUMPAD0 && code <= KeyEvent.VK_NUMPAD9) engine.receiveIpInput(String.valueOf(code - 96));
             if (code == KeyEvent.VK_PERIOD || code == KeyEvent.VK_DECIMAL) engine.receiveIpInput(".");
             if (code == KeyEvent.VK_BACK_SPACE) engine.receiveIpInput("\b");
+        } else if (engine.getGameStatus() == GameStatus.LEADERBOARDS) {
+            if (code == KeyEvent.VK_UP || code == KeyEvent.VK_W) currentAction = ButtonAction.SELECTION_UP;
+            if (code == KeyEvent.VK_DOWN || code == KeyEvent.VK_S) currentAction = ButtonAction.SELECTION_DOWN;
         } else {
             if (code == KeyEvent.VK_UP || code == KeyEvent.VK_W || code == KeyEvent.VK_SPACE) currentAction = ButtonAction.JUMP;
             if (code == KeyEvent.VK_DOWN || code == KeyEvent.VK_S) currentAction = ButtonAction.CROUCH;

@@ -6,7 +6,7 @@ import control.ButtonAction;
  * The main menu screen handling the
  * state of the selected action.
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
 public class MainMenu {
     private int lineNumber;
@@ -22,10 +22,10 @@ public class MainMenu {
      */
     public void changeSelection(ButtonAction input) {
         if (input == ButtonAction.SELECTION_DOWN) {
-            if (lineNumber == 3) lineNumber = 0;
+            if (lineNumber == 4) lineNumber = 0;
             else lineNumber++;
         } else {
-            if (lineNumber == 0) lineNumber = 3;
+            if (lineNumber == 0) lineNumber = 4;
             else lineNumber--;
         }
     }

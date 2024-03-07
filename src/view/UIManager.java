@@ -7,23 +7,26 @@ import control.MapCreator;
 import model.hero.Mario;
 import utils.FontImporter;
 import utils.ImageImporter;
+import view.screens.LeaderboardsMenu;
 import view.screens.MainMenu;
 import view.screens.MultiplayerMenu;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 /**
  * This manager is responsible for rendering all the
  * components, such as the map and the GUI on the screen.
  *
- * @version 1.1.0
+ * @version 1.2.0
  */
 public class UIManager extends JPanel {
     private final GameEngine engine;
 
     private final MarioCursor marioCursor;
+    private final LeaderboardsMenu leaderboardsMenu;
     private final MainMenu mainMenu;
     private final MultiplayerMenu multiplayerMenu;
 
@@ -33,6 +36,7 @@ public class UIManager extends JPanel {
         this.engine = engine;
 
         this.marioCursor = new MarioCursor();
+        this.leaderboardsMenu = new LeaderboardsMenu();
         this.mainMenu = new MainMenu();
         this.multiplayerMenu = new MultiplayerMenu();
 
@@ -51,6 +55,7 @@ public class UIManager extends JPanel {
 
         if (engine.getGameStatus() == GameStatus.START_SCREEN) showStartScreen(g2D);
         else if (engine.getGameStatus() == GameStatus.CREDITS_SCREEN) showCreditsScreen(g2D);
+        else if (engine.getGameStatus() == GameStatus.LEADERBOARDS) showLeaderboardsScreen(g2D);
         else if (
             engine.getGameStatus() == GameStatus.MULTIPLAYER_LOBBY ||
             engine.getGameStatus() == GameStatus.MULTIPLAYER_HOST ||
@@ -105,6 +110,7 @@ public class UIManager extends JPanel {
      */
     public void changeSelectedAction(ButtonAction input) {
         if (engine.getGameStatus() == GameStatus.START_SCREEN) mainMenu.changeSelection(input);
+        else if (engine.getGameStatus() == GameStatus.LEADERBOARDS) leaderboardsMenu.changeScoresRange(input);
     }
 
     /**
@@ -117,8 +123,12 @@ public class UIManager extends JPanel {
             switch (selection) {
                 case 0 -> engine.createMap("map-01", false);
                 case 1 -> engine.setGameStatus(GameStatus.MULTIPLAYER_LOBBY);
-                case 2 -> engine.setGameStatus(GameStatus.CREDITS_SCREEN);
-                case 3 -> System.exit(0);
+                case 2 -> {
+                    leaderboardsMenu.fetchScores();
+                    engine.setGameStatus(GameStatus.LEADERBOARDS);
+                }
+                case 3 -> engine.setGameStatus(GameStatus.CREDITS_SCREEN);
+                case 4 -> System.exit(0);
             }
 
             mainMenu.setLineNumber(0);
@@ -159,6 +169,22 @@ public class UIManager extends JPanel {
     }
 
     /**
+     * Draws a full-screen single player leaderboard.
+     *
+     * @param g2D The graphics engine.
+     */
+    private void showLeaderboardsScreen(Graphics2D g2D) {
+        BufferedImage screen = ImageImporter.loadImage("leaderboards-screen");
+        g2D.drawImage(screen, (GameEngine.WIDTH - 1920) / 2, 0, null);
+
+        g2D.setFont(FontImporter.loadFont(32));
+
+        ArrayList<String> scores = new ArrayList<>(leaderboardsMenu.getScoresInRange());
+        for (int i = 0; i < scores.size(); i++)
+            g2D.drawString(scores.get(i), 560 + ((GameEngine.WIDTH - 1920) / 2), 290 + 72 * i);
+    }
+
+    /**
      * Draws a full-screen multiplayer waiting lobby page.
      *
      * @param g2D The graphics engine.
@@ -188,7 +214,7 @@ public class UIManager extends JPanel {
         // Draw the Mario cursor
         BufferedImage mario = marioCursor.getCurrentStyle();
 
-        int marioY = mainMenu.getLineNumber() < 3 ? 320 + 72 * mainMenu.getLineNumber() : 608;
+        int marioY = 320 + 72 * mainMenu.getLineNumber();
         g2D.drawImage(mario, 710 + ((GameEngine.WIDTH - 1920) / 2), marioY, null);
     }
 

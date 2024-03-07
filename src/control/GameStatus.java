@@ -3,13 +3,15 @@ package control;
 /**
  * The possible view states.
  *
- * @version 1.1.0
+ * @version 1.2.0
  */
 public enum GameStatus {
     /** The credits screen. */
     CREDITS_SCREEN,
     /** The player died and lost the game. */
     GAME_OVER,
+    /** The leaderboards screen. */
+    LEADERBOARDS,
     /** The player passed the level. */
     MISSION_PASSED,
     /** The player hosts the server and waits for connections. */

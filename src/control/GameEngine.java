@@ -18,7 +18,7 @@ import java.awt.*;
  * initialization and synchronization of the other threads. It also
  * provides some runtime checks that make up the whole game's brain.
  *
- * @version 1.1.0
+ * @version 1.2.0
  */
 public class GameEngine implements Runnable {
     private final static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -290,6 +290,9 @@ public class GameEngine implements Runnable {
                 if (uiManager.getMultiplayerMenu().validateServerIp()) gameStatus = GameStatus.MULTIPLAYER_JOIN;
             if (input == ButtonAction.SELECTION_UP) gameStatus = GameStatus.MULTIPLAYER_HOST;
             if (input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
+        } else if (gameStatus == GameStatus.LEADERBOARDS) {
+            if (input == ButtonAction.SELECTION_DOWN || input == ButtonAction.SELECTION_UP) uiManager.changeSelectedAction(input);
+            if (input == ButtonAction.ENTER || input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
         } else if (gameStatus == GameStatus.CREDITS_SCREEN) {
             if (input == ButtonAction.ENTER || input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
         } else if (gameStatus == GameStatus.RUNNING) {
