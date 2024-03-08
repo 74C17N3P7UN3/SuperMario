@@ -18,7 +18,7 @@ import java.awt.*;
  * initialization and synchronization of the other threads. It also
  * provides some runtime checks that make up the whole game's brain.
  *
- * @version 1.2.0
+ * @version 1.3.0
  */
 public class GameEngine implements Runnable {
     private final static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -295,6 +295,9 @@ public class GameEngine implements Runnable {
             if (input == ButtonAction.ENTER || input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
         } else if (gameStatus == GameStatus.CREDITS_SCREEN) {
             if (input == ButtonAction.ENTER || input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
+        } else if (gameStatus == GameStatus.USERNAME_SCREEN) {
+            if (input == ButtonAction.ENTER) createMap("map-01", false);
+            if (input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
         } else if (gameStatus == GameStatus.RUNNING) {
             if (mapManager.getMap().getEndPoint().isTouched() && input != ButtonAction.ENTER) return;
 
@@ -315,7 +318,10 @@ public class GameEngine implements Runnable {
                 if (mario.getVelX() > 0) mario.setVelX(7.5);
                 if (mario.getVelX() < 0) mario.setVelX(-7.5);
             }
-            if (input == ButtonAction.CHEAT && mario.getVelX() >= 0) mario.setVelX(100);
+            if (input == ButtonAction.CHEAT && mario.getVelX() >= 0) {
+                mario.setVelX(100);
+                mapManager.setHasCheated(true);
+            }
 
             if (input == ButtonAction.ACTION_COMPLETED) mario.setVelX(0);
         } else if (gameStatus == GameStatus.GAME_OVER || gameStatus == GameStatus.MISSION_PASSED || gameStatus == GameStatus.OUT_OF_TIME) {
@@ -347,6 +353,28 @@ public class GameEngine implements Runnable {
         else serverIp += character;
 
         if (serverIp.length() <= 15) uiManager.getMultiplayerMenu().setServerIp(serverIp);
+    }
+
+    /**
+     * Handles the input on the username screen, only
+     * relative to setting the player's name. The other inputs
+     * are processed by {@link GameEngine#receiveInput}.
+     *
+     * @param character The character that has been pressed.
+     */
+    public void receiveUsernameInput(String character) {
+        String username = mapManager.getUsername();
+
+        if (character.equals("\b")) {
+            if (!username.isEmpty() && !username.equals("Player1")) {
+                username = username.substring(0, username.length() - 1);
+                if (username.isEmpty()) username = "Player1";
+            }
+        }
+        else if (username.equals("Player1")) username = character;
+        else username += character;
+
+        if (username.length() <= 16) mapManager.setUsername(username);
     }
 
     /**

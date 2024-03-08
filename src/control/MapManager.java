@@ -21,15 +21,20 @@ import java.util.ArrayList;
  * behaviours. It provides checks and low-level conditions
  * for working in sync with the {@link GameEngine}.
  *
- * @version 1.1.0
+ * @version 1.2.0
  */
 public class MapManager {
     private Map map;
     private boolean isMultiplayer;
 
+    private String username;
+    private boolean hasCheated;
+
     ArrayList<GameObject> disposal = new ArrayList<>();
 
-    public MapManager() {}
+    public MapManager() {
+        username = "Player1";
+    }
 
     /**
      * Creates the map using the {@link MapCreator}.
@@ -40,9 +45,10 @@ public class MapManager {
      */
     public boolean createMap(String mapName, boolean isMultiplayer) {
         this.isMultiplayer = isMultiplayer;
+        this.hasCheated = false;
 
         MapCreator mapCreator = new MapCreator();
-        map = mapCreator.createMap(mapName, isMultiplayer);
+        map = mapCreator.createMap(mapName, isMultiplayer, username);
 
         return map != null;
     }
@@ -310,5 +316,17 @@ public class MapManager {
 
     public boolean isMultiplayer() {
         return isMultiplayer;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setHasCheated(boolean hasCheated) {
+        this.hasCheated = hasCheated;
     }
 }

@@ -3,7 +3,7 @@ package control;
 /**
  * The possible view states.
  *
- * @version 1.2.0
+ * @version 1.3.0
  */
 public enum GameStatus {
     /** The credits screen. */
@@ -26,4 +26,6 @@ public enum GameStatus {
     RUNNING,
     /** The starting selection screen. */
     START_SCREEN,
+    /** The single player username input screen. */
+    USERNAME_SCREEN,
 }

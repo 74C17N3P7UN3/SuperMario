@@ -9,11 +9,13 @@ import java.util.List;
  * The menu screen handling the fetching
  * of the scores from the web server.
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
 public class LeaderboardsMenu {
     private ArrayList<String> scores;
     private int range = 0;
+
+    private long lastTimeFetched = 0;
 
     public void changeScoresRange(ButtonAction input) {
         int lastValidRange = scores.size() % 5 == 0 ? scores.size() - 5 : scores.size() - scores.size() % 5;
@@ -35,7 +37,9 @@ public class LeaderboardsMenu {
         // TODO: Needs actual data fetching
         ArrayList<String> temp = new ArrayList<>();
         temp.add("1. Player_1         15320");
+
         scores = temp;
+        lastTimeFetched = System.currentTimeMillis();
     }
 
     /**
@@ -46,6 +50,8 @@ public class LeaderboardsMenu {
      * containing the 5-range sets of scores.
      */
     public List<String> getScoresInRange() {
+        if (System.currentTimeMillis() > lastTimeFetched + 10_000) fetchScores();
+
         int lastValidRange = scores.size() % 5 == 0 ? scores.size() - 5 : scores.size() - scores.size() % 5;
         return scores.subList(range, range == lastValidRange ? scores.size() : range + 5);
     }

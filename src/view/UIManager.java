@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * This manager is responsible for rendering all the
  * components, such as the map and the GUI on the screen.
  *
- * @version 1.2.0
+ * @version 1.3.0
  */
 public class UIManager extends JPanel {
     private final GameEngine engine;
@@ -61,6 +61,7 @@ public class UIManager extends JPanel {
             engine.getGameStatus() == GameStatus.MULTIPLAYER_HOST ||
             engine.getGameStatus() == GameStatus.MULTIPLAYER_JOIN
         ) showMultiplayerScreen(g2D);
+        else if (engine.getGameStatus() == GameStatus.USERNAME_SCREEN) showUsernameScreen(g2D);
         else if (engine.getGameStatus() == GameStatus.GAME_OVER) showEndingScreen(g2D, "game-over");
         else if (engine.getGameStatus() == GameStatus.MISSION_PASSED) showEndingScreen(g2D, "game-won");
         else if (engine.getGameStatus() == GameStatus.OUT_OF_TIME) showEndingScreen(g2D, "out-of-time");
@@ -121,12 +122,9 @@ public class UIManager extends JPanel {
             int selection = mainMenu.getLineNumber();
 
             switch (selection) {
-                case 0 -> engine.createMap("map-01", false);
+                case 0 -> engine.setGameStatus(GameStatus.USERNAME_SCREEN);
                 case 1 -> engine.setGameStatus(GameStatus.MULTIPLAYER_LOBBY);
-                case 2 -> {
-                    leaderboardsMenu.fetchScores();
-                    engine.setGameStatus(GameStatus.LEADERBOARDS);
-                }
+                case 2 -> engine.setGameStatus(GameStatus.LEADERBOARDS);
                 case 3 -> engine.setGameStatus(GameStatus.CREDITS_SCREEN);
                 case 4 -> System.exit(0);
             }
@@ -216,6 +214,21 @@ public class UIManager extends JPanel {
 
         int marioY = 320 + 72 * mainMenu.getLineNumber();
         g2D.drawImage(mario, 710 + ((GameEngine.WIDTH - 1920) / 2), marioY, null);
+    }
+
+    /**
+     * Draws a full-screen username selection page.
+     *
+     * @param g2D The graphics engine.
+     */
+    private void showUsernameScreen(Graphics2D g2D) {
+        BufferedImage screen = ImageImporter.loadImage("username-screen");
+        g2D.drawImage(screen, (GameEngine.WIDTH - 1920) / 2, 0, null);
+
+        g2D.setFont(FontImporter.loadFont(32));
+
+        String username = engine.getMapManager().getUsername();
+        g2D.drawString(username, 960 - (16 * username.length()) + ((GameEngine.WIDTH - 1920) / 2), 448);
     }
 
     /* ---------- Getters / Setters ---------- */

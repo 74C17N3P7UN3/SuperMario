@@ -16,7 +16,7 @@ import java.awt.image.BufferedImage;
 /**
  * Creates the {@link Map} by its given name.
  *
- * @version 1.1.0
+ * @version 1.1.1
  */
 public class MapCreator {
     public final static BufferedImage sprite = ImageImporter.loadImage("sprite");
@@ -60,7 +60,7 @@ public class MapCreator {
      * @param isMultiplayer Whether the map needs two marios.
      * @return The generated {@link Map} object.
      */
-    public Map createMap(String mapName, boolean isMultiplayer) {
+    public Map createMap(String mapName, boolean isMultiplayer, String username) {
         Map createdMap = new Map();
         BufferedImage mapImage = ImageImporter.loadMap(mapName);
 
@@ -92,7 +92,7 @@ public class MapCreator {
 
                 if (currentPixel == endRGB) createdMap.setEndPoint(new EndFlag(xLocation - 24, yLocation, end));
                 if (currentPixel == marioRGB) {
-                    createdMap.setMario(new Mario(xLocation, yLocation, "Player1"));
+                    createdMap.setMario(new Mario(xLocation, yLocation, username));
                     if (isMultiplayer) createdMap.setNetMario(new Mario(xLocation, yLocation, "Player2"));
                 }
 

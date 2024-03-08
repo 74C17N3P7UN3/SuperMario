@@ -7,7 +7,7 @@ import java.awt.event.KeyListener;
  * Handles all the key presses that the player performs to
  * then notify the performed action to the {@link GameEngine}.
  *
- * @version 1.2.0
+ * @version 1.3.0
  */
 public class InputManager implements KeyListener {
     private final GameEngine engine;
@@ -51,6 +51,11 @@ public class InputManager implements KeyListener {
         } else if (engine.getGameStatus() == GameStatus.LEADERBOARDS) {
             if (code == KeyEvent.VK_UP || code == KeyEvent.VK_W) currentAction = ButtonAction.SELECTION_UP;
             if (code == KeyEvent.VK_DOWN || code == KeyEvent.VK_S) currentAction = ButtonAction.SELECTION_DOWN;
+        } else if (engine.getGameStatus() == GameStatus.USERNAME_SCREEN) {
+            if (code >= KeyEvent.VK_0 && code <= KeyEvent.VK_9) engine.receiveUsernameInput(String.valueOf(code - 48));
+            if (code >= KeyEvent.VK_NUMPAD0 && code <= KeyEvent.VK_NUMPAD9) engine.receiveUsernameInput(String.valueOf(code - 96));
+            if (code >= KeyEvent.VK_A && code <= KeyEvent.VK_Z) engine.receiveUsernameInput(String.valueOf((char) code));
+            if (code == KeyEvent.VK_BACK_SPACE) engine.receiveUsernameInput("\b");
         } else {
             if (code == KeyEvent.VK_UP || code == KeyEvent.VK_W || code == KeyEvent.VK_SPACE) currentAction = ButtonAction.JUMP;
             if (code == KeyEvent.VK_DOWN || code == KeyEvent.VK_S) currentAction = ButtonAction.CROUCH;
