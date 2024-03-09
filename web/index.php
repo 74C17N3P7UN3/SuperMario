@@ -3,8 +3,8 @@
 if ($_SERVER["REQUEST_METHOD"] === "GET") {
    $connection = mysqli_connect("localhost", "root", "", "SuperMario");
 
-   // Set the response Content-Type header as text/xml
-   header("Content-Type: text/xml; charset=utf-8");
+   // Set the response Content-Type header as application/xml
+   header("Content-Type: application/xml; charset=utf-8");
 
    $response = "<?xml version='1.0' encoding='UTF-8'?>";
    $response .= "<leaderboard>";
@@ -27,15 +27,15 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
    $connection = mysqli_connect("localhost", "root", "", "SuperMario");
 
-   // Get the raw text/xml request data
+   // Get the raw application/xml request data
    $raw_request = file_get_contents("php://input");
 
-   // Load the raw text/xml data as a Document to validate it
+   // Load the raw application/xml data as a Document to validate it
    $xml = new DOMDocument();
    $xml -> loadXML($raw_request);
 
    if ($xml -> schemaValidate("schemas/score.xsd")) {
-      // Convert the raw text/xml data into an object
+      // Convert the raw application/xml data into an object
       $score = simplexml_load_string($raw_request);
 
       $username = $score -> username;
