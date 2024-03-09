@@ -5,8 +5,8 @@ import model.enemy.Enemy;
 import model.enemy.Goomba;
 import model.enemy.Koopa;
 import model.hero.Mario;
-import net.Client;
-import net.Server;
+import net.local.Client;
+import net.local.Server;
 import utils.ImageImporter;
 import view.UIManager;
 

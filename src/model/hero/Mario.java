@@ -4,7 +4,7 @@ import control.Camera;
 import control.GameEngine;
 import control.MapManager;
 import model.GameObject;
-import net.Packet;
+import net.local.Packet;
 import view.Animation;
 import view.ImageLoader;
 

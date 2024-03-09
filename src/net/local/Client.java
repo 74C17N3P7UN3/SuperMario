@@ -1,41 +1,36 @@
-package net;
+package net.local;
 
 import control.GameEngine;
-import control.GameStatus;
 import model.hero.Mario;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * The server class, responsible for hosting
- * the multiplayer game and communicating with
- * the connected TCP client.
+ * The client class, responsible for
+ * communicating with the connected TCP server.
  *
  * @version 1.0.0
  */
-public class Server implements Runnable {
+public class Client implements Runnable {
     private GameEngine engine;
     private boolean interrupt;
 
-    private ServerSocket server;
     private Socket connection;
 
     private ObjectInputStream input;
     private ObjectOutputStream output;
 
-    public Server(GameEngine engine) {
+    public Client(GameEngine engine, String serverIp) {
         try {
             this.engine = engine;
             interrupt = false;
 
-            server = new ServerSocket(6996);
-            connection = server.accept();
+            connection = new Socket(serverIp, 6996);
 
-            output = new ObjectOutputStream(connection.getOutputStream());
             input = new ObjectInputStream(connection.getInputStream());
+            output = new ObjectOutputStream(connection.getOutputStream());
 
             engine.createMap("map-01", true);
         } catch (Exception ignored) {}
@@ -61,7 +56,7 @@ public class Server implements Runnable {
     }
 
     /**
-     * Sends an update to the connected client
+     * Sends an update to the host server
      * with the current Mario object wrapped
      * in a special serializable packet.
      *

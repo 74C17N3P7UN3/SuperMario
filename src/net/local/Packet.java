@@ -1,4 +1,4 @@
-package net;
+package net.local;
 
 import model.hero.Mario;
 
