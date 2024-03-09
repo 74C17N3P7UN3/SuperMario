@@ -12,6 +12,8 @@ import model.enemy.Goomba;
 import model.enemy.Koopa;
 import model.hero.Fireball;
 import model.hero.Mario;
+import net.web.Score;
+import net.web.WebServer;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -21,7 +23,7 @@ import java.util.ArrayList;
  * behaviours. It provides checks and low-level conditions
  * for working in sync with the {@link GameEngine}.
  *
- * @version 1.2.0
+ * @version 1.3.0
  */
 public class MapManager {
     private Map map;
@@ -298,6 +300,14 @@ public class MapManager {
                 }
             }
         }
+    }
+
+    /**
+     * Publishes the score obtained by the player
+     * to the web server at the end of the game.
+     */
+    public void publishScore() {
+        WebServer.publishScore(new Score(username, map.getPoints()));
     }
 
     /**

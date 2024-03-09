@@ -18,7 +18,7 @@ import java.awt.*;
  * initialization and synchronization of the other threads. It also
  * provides some runtime checks that make up the whole game's brain.
  *
- * @version 1.3.0
+ * @version 1.3.1
  */
 public class GameEngine implements Runnable {
     private final static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -208,6 +208,7 @@ public class GameEngine implements Runnable {
                 control.GameEngine.playSound("flag");
 
                 calculateEndPoints(mario);
+                mapManager.publishScore();
             }
         }
 

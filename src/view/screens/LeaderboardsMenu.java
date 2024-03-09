@@ -1,6 +1,7 @@
 package view.screens;
 
 import control.ButtonAction;
+import net.web.WebServer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
  * The menu screen handling the fetching
  * of the scores from the web server.
  *
- * @version 1.0.1
+ * @version 1.1.0
  */
 public class LeaderboardsMenu {
     private ArrayList<String> scores;
@@ -34,11 +35,7 @@ public class LeaderboardsMenu {
      * and sets a pretty-formatted string array.
      */
     public void fetchScores() {
-        // TODO: Needs actual data fetching
-        ArrayList<String> temp = new ArrayList<>();
-        temp.add("1. Player_1         15320");
-
-        scores = temp;
+        scores = WebServer.getScores();
         lastTimeFetched = System.currentTimeMillis();
     }
 
