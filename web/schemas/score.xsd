@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <xsd:complexType name="scoreType">
+    <xsd:sequence>
+      <xsd:element name="username" type="xsd:string"/>
+      <xsd:element name="points" type="xsd:int"/>
+      <xsd:element name="timestamp" type="xsd:dateTime"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="score" type="scoreType"/>
+
+</xsd:schema>
