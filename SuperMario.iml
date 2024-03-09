@@ -7,5 +7,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="jakarta.xml.bind.api" level="project" />
+    <orderEntry type="library" name="sun.xml.bind.jaxb.impl" level="project" />
+    <orderEntry type="library" name="apache.commons.lang3" level="project" />
   </component>
 </module>

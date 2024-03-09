@@ -2,10 +2,15 @@
   <artifact type="jar" build-on-make="true" name="SuperMario:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/SuperMario_jar</output-path>
     <root id="archive" name="SuperMario.jar">
-      <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
-      </element>
       <element id="module-output" name="SuperMario" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/jakarta.xml.bind-api-4.0.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/jakarta.activation-api-2.1.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/commons-lang3-3.14.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/jaxb-impl-4.0.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/jaxb-core-4.0.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/jakarta.xml.bind-api-4.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/jakarta.activation-api-2.1.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/angus-activation-2.0.0.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

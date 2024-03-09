@@ -1,0 +1,26 @@
+<component name="libraryTable">
+  <library name="sun.xml.bind.jaxb.impl" type="repository">
+    <properties maven-id="com.sun.xml.bind:jaxb-impl:4.0.2" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jaxb-impl-4.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jaxb-core-4.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jakarta.xml.bind-api-4.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jakarta.activation-api-2.1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/angus-activation-2.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib/jaxb-impl-4.0.2-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jaxb-core-4.0.2-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jakarta.xml.bind-api-4.0.0-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jakarta.activation-api-2.1.0-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/angus-activation-2.0.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/jaxb-impl-4.0.2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jaxb-core-4.0.2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jakarta.xml.bind-api-4.0.0-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jakarta.activation-api-2.1.0-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/angus-activation-2.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
