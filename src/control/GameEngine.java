@@ -18,7 +18,7 @@ import java.awt.*;
  * initialization and synchronization of the other threads. It also
  * provides some runtime checks that make up the whole game's brain.
  *
- * @version 1.3.1
+ * @version 1.4.0
  */
 public class GameEngine implements Runnable {
     private final static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -32,13 +32,11 @@ public class GameEngine implements Runnable {
     private final UIManager uiManager;
 
     private Client client;
-    private Thread clientThread;
     private Server server;
-    private Thread serverThread;
 
     private GameStatus gameStatus;
-    private Thread thread;
     private boolean isRunning;
+    private Thread thread;
 
     public GameEngine() {
         camera = new Camera();
@@ -70,9 +68,7 @@ public class GameEngine implements Runnable {
      * The initializer method of the game engine,
      * which calls the {@link Thread#start()} method.
      */
-    private synchronized void start() {
-        if (isRunning) return;
-
+    private void start() {
         isRunning = true;
         thread = new Thread(this);
         thread.start();
@@ -94,13 +90,13 @@ public class GameEngine implements Runnable {
         while (isRunning && !thread.isInterrupted()) {
             // Calculate the ticks since the last repaint
             long now = System.nanoTime();
-            delta += (now - lastTime) / (1000000000 / amountOfTicks);
+            delta += (now - lastTime) / (1_000_000_000 / amountOfTicks);
             lastTime = now;
 
             // Convert the time into milliseconds and seconds
             // for easy-use in the time-checker functions.
-            long currentMillis = now / 100000000;
-            long currentSeconds = now / 1000000000;
+            long currentMillis = now / 100_000_000;
+            long currentSeconds = now / 1_000_000_000;
 
             if (gameStatus == GameStatus.RUNNING) {
                 Mario mario = mapManager.getMap().getMario();
@@ -147,28 +143,20 @@ public class GameEngine implements Runnable {
 
             // Multiplayer threads logic
             if (gameStatus == GameStatus.MULTIPLAYER_HOST) {
-                if (serverThread == null || serverThread.isInterrupted()) {
+                if (server == null || server.isInterrupted())
                     server = new Server(this);
-                    serverThread = new Thread(server);
-                    serverThread.start();
-                }
             }
             if (gameStatus == GameStatus.MULTIPLAYER_JOIN) {
-                if (clientThread == null || clientThread.isInterrupted()) {
-                    String serverIp = uiManager.getMultiplayerMenu().getServerIp();
-
-                    client = new Client(this, serverIp);
-                    clientThread = new Thread(client);
-                    clientThread.start();
-                }
+                if (client == null || client.isInterrupted())
+                    client = new Client(this, uiManager.getMultiplayerMenu().getServerIp());
             }
 
             // Repaint based on the ticks passed since the last iteration
             while (delta > 0) {
                 if (gameStatus == GameStatus.RUNNING) gameLoop();
 
-                delta--;
                 render();
+                delta--;
             }
         }
     }
@@ -177,14 +165,12 @@ public class GameEngine implements Runnable {
      * Calculates the points rewarded for hitting the final
      * flag based on the height. The higher, the better.
      * It also sums the points for the coins and the time.
-     *
-     * @param mario Mario object used to get the height.
      */
-    private void calculateEndPoints(Mario mario) {
+    private void calculateEndPoints() {
         Map map = mapManager.getMap();
         int points = map.getPoints();
 
-        int heightPoints = (int) (6837.5 - (mario.getY() * 612.5 / 48));
+        int heightPoints = (int) (6837.5 - (map.getMario().getY() * 612.5 / 48));
         points += Math.min(heightPoints, 5000);
 
         points += map.getCoins() * 100;
@@ -205,9 +191,9 @@ public class GameEngine implements Runnable {
                 mapManager.getMap().getEndPoint().setTouched(true);
                 mario.setX((48 * 198) - 20);
                 mario.setVelX(2.5);
-                control.GameEngine.playSound("flag");
+                GameEngine.playSound("flag");
 
-                calculateEndPoints(mario);
+                calculateEndPoints();
                 mapManager.publishScore();
             }
         }
@@ -217,20 +203,21 @@ public class GameEngine implements Runnable {
             mario.setX(9792);
             mario.jump();
         }
-        if (mario.getX() == 9792 && !mario.isJumping() && !mario.isFalling()) gameStatus = GameStatus.MISSION_PASSED;
+
+        if (mario.getX() == 9792 && !mario.isJumping() && !mario.isFalling())
+            gameStatus = GameStatus.MISSION_PASSED;
     }
 
     /**
-     * Creates the selected map and sets the
-     * {@link GameStatus} to {@code running}.
+     * Creates the selected map and sets
+     * {@link GameStatus#RUNNING}.
      *
      * @param mapName The name of the map to be loaded.
      */
     public void createMap(String mapName, boolean isMultiplayer) {
-        if (mapManager.createMap(mapName, isMultiplayer)) {
-            setGameStatus(GameStatus.RUNNING);
-            soundManager.restartTheme();
-        } else setGameStatus(GameStatus.START_SCREEN);
+        mapManager.createMap(mapName, isMultiplayer);
+        setGameStatus(GameStatus.RUNNING);
+        soundManager.restartTheme();
     }
 
     /**
@@ -254,8 +241,8 @@ public class GameEngine implements Runnable {
         checkEndContact();
 
         Mario mario = mapManager.getMap().getMario();
-        if (clientThread != null && !clientThread.isInterrupted()) client.sendUpdate(mario);
-        if (serverThread != null && !serverThread.isInterrupted()) server.sendUpdate(mario);
+        if (client != null && !client.isInterrupted()) client.sendUpdate(mario);
+        if (server != null && !server.isInterrupted()) server.sendUpdate(mario);
     }
 
     /**
@@ -300,28 +287,28 @@ public class GameEngine implements Runnable {
             if (input == ButtonAction.ENTER) createMap("map-01", false);
             if (input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
         } else if (gameStatus == GameStatus.RUNNING) {
-            if (mapManager.getMap().getEndPoint().isTouched() && input != ButtonAction.ENTER) return;
+            if (mapManager.getMap().getEndPoint().isTouched()) return;
 
             Mario mario = mapManager.getMap().getMario();
 
-            if (input == ButtonAction.JUMP) mario.jump();
             if (input == ButtonAction.CROUCH) {
                 if (mario.getX() >= 2736 && mario.getX() <= 2784 && !mario.isFalling() && !mario.isJumping()) {
                     camera.setX(10992 + ((1920 - WIDTH) / 2));
                     mario.pipeTeleport(11616, 96);
                 }
             }
-            if (input == ButtonAction.M_RIGHT) mario.move(true, camera);
+            if (input == ButtonAction.JUMP) mario.jump();
             if (input == ButtonAction.M_LEFT) mario.move(false, camera);
+            if (input == ButtonAction.M_RIGHT) mario.move(true, camera);
 
+            if (input == ButtonAction.CHEAT && mario.getVelX() >= 0) {
+                mario.setVelX(100);
+                mapManager.setHasCheated(true);
+            }
             if (input == ButtonAction.FIRE && mario.isFire()) mario.setFiring(true);
             if (input == ButtonAction.RUN) {
                 if (mario.getVelX() > 0) mario.setVelX(7.5);
                 if (mario.getVelX() < 0) mario.setVelX(-7.5);
-            }
-            if (input == ButtonAction.CHEAT && mario.getVelX() >= 0) {
-                mario.setVelX(100);
-                mapManager.setHasCheated(true);
             }
 
             if (input == ButtonAction.ACTION_COMPLETED) mario.setVelX(0);
@@ -329,8 +316,8 @@ public class GameEngine implements Runnable {
             if (input == ButtonAction.ENTER) reset(false);
             if (input == ButtonAction.ESCAPE) gameStatus = GameStatus.START_SCREEN;
 
-            if (clientThread != null && !clientThread.isInterrupted()) client.interrupt();
-            if (serverThread != null && !serverThread.isInterrupted()) server.interrupt();
+            if (client != null && !client.isInterrupted()) client.interrupt();
+            if (server != null && !server.isInterrupted()) server.interrupt();
         }
     }
 

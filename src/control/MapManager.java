@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * behaviours. It provides checks and low-level conditions
  * for working in sync with the {@link GameEngine}.
  *
- * @version 1.3.0
+ * @version 1.4.0
  */
 public class MapManager {
     private Map map;
@@ -43,16 +43,12 @@ public class MapManager {
      *
      * @param mapName       The name of the map to be loaded.
      * @param isMultiplayer Whether the map needs two marios.
-     * @return If the map was created successfully.
      */
-    public boolean createMap(String mapName, boolean isMultiplayer) {
+    public void createMap(String mapName, boolean isMultiplayer) {
         this.isMultiplayer = isMultiplayer;
         this.hasCheated = false;
 
-        MapCreator mapCreator = new MapCreator();
-        map = mapCreator.createMap(mapName, isMultiplayer, username);
-
-        return map != null;
+        this.map = MapCreator.createMap(mapName, isMultiplayer, username);
     }
 
     /**
@@ -307,7 +303,7 @@ public class MapManager {
      * to the web server at the end of the game.
      */
     public void publishScore() {
-        WebServer.publishScore(new Score(username, map.getPoints()));
+        if (!hasCheated) WebServer.publishScore(new Score(username, map.getPoints()));
     }
 
     /**

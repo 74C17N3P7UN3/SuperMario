@@ -3,7 +3,7 @@ package control;
 /**
  * The possible view states.
  *
- * @version 1.3.0
+ * @version 1.3.1
  */
 public enum GameStatus {
     /** The credits screen. */
@@ -22,7 +22,7 @@ public enum GameStatus {
     MULTIPLAYER_LOBBY,
     /** The player ran out of time. */
     OUT_OF_TIME,
-    /** The game is running and the player is still playing. */
+    /** The game is running and the player is playing. */
     RUNNING,
     /** The starting selection screen. */
     START_SCREEN,

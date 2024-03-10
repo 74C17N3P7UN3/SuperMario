@@ -3,33 +3,33 @@ package control;
 /**
  * The states that can be inputted.
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
 public enum ButtonAction {
-    /** When the key gets released, the action needs to be completed. */
+    /** Complete whatever movement was in progress. */
     ACTION_COMPLETED,
-    /** A special key for running ultra-fast. */
+    /** Allows Mario to move at supersonic speed. */
     CHEAT,
-    /** Crouch in the pipe to enter it. */
+    /** Allows Mario to enter pipes from the top. */
     CROUCH,
-    /** Enter key is used to confirm an action or restart the game. */
+    /** Select or confirm the current action. */
     ENTER,
-    /** Escape key is used to exit or go back to the menu. */
+    /** Go back or cancel the current action. */
     ESCAPE,
-    /** Lets Mario spawn a fireball in the facing direction. */
+    /** Allows Mario to throw a fireball. */
     FIRE,
-    /** A standard jump performed by Mario. */
+    /** Allows Mario to perform a jump. */
     JUMP,
-    /** Moves left horizontally. */
+    /** Allows Mario to move left. */
     M_LEFT,
-    /** Moves right horizontally. */
+    /** Allows Mario to move right. */
     M_RIGHT,
-    /** When no valid key is inputted, it gets ignored. */
+    /** The default ignored action state. */
     NO_ACTION,
-    /** Lets mario run a little bit faster. */
+    /** Allows Mario to run a little faster. */
     RUN,
-    /** Moves the graphic selection down. */
+    /** Indicates a negative selection input. */
     SELECTION_DOWN,
-    /** Moves the graphic selection up. */
+    /** Indicates a positive selection input. */
     SELECTION_UP,
 }

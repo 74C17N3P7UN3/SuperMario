@@ -5,6 +5,12 @@ import java.net.UnknownHostException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The menu screen handling the input
+ * of the multiplayer host ip.
+ *
+ * @version 1.0.1
+ */
 public class MultiplayerMenu {
     private String localHostIp;
     private String serverIp;

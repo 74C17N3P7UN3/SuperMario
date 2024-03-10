@@ -15,11 +15,11 @@ import java.util.Objects;
 import java.util.Scanner;
 
 /**
- * The web class, responsible for communicating
- * with the web server, keeping track of the
- * scores' leaderboard.
+ * The class responsible for communicating
+ * with the web server, keeping track and
+ * updating the scores' leaderboard.
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
 public class WebServer {
     /**
@@ -62,6 +62,10 @@ public class WebServer {
         } catch (Exception ignored) {}
     }
 
+    /**
+     * Retrieves the scores from the leaderboard
+     * to show them on the leaderboard screen.
+     */
     public static ArrayList<String> getScores() {
         try {
             // Set up the connection with the web server

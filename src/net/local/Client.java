@@ -11,11 +11,12 @@ import java.net.Socket;
  * The client class, responsible for
  * communicating with the connected TCP server.
  *
- * @version 1.0.0
+ * @version 1.1.0
  */
 public class Client implements Runnable {
     private GameEngine engine;
     private boolean interrupt;
+    private Thread thread;
 
     private Socket connection;
 
@@ -33,9 +34,22 @@ public class Client implements Runnable {
             output = new ObjectOutputStream(connection.getOutputStream());
 
             engine.createMap("map-01", true);
+            start();
         } catch (Exception ignored) {}
     }
 
+    /**
+     * The initializer method of the client thread,
+     * which calls the {@link Thread#start()} method.
+     */
+    private void start() {
+        thread = new Thread(this);
+        thread.start();
+    }
+
+    /**
+     * The implementation of the {@link Runnable} interface.
+     */
     @Override
     public void run() {
         while (!interrupt) {
@@ -67,5 +81,11 @@ public class Client implements Runnable {
             output.writeObject(new Packet(mario));
             output.flush();
         } catch (Exception ignored) {}
+    }
+
+    /* ---------- Getters / Setters ---------- */
+
+    public boolean isInterrupted() {
+        return interrupt;
     }
 }

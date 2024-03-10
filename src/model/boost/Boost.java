@@ -8,7 +8,7 @@ import model.hero.Mario;
 import java.awt.image.BufferedImage;
 
 /**
- * A boost that spawn off a {@link SurpriseBrick}.
+ * A boost that spawns off a {@link SurpriseBrick}.
  *
  * @version 1.0.0
  */

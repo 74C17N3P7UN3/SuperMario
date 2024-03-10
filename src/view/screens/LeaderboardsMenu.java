@@ -10,7 +10,7 @@ import java.util.List;
  * The menu screen handling the fetching
  * of the scores from the web server.
  *
- * @version 1.1.0
+ * @version 1.1.1
  */
 public class LeaderboardsMenu {
     private ArrayList<String> scores;
@@ -18,6 +18,10 @@ public class LeaderboardsMenu {
 
     private long lastTimeFetched = 0;
 
+    /**
+     * Updates the currently-in-view range
+     * set of scores by an increment of 5.
+     */
     public void changeScoresRange(ButtonAction input) {
         int lastValidRange = scores.size() % 5 == 0 ? scores.size() - 5 : scores.size() - scores.size() % 5;
 

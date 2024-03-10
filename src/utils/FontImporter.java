@@ -8,11 +8,12 @@ import java.io.InputStream;
  * Util class responsible for importing the
  * game's font from the media's package.
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
 public class FontImporter {
     /**
-     * Returns the custom Mario {@link Font}.
+     * Loads the custom Mario {@link Font}
+     * from the ttf file.
      *
      * @return The custom Mario {@link Font}.
      */
