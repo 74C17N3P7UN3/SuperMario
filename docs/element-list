@@ -5,7 +5,8 @@ model.boost
 model.brick
 model.enemy
 model.hero
-net
+net.local
+net.web
 utils
 view
 view.screens

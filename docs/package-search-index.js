@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"control"},{"l":"main"},{"l":"model"},{"l":"model.boost"},{"l":"model.brick"},{"l":"model.enemy"},{"l":"model.hero"},{"l":"net"},{"l":"utils"},{"l":"view"},{"l":"view.screens"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"control"},{"l":"main"},{"l":"model"},{"l":"model.boost"},{"l":"model.brick"},{"l":"model.enemy"},{"l":"model.hero"},{"l":"net.local"},{"l":"net.web"},{"l":"utils"},{"l":"view"},{"l":"view.screens"}];updateSearchResults();
