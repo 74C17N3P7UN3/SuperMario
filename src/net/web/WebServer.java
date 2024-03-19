@@ -19,7 +19,7 @@ import java.util.Scanner;
  * with the web server, keeping track and
  * updating the scores' leaderboard.
  *
- * @version 1.0.1
+ * @version 1.0.2
  */
 public class WebServer {
     /**
@@ -97,11 +97,14 @@ public class WebServer {
                 String username = leaderboard.getScores().get(i).username;
                 int points = leaderboard.getScores().get(i).points;
 
-                String score = (i + 1) + ". "
-                        + StringUtils.rightPad(username, 16 + 1)
+                String index = String.valueOf(i + 1);
+                String score = StringUtils.leftPad(index, 2, "0") + ". "
+                        + StringUtils.rightPad(username, 16) + " "
                         + StringUtils.leftPad(String.valueOf(points), 5);
                 scores.add(score);
             }
+            // Or show that there are no scores to display
+            if (leaderboard.getScores().isEmpty()) scores.add("   No scores to display   ");
 
             return scores;
         } catch (Exception ignored) {}

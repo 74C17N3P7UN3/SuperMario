@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * This manager is responsible for rendering all the
  * components, such as the map and the GUI on the screen.
  *
- * @version 1.3.0
+ * @version 1.3.1
  */
 public class UIManager extends JPanel {
     private final GameEngine engine;
@@ -179,7 +179,7 @@ public class UIManager extends JPanel {
 
         ArrayList<String> scores = new ArrayList<>(leaderboardsMenu.getScoresInRange());
         for (int i = 0; i < scores.size(); i++)
-            g2D.drawString(scores.get(i), 560 + ((GameEngine.WIDTH - 1920) / 2), 290 + 72 * i);
+            g2D.drawString(scores.get(i), 544 + ((GameEngine.WIDTH - 1920) / 2), 290 + 72 * i);
     }
 
     /**
